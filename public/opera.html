@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Opera — Claudio Terzi</title>
+<meta name="description" content="L'Opera — il lavoro grande, quello che non finisce in un pomeriggio." />
+<link rel="stylesheet" href="/css/style.css" />
+<link rel="stylesheet" href="/css/nav.css" />
+<style>
+  /*
+    Nota: qui .pagina NON deve mai avere una larghezza fissa in px.
+    La versione precedente di questa pagina sbordava di 231px su telefono
+    perché usava una larghezza fissa (605px) invece di percentuali/max-width.
+    .pagina in style.css è già width:100% + max-width — questa pagina si
+    limita ad aggiungere contenuto dentro quel contenitore, niente override.
+  */
+  .fasi-opera {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    margin: 1.5rem 0;
+  }
+</style>
+</head>
+<body>
+<div id="costellazione"></div>
+<main class="pagina">
+  <h1><span class="oro">Opera</span></h1>
+  <p class="sottotitolo">Il lavoro grande, quello che non finisce in un pomeriggio.</p>
+
+  <div class="riquadro">
+    <p>C'è una differenza tra un progetto e un'Opera. Un progetto ha una scadenza e uno scopo dichiarato. Un'Opera si porta avanti per anni, cambia forma strada facendo, e a volte non sai nemmeno bene cosa diventerà finché non ci sei dentro fino al collo. I Tarocchi Quantici sono un'Opera. Questo sito è un'Opera. Non tutto quello che si fa deve essere un progetto.</p>
+  </div>
+
+  <h2>Fasi, non tappe</h2>
+  <div class="fasi-opera">
+    <div class="riquadro">
+      <h3>Nigredo</h3>
+      <p>La fase scura: scomporre, capire cosa non funziona più, lasciare che qualcosa marcisca prima di poterlo ricostruire.</p>
+    </div>
+    <div class="riquadro">
+      <h3>Albedo</h3>
+      <p>La fase chiara: pulizia, distillazione, ciò che resta dopo aver tolto tutto quello che non serviva.</p>
+    </div>
+    <div class="riquadro">
+      <h3>Rubedo</h3>
+      <p>La fase rossa: la cosa finita che comincia a funzionare da sola, senza bisogno di essere continuamente sorvegliata.</p>
+    </div>
+  </div>
+
+  <div class="riquadro">
+    <p class="sottotitolo" style="margin:0;">Non tutte le Opere raggiungono la Rubedo. È comunque valso il tempo di quelle che restano nella Nigredo.</p>
+  </div>
+</main>
+<footer class="piede">Claudio Terzi — Bruxelles.</footer>
+<script src="/js/soglia.js"></script>
+<script src="/js/nav.js"></script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Viaggi — Claudio Terzi</title>
+<meta name="description" content="Pianifica un viaggio per stile e durata, non per destinazione già decisa." />
+<link rel="stylesheet" href="/css/style.css" />
+<link rel="stylesheet" href="/css/nav.css" />
+<style>
+  .modulo { display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-end; margin-bottom: 1.5rem; }
+  .campo label { display: block; color: var(--testo-tenue); font-size: 0.8rem; margin-bottom: 0.35rem; }
+  .campo select, .campo input {
+    background: var(--fondo-carta); color: var(--testo); border: 1px solid var(--linea);
+    font-family: var(--serif); padding: 0.5rem 0.6rem; border-radius: 4px; min-width: 8rem;
+  }
+  .proposte { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); }
+</style>
+</head>
+<body>
+<div id="costellazione"></div>
+<main class="pagina">
+  <h1><span class="oro">Viaggi</span></h1>
+  <p class="sottotitolo">Pianifica per stile e durata — la destinazione arriva dopo, non prima.</p>
+
+  <form class="modulo" id="modulo-viaggi">
+    <div class="campo">
+      <label for="stile">Stile</label>
+      <select id="stile">
+        <option value="">Qualunque</option>
+        <option value="mare">Mare</option>
+        <option value="città">Città</option>
+        <option value="natura">Natura</option>
+      </select>
+    </div>
+    <div class="campo">
+      <label for="regione">Regione (rispetto a Bruxelles)</label>
+      <select id="regione">
+        <option value="">Qualunque</option>
+        <option value="nord">Nord</option>
+        <option value="est">Est</option>
+        <option value="sud">Sud</option>
+        <option value="ovest">Ovest</option>
+      </select>
+    </div>
+    <div class="campo">
+      <label for="giorni">Giorni</label>
+      <input type="number" id="giorni" min="1" max="21" value="4" />
+    </div>
+    <button class="bottone" type="submit">Proponi</button>
+  </form>
+
+  <p id="stato-viaggi" class="sottotitolo"></p>
+  <div class="proposte" id="proposte"></div>
+</main>
+<footer class="piede">Claudio Terzi — Bruxelles. <a href="/flight.html">Cerca voli</a> · <a href="/valigia.html">Valigia</a></footer>
+<script src="/js/soglia.js"></script>
+<script src="/js/nav.js"></script>
+<script>
+(function () {
+  var form = document.getElementById("modulo-viaggi");
+  var stato = document.getElementById("stato-viaggi");
+  var proposte = document.getElementById("proposte");
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    stato.textContent = "Cerco…";
+    proposte.innerHTML = "";
+
+    fetch("/api/viaggi/pianifica", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        stile: document.getElementById("stile").value || null,
+        regione: document.getElementById("regione").value || null,
+        giorni: Number(document.getElementById("giorni").value) || 4
+      })
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (dati) {
+        if (!dati.proposte || dati.proposte.length === 0) {
+          stato.textContent = dati.messaggio || "Nessuna proposta trovata.";
+          return;
+        }
+        stato.textContent = dati.trovate + " destinazioni corrispondono — tre proposte:";
+        dati.proposte.forEach(function (p) {
+          var div = document.createElement("div");
+          div.className = "riquadro";
+          div.innerHTML =
+            "<h2>" + p.citta + ", " + p.paese + "</h2>" +
+            "<p>" + p.nota + "</p>" +
+            "<p class='sottotitolo'>" + p.itinerario + "</p>" +
+            "<p><a href='/flight.html?verso=" + encodeURIComponent(p.iata) + "'>Cerca voli per " + p.iata + " →</a></p>";
+          proposte.appendChild(div);
+        });
+      })
+      .catch(function () {
+        stato.textContent = "Non riesco a contattare il pianificatore in questo momento.";
+      });
+  });
+})();
+</script>
+</body>
+</html>

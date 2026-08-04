@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Libro — Claudio Terzi</title>
+<meta name="description" content="Indice del libro — un capitolo per pagina, non una pagina sola." />
+<link rel="stylesheet" href="/css/style.css" />
+<link rel="stylesheet" href="/css/nav.css" />
+<style>
+  .indice-capitoli { list-style: none; padding: 0; margin: 1.5rem 0; }
+  .indice-capitoli li {
+    display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+    border-bottom: 1px solid var(--linea); padding: 0.9rem 0;
+  }
+  .indice-capitoli .num { color: var(--oro-tenue); margin-right: 0.6rem; }
+  .indice-capitoli .stima { color: var(--testo-tenue); font-size: 0.85rem; white-space: nowrap; }
+</style>
+</head>
+<body>
+<div id="costellazione"></div>
+<main class="pagina">
+  <h1><span class="oro">Libro</span></h1>
+  <p class="sottotitolo">Un capitolo per pagina. Nessuna pagina che diventa uno scorrimento infinito.</p>
+
+  <div class="riquadro">
+    <p>Questo indice esiste perché un libro letto da telefono non è un libro letto al tavolo — ha bisogno di fermate, non di uno scorrimento senza fine. Ogni capitolo è una pagina propria, con link avanti e indietro, così puoi lasciarlo e ritrovarlo dove l'hai lasciato.</p>
+  </div>
+
+  <ol class="indice-capitoli">
+    <li><a href="/libro/capitolo-1.html"><span class="num">01</span>Prima di aprire</a><span class="stima">~3 min</span></li>
+    <li><a href="/libro/capitolo-2.html"><span class="num">02</span>Osservare cambia</a><span class="stima">~3 min</span></li>
+    <li><a href="/libro/capitolo-3.html"><span class="num">03</span>La soglia</a><span class="stima">~3 min</span></li>
+    <li><a href="/libro/capitolo-4.html"><span class="num">04</span>Le parti</a><span class="stima">~3 min</span></li>
+    <li><a href="/libro/capitolo-5.html"><span class="num">05</span>Il collasso</a><span class="stima">~4 min</span></li>
+  </ol>
+</main>
+<footer class="piede">Claudio Terzi — Bruxelles.</footer>
+<script src="/js/soglia.js"></script>
+<script src="/js/nav.js"></script>
+</body>
+</html>

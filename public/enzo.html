@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Per Enzo — Claudio Terzi</title>
+<meta name="description" content="Un regalo per un amico: un'invocazione e una stesa a quattro assi." />
+<link rel="stylesheet" href="/css/style.css" />
+<link rel="stylesheet" href="/css/nav.css" />
+<style>
+  .invocazione {
+    font-style: italic;
+    color: var(--luce);
+    border-left: 2px solid var(--oro-tenue);
+    padding-left: 1.25rem;
+    margin: 1.5rem 0 2rem;
+  }
+  .quattro-assi { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); margin: 1.5rem 0; }
+  .asse-etichetta { color: var(--oro-tenue); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; }
+</style>
+</head>
+<body>
+<div id="costellazione"></div>
+<main class="pagina">
+  <h1><span class="oro">Per Enzo</span></h1>
+  <p class="sottotitolo">Una pagina, non un regalo da scartare — da leggere con calma, magari due volte.</p>
+
+  <p class="invocazione">
+    Che le quattro direzioni ti si mostrino non per dirti cosa fare, ma per farti vedere dove sei già.<br />
+    Che la luce, quando arriva, non ti trovi impreparato — e che l'ombra, quando arriva, non ti trovi solo.<br />
+    Questo mazzo non predice niente. Ti restituisce solo quello che ci hai messo, un po' più chiaro di prima.
+  </p>
+
+  <div class="riquadro">
+    <p>Enzo — questa è una stesa a quattro assi, una carta per direzione: nord, est, sud, ovest. Tirale quando vuoi, non serve un'occasione. Possono uscire diverse ogni volta: va bene così, è il punto.</p>
+  </div>
+
+  <button class="bottone" id="tira" type="button" disabled>Tira le quattro carte</button>
+  <p class="sottotitolo" id="stato-enzo"></p>
+
+  <div class="quattro-assi" id="assi"></div>
+</main>
+<footer class="piede">Claudio Terzi — Bruxelles. <a href="/tarocchi.html">R³∞</a></footer>
+<script src="/js/soglia.js"></script>
+<script src="/js/nav.js"></script>
+<script>
+(function () {
+  var ASSI = ["nord", "est", "sud", "ovest"];
+  var bottone = document.getElementById("tira");
+  var stato = document.getElementById("stato-enzo");
+  var contenitore = document.getElementById("assi");
+  var carte = [];
+
+  function estrai(escluse) {
+    var scelta;
+    do {
+      scelta = carte[Math.floor(Math.random() * carte.length)];
+    } while (escluse.indexOf(scelta) !== -1 && carte.length > escluse.length);
+    return scelta;
+  }
+
+  function tira() {
+    stato.textContent = "Tiro le carte…";
+    contenitore.innerHTML = "";
+    var usate = [];
+
+    var richieste = ASSI.map(function (asse) {
+      var carta = estrai(usate);
+      usate.push(carta);
+      var polarita = Math.random() < 0.5 ? "luce" : "ombra";
+      return fetch("/api/leggi", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mazzo: "r3", carta: carta.numero, asse: asse, polarita: polarita })
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (dati) { return dati; });
+    });
+
+    Promise.all(richieste)
+      .then(function (risultati) {
+        stato.textContent = "";
+        risultati.forEach(function (dati) {
+          var div = document.createElement("div");
+          div.className = "riquadro";
+          div.innerHTML =
+            '<span class="asse-etichetta">' + dati.asse + "</span>" +
+            "<h3>" + dati.carta.nome + " — " + dati.polarita + "</h3>" +
+            "<p>" + dati.significato + "</p>";
+          contenitore.appendChild(div);
+        });
+      })
+      .catch(function () {
+        stato.textContent = "Non riesco a comporre la lettura in questo momento.";
+      });
+  }
+
+  fetch("/api/mazzo?mazzo=r3")
+    .then(function (r) { return r.json(); })
+    .then(function (dati) {
+      carte = dati.carte || [];
+      bottone.disabled = false;
+    })
+    .catch(function () {
+      stato.textContent = "Non riesco a caricare il mazzo in questo momento.";
+    });
+
+  bottone.addEventListener("click", tira);
+})();
+</script>
+</body>
+</html>

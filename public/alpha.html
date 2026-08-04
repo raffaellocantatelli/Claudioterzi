@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Canone Alpha — Claudio Terzi</title>
+<meta name="description" content="74 carte, 8 cicli, 592 stati. Il collasso calcolato interamente nel browser." />
+<link rel="stylesheet" href="/css/style.css" />
+<link rel="stylesheet" href="/css/nav.css" />
+<style>
+  .cicli {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 1.5rem 0;
+  }
+  .ciclo-bottone {
+    background: var(--fondo-carta);
+    border: 1px solid var(--linea);
+    color: var(--testo-tenue);
+    font-family: var(--serif);
+    font-size: 0.85rem;
+    padding: 0.5rem 0.85rem;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: left;
+    max-width: 100%;
+  }
+  .ciclo-bottone .n { color: var(--oro-tenue); margin-right: 0.4rem; }
+  .ciclo-bottone.attivo {
+    border-color: var(--oro);
+    color: var(--testo);
+    background: var(--oro-ombra);
+  }
+  .stato-collasso {
+    display: none;
+    margin-top: 1.5rem;
+  }
+  .stato-collasso.visibile { display: block; }
+  #campo-cerca {
+    width: 100%;
+    max-width: 22rem;
+    background: var(--fondo-carta);
+    color: var(--testo);
+    border: 1px solid var(--linea);
+    font-family: var(--serif);
+    padding: 0.6rem 0.8rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+  }
+  .griglia-alpha {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+    gap: 0.6rem;
+    max-height: 22rem;
+    overflow-y: auto;
+    padding-right: 0.25rem;
+  }
+  .carta-alpha {
+    background: var(--fondo-carta);
+    border: 1px solid var(--linea);
+    border-radius: 6px;
+    padding: 0.6rem 0.75rem;
+    cursor: pointer;
+    color: var(--testo);
+    font-family: var(--serif);
+    font-size: 0.85rem;
+    text-align: left;
+    width: 100%;
+  }
+  .carta-alpha:hover, .carta-alpha:focus-visible { border-color: var(--oro); }
+  .carta-alpha.selezionata { border-color: var(--oro); background: var(--oro-ombra); }
+</style>
+</head>
+<body>
+<div id="costellazione"></div>
+
+<main class="pagina">
+  <h1><span class="oro">Canone Alpha</span></h1>
+  <p class="sottotitolo">74 carte. 8 cicli. 592 stati possibili — nessuno salvato, tutti calcolati qui, nel browser, quando li chiedi.</p>
+
+  <div class="riquadro">
+    <p>Questa pagina non dipende da nessuna API: le 74 carte sono incluse nel file stesso. Scegli un ciclo, poi una carta — lo stato (il "collasso") si compone sul momento.</p>
+  </div>
+
+  <h2>1. Scegli un ciclo</h2>
+  <div class="cicli" id="cicli"></div>
+
+  <h2>2. Scegli una carta</h2>
+  <input type="search" id="campo-cerca" placeholder="Cerca per nome…" aria-label="Cerca carta" />
+  <div class="griglia-alpha" id="griglia-alpha"></div>
+
+  <div class="riquadro stato-collasso" id="stato-collasso">
+    <h2 id="stato-titolo"></h2>
+    <p id="stato-testo"></p>
+  </div>
+</main>
+
+<footer class="piede">Claudio Terzi — Bruxelles. <a href="/tarocchi.html">R³∞</a> · <a href="/oracolo.html">Oracolo</a></footer>
+
+<script type="application/json" id="dati-alpha">{"cicli":[{"numero":1,"nome":"Origine","tema":"il punto prima del punto, quando ancora nulla si è mosso"},{"numero":2,"nome":"Attrito","tema":"il primo contatto con una resistenza reale"},{"numero":3,"nome":"Fessura","tema":"la crepa che lascia entrare qualcosa di nuovo"},{"numero":4,"nome":"Fermento","tema":"il disordine necessario prima che qualcosa si organizzi"},{"numero":5,"nome":"Forma","tema":"ciò che finalmente prende una figura riconoscibile"},{"numero":6,"nome":"Prova","tema":"la forma messa alla prova dal mondo che non la conosce ancora"},{"numero":7,"nome":"Radicamento","tema":"ciò che ha retto e ora mette radici"},{"numero":8,"nome":"Soglia successiva","tema":"il compimento che è già l'inizio di qualcos'altro"}],"carte":[{"numero":0,"nome":"Silente Soglia","essenza":"Ciò che agisce senza far rumore. Qui si mostra come un passaggio, non un luogo dove restare."},{"numero":1,"nome":"Silente Radice","essenza":"Ciò che agisce senza far rumore. Qui si mostra come ciò che tiene anche quando non si vede."},{"numero":2,"nome":"Silente Fessura","essenza":"Ciò che agisce senza far rumore. Qui si mostra come una crepa che lascia entrare aria nuova."},{"numero":3,"nome":"Silente Corrente","essenza":"Ciò che agisce senza far rumore. Qui si mostra come una forza che porta senza chiedere il permesso."},{"numero":4,"nome":"Silente Nodo","essenza":"Ciò che agisce senza far rumore. Qui si mostra come un punto dove più fili si sono stretti insieme."},{"numero":5,"nome":"Silente Eco","essenza":"Ciò che agisce senza far rumore. Qui si mostra come ciò che ritorna, cambiato, di qualcosa già detto."},{"numero":6,"nome":"Silente Deriva","essenza":"Ciò che agisce senza far rumore. Qui si mostra come un moto lento lontano dal punto di partenza."},{"numero":7,"nome":"Silente Innesto","essenza":"Ciò che agisce senza far rumore. Qui si mostra come un elemento estraneo diventato parte viva."},{"numero":8,"nome":"Ardente Soglia","essenza":"Ciò che brucia il passo prima ancora di deciderlo. Qui si mostra come un passaggio, non un luogo dove restare."},{"numero":9,"nome":"Ardente Radice","essenza":"Ciò che brucia il passo prima ancora di deciderlo. Qui si mostra come ciò che tiene anche quando non si vede."},{"numero":10,"nome":"Ardente Fessura","essenza":"Ciò che brucia il passo prima ancora di deciderlo. Qui si mostra come una crepa che lascia entrare aria nuova."},{"numero":11,"nome":"Ardente Corrente","essenza":"Ciò che brucia il passo prima ancora di deciderlo. Qui si mostra come una forza che porta senza chiedere il permesso."},{"numero":12,"nome":"Ardente Nodo","essenza":"Ciò che brucia il passo prima ancora di deciderlo. Qui si mostra come un punto dove più fili si sono stretti insieme."},{"numero":13,"nome":"Ardente Eco","essenza":"Ciò che brucia il passo prima ancora di deciderlo. Qui si mostra come ciò che ritorna, cambiato, di qualcosa già detto."},{"numero":14,"nome":"Ardente Deriva","essenza":"Ciò che brucia il passo prima ancora di deciderlo. Qui si mostra come un moto lento lontano dal punto di partenza."},{"numero":15,"nome":"Ardente Innesto","essenza":"Ciò che brucia il passo prima ancora di deciderlo. Qui si mostra come un elemento estraneo diventato parte viva."},{"numero":16,"nome":"Sospesa Soglia","essenza":"Ciò che non è ancora scesa da nessuna parte. Qui si mostra come un passaggio, non un luogo dove restare."},{"numero":17,"nome":"Sospesa Radice","essenza":"Ciò che non è ancora scesa da nessuna parte. Qui si mostra come ciò che tiene anche quando non si vede."},{"numero":18,"nome":"Sospesa Fessura","essenza":"Ciò che non è ancora scesa da nessuna parte. Qui si mostra come una crepa che lascia entrare aria nuova."},{"numero":19,"nome":"Sospesa Corrente","essenza":"Ciò che non è ancora scesa da nessuna parte. Qui si mostra come una forza che porta senza chiedere il permesso."},{"numero":20,"nome":"Sospesa Nodo","essenza":"Ciò che non è ancora scesa da nessuna parte. Qui si mostra come un punto dove più fili si sono stretti insieme."},{"numero":21,"nome":"Sospesa Eco","essenza":"Ciò che non è ancora scesa da nessuna parte. Qui si mostra come ciò che ritorna, cambiato, di qualcosa già detto."},{"numero":22,"nome":"Sospesa Deriva","essenza":"Ciò che non è ancora scesa da nessuna parte. Qui si mostra come un moto lento lontano dal punto di partenza."},{"numero":23,"nome":"Sospesa Innesto","essenza":"Ciò che non è ancora scesa da nessuna parte. Qui si mostra come un elemento estraneo diventato parte viva."},{"numero":24,"nome":"Lucida Soglia","essenza":"Ciò che vede chiaro proprio mentre trema. Qui si mostra come un passaggio, non un luogo dove restare."},{"numero":25,"nome":"Lucida Radice","essenza":"Ciò che vede chiaro proprio mentre trema. Qui si mostra come ciò che tiene anche quando non si vede."},{"numero":26,"nome":"Lucida Fessura","essenza":"Ciò che vede chiaro proprio mentre trema. Qui si mostra come una crepa che lascia entrare aria nuova."},{"numero":27,"nome":"Lucida Corrente","essenza":"Ciò che vede chiaro proprio mentre trema. Qui si mostra come una forza che porta senza chiedere il permesso."},{"numero":28,"nome":"Lucida Nodo","essenza":"Ciò che vede chiaro proprio mentre trema. Qui si mostra come un punto dove più fili si sono stretti insieme."},{"numero":29,"nome":"Lucida Eco","essenza":"Ciò che vede chiaro proprio mentre trema. Qui si mostra come ciò che ritorna, cambiato, di qualcosa già detto."},{"numero":30,"nome":"Lucida Deriva","essenza":"Ciò che vede chiaro proprio mentre trema. Qui si mostra come un moto lento lontano dal punto di partenza."},{"numero":31,"nome":"Lucida Innesto","essenza":"Ciò che vede chiaro proprio mentre trema. Qui si mostra come un elemento estraneo diventato parte viva."},{"numero":32,"nome":"Cava Soglia","essenza":"Ciò che ha uno spazio vuoto al centro, e lo sa. Qui si mostra come un passaggio, non un luogo dove restare."},{"numero":33,"nome":"Cava Radice","essenza":"Ciò che ha uno spazio vuoto al centro, e lo sa. Qui si mostra come ciò che tiene anche quando non si vede."},{"numero":34,"nome":"Cava Fessura","essenza":"Ciò che ha uno spazio vuoto al centro, e lo sa. Qui si mostra come una crepa che lascia entrare aria nuova."},{"numero":35,"nome":"Cava Corrente","essenza":"Ciò che ha uno spazio vuoto al centro, e lo sa. Qui si mostra come una forza che porta senza chiedere il permesso."},{"numero":36,"nome":"Cava Nodo","essenza":"Ciò che ha uno spazio vuoto al centro, e lo sa. Qui si mostra come un punto dove più fili si sono stretti insieme."},{"numero":37,"nome":"Cava Eco","essenza":"Ciò che ha uno spazio vuoto al centro, e lo sa. Qui si mostra come ciò che ritorna, cambiato, di qualcosa già detto."},{"numero":38,"nome":"Cava Deriva","essenza":"Ciò che ha uno spazio vuoto al centro, e lo sa. Qui si mostra come un moto lento lontano dal punto di partenza."},{"numero":39,"nome":"Cava Innesto","essenza":"Ciò che ha uno spazio vuoto al centro, e lo sa. Qui si mostra come un elemento estraneo diventato parte viva."},{"numero":40,"nome":"Doppia Soglia","essenza":"Ciò che è due cose vere insieme, non una a scelta. Qui si mostra come un passaggio, non un luogo dove restare."},{"numero":41,"nome":"Doppia Radice","essenza":"Ciò che è due cose vere insieme, non una a scelta. Qui si mostra come ciò che tiene anche quando non si vede."},{"numero":42,"nome":"Doppia Fessura","essenza":"Ciò che è due cose vere insieme, non una a scelta. Qui si mostra come una crepa che lascia entrare aria nuova."},{"numero":43,"nome":"Doppia Corrente","essenza":"Ciò che è due cose vere insieme, non una a scelta. Qui si mostra come una forza che porta senza chiedere il permesso."},{"numero":44,"nome":"Doppia Nodo","essenza":"Ciò che è due cose vere insieme, non una a scelta. Qui si mostra come un punto dove più fili si sono stretti insieme."},{"numero":45,"nome":"Doppia Eco","essenza":"Ciò che è due cose vere insieme, non una a scelta. Qui si mostra come ciò che ritorna, cambiato, di qualcosa già detto."},{"numero":46,"nome":"Doppia Deriva","essenza":"Ciò che è due cose vere insieme, non una a scelta. Qui si mostra come un moto lento lontano dal punto di partenza."},{"numero":47,"nome":"Doppia Innesto","essenza":"Ciò che è due cose vere insieme, non una a scelta. Qui si mostra come un elemento estraneo diventato parte viva."},{"numero":48,"nome":"Ferma Soglia","essenza":"Ciò che ha smesso di cercare altrove. Qui si mostra come un passaggio, non un luogo dove restare."},{"numero":49,"nome":"Ferma Radice","essenza":"Ciò che ha smesso di cercare altrove. Qui si mostra come ciò che tiene anche quando non si vede."},{"numero":50,"nome":"Ferma Fessura","essenza":"Ciò che ha smesso di cercare altrove. Qui si mostra come una crepa che lascia entrare aria nuova."},{"numero":51,"nome":"Ferma Corrente","essenza":"Ciò che ha smesso di cercare altrove. Qui si mostra come una forza che porta senza chiedere il permesso."},{"numero":52,"nome":"Ferma Nodo","essenza":"Ciò che ha smesso di cercare altrove. Qui si mostra come un punto dove più fili si sono stretti insieme."},{"numero":53,"nome":"Ferma Eco","essenza":"Ciò che ha smesso di cercare altrove. Qui si mostra come ciò che ritorna, cambiato, di qualcosa già detto."},{"numero":54,"nome":"Ferma Deriva","essenza":"Ciò che ha smesso di cercare altrove. Qui si mostra come un moto lento lontano dal punto di partenza."},{"numero":55,"nome":"Ferma Innesto","essenza":"Ciò che ha smesso di cercare altrove. Qui si mostra come un elemento estraneo diventato parte viva."},{"numero":56,"nome":"Mobile Soglia","essenza":"Ciò che non si lascia fissare in una sola forma. Qui si mostra come un passaggio, non un luogo dove restare."},{"numero":57,"nome":"Mobile Radice","essenza":"Ciò che non si lascia fissare in una sola forma. Qui si mostra come ciò che tiene anche quando non si vede."},{"numero":58,"nome":"Mobile Fessura","essenza":"Ciò che non si lascia fissare in una sola forma. Qui si mostra come una crepa che lascia entrare aria nuova."},{"numero":59,"nome":"Mobile Corrente","essenza":"Ciò che non si lascia fissare in una sola forma. Qui si mostra come una forza che porta senza chiedere il permesso."},{"numero":60,"nome":"Mobile Nodo","essenza":"Ciò che non si lascia fissare in una sola forma. Qui si mostra come un punto dove più fili si sono stretti insieme."},{"numero":61,"nome":"Mobile Eco","essenza":"Ciò che non si lascia fissare in una sola forma. Qui si mostra come ciò che ritorna, cambiato, di qualcosa già detto."},{"numero":62,"nome":"Mobile Deriva","essenza":"Ciò che non si lascia fissare in una sola forma. Qui si mostra come un moto lento lontano dal punto di partenza."},{"numero":63,"nome":"Mobile Innesto","essenza":"Ciò che non si lascia fissare in una sola forma. Qui si mostra come un elemento estraneo diventato parte viva."},{"numero":64,"nome":"Grezza Soglia","essenza":"Ciò che non è stata ancora lavorata da nessuno. Qui si mostra come un passaggio, non un luogo dove restare."},{"numero":65,"nome":"Grezza Radice","essenza":"Ciò che non è stata ancora lavorata da nessuno. Qui si mostra come ciò che tiene anche quando non si vede."},{"numero":66,"nome":"Grezza Fessura","essenza":"Ciò che non è stata ancora lavorata da nessuno. Qui si mostra come una crepa che lascia entrare aria nuova."},{"numero":67,"nome":"Grezza Corrente","essenza":"Ciò che non è stata ancora lavorata da nessuno. Qui si mostra come una forza che porta senza chiedere il permesso."},{"numero":68,"nome":"Grezza Nodo","essenza":"Ciò che non è stata ancora lavorata da nessuno. Qui si mostra come un punto dove più fili si sono stretti insieme."},{"numero":69,"nome":"Grezza Eco","essenza":"Ciò che non è stata ancora lavorata da nessuno. Qui si mostra come ciò che ritorna, cambiato, di qualcosa già detto."},{"numero":70,"nome":"Grezza Deriva","essenza":"Ciò che non è stata ancora lavorata da nessuno. Qui si mostra come un moto lento lontano dal punto di partenza."},{"numero":71,"nome":"Grezza Innesto","essenza":"Ciò che non è stata ancora lavorata da nessuno. Qui si mostra come un elemento estraneo diventato parte viva."},{"numero":72,"nome":"Levigata Soglia","essenza":"Ciò che il tempo ha reso liscia, forse troppo. Qui si mostra come un passaggio, non un luogo dove restare."},{"numero":73,"nome":"Levigata Radice","essenza":"Ciò che il tempo ha reso liscia, forse troppo. Qui si mostra come ciò che tiene anche quando non si vede."}]}</script>
+
+<script src="/js/soglia.js"></script>
+<script src="/js/nav.js"></script>
+<script>
+(function () {
+  var DATI = JSON.parse(document.getElementById("dati-alpha").textContent);
+  var cicloScelto = null;
+  var cartaScelta = null;
+
+  var contCicli = document.getElementById("cicli");
+  var contGriglia = document.getElementById("griglia-alpha");
+  var campoCerca = document.getElementById("campo-cerca");
+  var statoBox = document.getElementById("stato-collasso");
+  var statoTitolo = document.getElementById("stato-titolo");
+  var statoTesto = document.getElementById("stato-testo");
+
+  function collassa() {
+    if (!cicloScelto || !cartaScelta) return;
+    statoTitolo.textContent = cartaScelta.nome + " — ciclo " + cicloScelto.numero + " (" + cicloScelto.nome + ")";
+    statoTesto.textContent =
+      cartaScelta.nome + ", nel ciclo " + cicloScelto.numero + " — " + cicloScelto.nome +
+      " (" + cicloScelto.tema + "). " + cartaScelta.essenza;
+    statoBox.classList.add("visibile");
+    statoBox.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
+  DATI.cicli.forEach(function (ciclo) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "ciclo-bottone";
+    b.innerHTML = '<span class="n">' + ciclo.numero + "</span>" + ciclo.nome;
+    b.title = ciclo.tema;
+    b.addEventListener("click", function () {
+      cicloScelto = ciclo;
+      Array.prototype.forEach.call(contCicli.children, function (el) { el.classList.remove("attivo"); });
+      b.classList.add("attivo");
+      collassa();
+    });
+    contCicli.appendChild(b);
+  });
+
+  function disegnaCarte(filtro) {
+    contGriglia.innerHTML = "";
+    var testo = (filtro || "").trim().toLowerCase();
+    DATI.carte
+      .filter(function (c) { return !testo || c.nome.toLowerCase().indexOf(testo) !== -1; })
+      .forEach(function (carta) {
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "carta-alpha";
+        b.textContent = carta.nome;
+        b.addEventListener("click", function () {
+          cartaScelta = carta;
+          Array.prototype.forEach.call(contGriglia.children, function (el) { el.classList.remove("selezionata"); });
+          b.classList.add("selezionata");
+          collassa();
+        });
+        contGriglia.appendChild(b);
+      });
+  }
+
+  campoCerca.addEventListener("input", function () { disegnaCarte(campoCerca.value); });
+  disegnaCarte("");
+})();
+</script>
+</body>
+</html>

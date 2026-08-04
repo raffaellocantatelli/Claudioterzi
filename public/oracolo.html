@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Oracolo — Claudio Terzi</title>
+<meta name="description" content="Una carta decide la direzione, l'oracolo trova la destinazione e, se può, il volo." />
+<link rel="stylesheet" href="/css/style.css" />
+<link rel="stylesheet" href="/css/nav.css" />
+<style>
+  .modulo { display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-end; margin-bottom: 1.5rem; }
+  .campo label { display: block; color: var(--testo-tenue); font-size: 0.8rem; margin-bottom: 0.35rem; }
+  .campo select {
+    background: var(--fondo-carta); color: var(--testo); border: 1px solid var(--linea);
+    font-family: var(--serif); padding: 0.5rem 0.6rem; border-radius: 4px; min-width: 8rem;
+  }
+  #esito-oracolo { display: none; }
+  #esito-oracolo.visibile { display: block; }
+</style>
+</head>
+<body>
+<div id="costellazione"></div>
+<main class="pagina">
+  <h1><span class="oro">Oracolo</span></h1>
+  <p class="sottotitolo">Una carta decide la direzione. L'oracolo trova dove, e — se Ryanair collabora — anche come arrivarci.</p>
+
+  <form class="modulo" id="modulo-oracolo">
+    <div class="campo">
+      <label for="asse">Asse (facoltativo)</label>
+      <select id="asse">
+        <option value="">Lascia decidere alla carta</option>
+        <option value="nord">Nord</option>
+        <option value="est">Est</option>
+        <option value="sud">Sud</option>
+        <option value="ovest">Ovest</option>
+      </select>
+    </div>
+    <div class="campo">
+      <label for="polarita">Polarità (facoltativa)</label>
+      <select id="polarita">
+        <option value="">Lascia decidere alla carta</option>
+        <option value="luce">Luce</option>
+        <option value="ombra">Ombra</option>
+      </select>
+    </div>
+    <button class="bottone" type="submit">Interroga l'oracolo</button>
+  </form>
+
+  <p id="stato-oracolo" class="sottotitolo"></p>
+
+  <div id="esito-oracolo">
+    <div class="riquadro">
+      <h2 id="oracolo-carta"></h2>
+      <p id="oracolo-significato"></p>
+    </div>
+    <div class="riquadro">
+      <h2 id="oracolo-destinazione"></h2>
+      <p id="oracolo-nota"></p>
+      <p id="oracolo-volo"></p>
+    </div>
+  </div>
+</main>
+<footer class="piede">Claudio Terzi — Bruxelles. <a href="/tarocchi.html">R³∞</a> · <a href="/viaggi.html">Viaggi</a></footer>
+<script src="/js/soglia.js"></script>
+<script src="/js/nav.js"></script>
+<script>
+(function () {
+  var form = document.getElementById("modulo-oracolo");
+  var stato = document.getElementById("stato-oracolo");
+  var esito = document.getElementById("esito-oracolo");
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    stato.textContent = "Interrogo l'oracolo…";
+    esito.classList.remove("visibile");
+
+    fetch("/api/flight/oracolo", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        asse: document.getElementById("asse").value || undefined,
+        polarita: document.getElementById("polarita").value || undefined
+      })
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (dati) {
+        if (dati.errore) {
+          stato.textContent = dati.errore;
+          return;
+        }
+        stato.textContent = "";
+        document.getElementById("oracolo-carta").textContent = dati.carta.nome + " — " + dati.asse + " / " + dati.polarita;
+        document.getElementById("oracolo-significato").textContent = dati.significato;
+        document.getElementById("oracolo-destinazione").textContent = dati.destinazione.citta + ", " + dati.destinazione.paese + " (" + dati.destinazione.iata + ")";
+        document.getElementById("oracolo-nota").textContent = dati.destinazione.nota;
+
+        var voloTxt;
+        if (dati.volo.fonte === "ryanair-live" && dati.volo.occasioni.length > 0) {
+          var o = dati.volo.occasioni[0].outbound;
+          voloTxt = "Volo trovato da " + dati.origine + ": " + o.flightNumber + ", " +
+            new Date(o.departureDate).toLocaleDateString("it-IT") + ", " + o.price.currencySymbol + o.price.value.toFixed(2) + ".";
+        } else if (dati.volo.fonte === "ryanair-live") {
+          voloTxt = "Nessun volo diretto trovato da " + dati.origine + " verso " + dati.destinazione.iata + " nei prossimi 60 giorni.";
+        } else {
+          voloTxt = "Voli non disponibili in questo momento — " + dati.volo.motivo;
+        }
+        document.getElementById("oracolo-volo").textContent = voloTxt;
+        esito.classList.add("visibile");
+      })
+      .catch(function () {
+        stato.textContent = "L'oracolo non risponde in questo momento.";
+      });
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,172 @@
+/*
+  Claudio Terzi — sistema visivo condiviso.
+  Fondo #0c0c0e, oro #c9a84c, Georgia serif.
+  Una sola fonte di stile per tutte le pagine della Costellazione.
+*/
+
+:root {
+  --fondo: #0c0c0e;
+  --fondo-alza: #131316;
+  --fondo-carta: #17171b;
+  --oro: #c9a84c;
+  --oro-tenue: #8a7638;
+  --oro-ombra: rgba(201, 168, 76, 0.16);
+  --testo: #e9e6da;
+  --testo-tenue: #a39d8a;
+  --linea: #2a2a2f;
+  --luce: #d9c98a;
+  --ombra: #5b3c6a;
+  --serif: Georgia, "Times New Roman", serif;
+  --max: 1100px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--fondo);
+}
+
+body {
+  margin: 0;
+  background: var(--fondo);
+  color: var(--testo);
+  font-family: var(--serif);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at top, rgba(201, 168, 76, 0.06), transparent 60%);
+  z-index: 0;
+}
+
+a {
+  color: var(--oro);
+  text-decoration: none;
+}
+
+a:hover,
+a:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+img,
+svg {
+  max-width: 100%;
+  height: auto;
+}
+
+.pagina {
+  position: relative;
+  z-index: 1;
+  max-width: var(--max);
+  width: 100%;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+}
+
+h1,
+h2,
+h3 {
+  font-weight: normal;
+  letter-spacing: 0.02em;
+  color: var(--testo);
+}
+
+h1 {
+  font-size: clamp(1.6rem, 5vw, 2.4rem);
+  border-bottom: 1px solid var(--linea);
+  padding-bottom: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+h1 .oro {
+  color: var(--oro);
+}
+
+.sottotitolo {
+  color: var(--testo-tenue);
+  font-style: italic;
+  margin-top: -1rem;
+  margin-bottom: 2rem;
+}
+
+.oro {
+  color: var(--oro);
+}
+
+.riquadro {
+  background: var(--fondo-carta);
+  border: 1px solid var(--linea);
+  border-radius: 6px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.riquadro:hover {
+  border-color: var(--oro-tenue);
+}
+
+.bottone {
+  display: inline-block;
+  background: transparent;
+  border: 1px solid var(--oro-tenue);
+  color: var(--oro);
+  font-family: var(--serif);
+  font-size: 1rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.bottone:hover,
+.bottone:focus-visible {
+  background: var(--oro-ombra);
+  text-decoration: none;
+}
+
+.bottone[disabled] {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+pre,
+code {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+footer.piede {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 2rem 1rem 3rem;
+  color: var(--testo-tenue);
+  font-size: 0.85rem;
+}
+
+/* Scrollbar per contenitori a scorrimento orizzontale dichiarato (tabelle, ecc.) */
+.scorri-x {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 480px) {
+  .pagina {
+    padding: 1.25rem 1rem 3rem;
+  }
+}

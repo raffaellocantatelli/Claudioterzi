@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Flight — Claudio Terzi</title>
+<meta name="description" content="Occasioni di volo Ryanair dal vivo, origine autodetect." />
+<link rel="stylesheet" href="/css/style.css" />
+<link rel="stylesheet" href="/css/nav.css" />
+<style>
+  .modulo { display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-end; margin-bottom: 1.5rem; }
+  .campo label { display: block; color: var(--testo-tenue); font-size: 0.8rem; margin-bottom: 0.35rem; }
+  .campo input {
+    background: var(--fondo-carta); color: var(--testo); border: 1px solid var(--linea);
+    font-family: var(--serif); padding: 0.5rem 0.6rem; border-radius: 4px; width: 8rem;
+  }
+  .tabella-voli { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+  .tabella-voli th, .tabella-voli td { text-align: left; padding: 0.5rem 0.6rem; border-bottom: 1px solid var(--linea); font-size: 0.9rem; }
+  .tabella-voli th { color: var(--testo-tenue); font-weight: normal; }
+</style>
+</head>
+<body>
+<div id="costellazione"></div>
+<main class="pagina">
+  <h1><span class="oro">Flight</span></h1>
+  <p class="sottotitolo">Occasioni di volo Ryanair dal vivo. Origine rilevata automaticamente, modificabile.</p>
+
+  <form class="modulo" id="modulo-flight">
+    <div class="campo">
+      <label for="origine">Origine (IATA)</label>
+      <input type="text" id="origine" maxlength="3" placeholder="es. CRL" />
+    </div>
+    <div class="campo">
+      <label for="verso">Verso (IATA, facoltativo)</label>
+      <input type="text" id="verso" maxlength="3" placeholder="es. OPO" />
+    </div>
+    <div class="campo">
+      <label for="budget">Budget max €</label>
+      <input type="number" id="budget" min="0" placeholder="es. 60" />
+    </div>
+    <button class="bottone" type="submit">Cerca occasioni</button>
+  </form>
+
+  <p id="stato-flight" class="sottotitolo">Premi "Cerca occasioni" per iniziare.</p>
+  <div class="scorri-x">
+    <table class="tabella-voli" id="tabella-voli" hidden>
+      <thead>
+        <tr><th>Volo</th><th>Da</th><th>A</th><th>Partenza</th><th>Prezzo</th></tr>
+      </thead>
+      <tbody id="corpo-tabella"></tbody>
+    </table>
+  </div>
+</main>
+<footer class="piede">Claudio Terzi — Bruxelles. <a href="/oracolo.html">Lascialo scegliere all'oracolo</a></footer>
+<script src="/js/soglia.js"></script>
+<script src="/js/nav.js"></script>
+<script>
+(function () {
+  var params = new URLSearchParams(window.location.search);
+  if (params.get("verso")) document.getElementById("verso").value = params.get("verso").toUpperCase();
+
+  var form = document.getElementById("modulo-flight");
+  var stato = document.getElementById("stato-flight");
+  var tabella = document.getElementById("tabella-voli");
+  var corpo = document.getElementById("corpo-tabella");
+
+  function cerca() {
+    stato.textContent = "Interrogo Ryanair…";
+    tabella.hidden = true;
+    corpo.innerHTML = "";
+
+    var origine = document.getElementById("origine").value.trim().toUpperCase();
+    var verso = document.getElementById("verso").value.trim().toUpperCase();
+    var budget = document.getElementById("budget").value;
+
+    fetch("/api/flight/occasioni", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ origine: origine || undefined, budget: budget ? Number(budget) : undefined })
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (dati) {
+        if (dati.fonte !== "ryanair-live") {
+          stato.textContent = "Origine " + dati.origine + " — " + (dati.motivo || "dati non disponibili in questo momento.");
+          return;
+        }
+        var voli = dati.occasioni || [];
+        if (verso) {
+          voli = voli.filter(function (v) {
+            return v.outbound && v.outbound.arrivalAirport && v.outbound.arrivalAirport.iataCode === verso;
+          });
+        }
+        if (voli.length === 0) {
+          stato.textContent = "Nessuna occasione trovata da " + dati.origine + (verso ? " verso " + verso : "") + " in questo momento.";
+          return;
+        }
+        stato.textContent = voli.length + " occasioni da " + dati.origine + ":";
+        voli.forEach(function (v) {
+          var o = v.outbound;
+          var tr = document.createElement("tr");
+          tr.innerHTML =
+            "<td>" + o.flightNumber + "</td>" +
+            "<td>" + o.departureAirport.iataCode + "</td>" +
+            "<td>" + o.arrivalAirport.iataCode + "</td>" +
+            "<td>" + new Date(o.departureDate).toLocaleDateString("it-IT") + "</td>" +
+            "<td>" + o.price.currencySymbol + o.price.value.toFixed(2) + "</td>";
+          corpo.appendChild(tr);
+        });
+        tabella.hidden = false;
+      })
+      .catch(function () {
+        stato.textContent = "Non riesco a contattare il servizio voli in questo momento.";
+      });
+  }
+
+  form.addEventListener("submit", function (e) { e.preventDefault(); cerca(); });
+})();
+</script>
+</body>
+</html>

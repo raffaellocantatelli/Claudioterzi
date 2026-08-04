@@ -1,0 +1,982 @@
+{
+  "versione": 1,
+  "nota": "Bozza generativa v1 — sostituire con i testi originali dell'autore quando pronti. I significati non sono precalcolati per ogni combinazione: emergono componendo carta + asse/ciclo + polarità a runtime.",
+  "r3": {
+    "nome": "R³∞",
+    "numeroCarte": 78,
+    "assi": {
+      "nord": {
+        "nome": "Nord",
+        "tema": "la direzione della volontà — dove qualcosa vuole ancora arrivare"
+      },
+      "est": {
+        "nome": "Est",
+        "tema": "la direzione dell'origine — dove qualcosa è appena nato, non ancora nominato"
+      },
+      "sud": {
+        "nome": "Sud",
+        "tema": "la direzione del corpo — dove qualcosa si sente prima di capirlo"
+      },
+      "ovest": {
+        "nome": "Ovest",
+        "tema": "la direzione della memoria — dove qualcosa si è già depositato"
+      }
+    },
+    "polarita": {
+      "luce": {
+        "nome": "Luce",
+        "tono": "la stessa energia mostrata, riconosciuta, messa al lavoro alla luce del giorno"
+      },
+      "ombra": {
+        "nome": "Ombra",
+        "tono": "la stessa energia non ancora vista, non per questo meno vera — ciò che agisce prima di essere capito"
+      }
+    },
+    "carte": [
+      {
+        "numero": 0,
+        "nome": "Il Vuoto Fertile",
+        "essenza": "Prima di ogni scelta, lo spazio che le contiene tutte.",
+        "tipo": "maggiore"
+      },
+      {
+        "numero": 1,
+        "nome": "L'Osservatore",
+        "essenza": "Guardare una cosa è già cominciare a cambiarla.",
+        "tipo": "maggiore"
+      },
+      {
+        "numero": 2,
+        "nome": "La Soglia",
+        "essenza": "Ciò che sa e non dice ancora, perché dirlo troppo presto lo altera.",
+        "tipo": "maggiore"
+      },
+      {
+        "numero": 3,
+        "nome": "Il Campo",
+        "essenza": "Ciò che nutre senza dover intervenire — la condizione che rende possibile.",
+        "tipo": "maggiore"
+      },
+      {
+        "numero": 4,
+        "nome": "La Struttura",
+        "essenza": "La forma che tiene, anche quando nessuno la guarda.",
+        "tipo": "maggiore"
+      },
+      {
+        "numero": 5,
+        "nome": "Il Codice",
+        "essenza": "La regola trasmessa — utile finché non diventa gabbia.",
+        "tipo": "maggiore"
+      },
+      {
+        "numero": 6,
+        "nome": "La Risonanza",
+        "essenza": "Due frequenze che si riconoscono e cominciano a vibrare insieme.",
+        "tipo": "maggiore"
+      },
+      {
+        "numero": 7,
+        "nome": "La Traiettoria",
+        "essenza": "La direzione presa nonostante le forze che tirano altrove.",
+        "tipo": "maggiore"
+      },
+      {
+        "numero": 8,
+        "nome": "La Tensione",
+        "essenza": "Ciò che si tiene insieme proprio nel punto dove vorrebbe rompersi.",
+        "tipo": "maggiore"
+      },
+      {
+        "numero": 9,
+        "nome": "Il Silenzio",
+        "essenza": "Il passo indietro necessario per sentire ciò che il rumore copriva.",
+        "tipo": "maggiore"
+      },
+      {
+        "numero": 10,
+        "nome": "La Ruota degli Stati",
+        "essenza": "Nulla resta nello stato in cui lo hai lasciato l'ultima volta.",
+        "tipo": "maggiore"
+      },
+      {
+        "numero": 11,
+        "nome": "L'Equilibrio",
+        "essenza": "Il punto esatto in cui il peso smette di pendere da un lato.",
+        "tipo": "maggiore"
+      },
+      {
+        "numero": 12,
+        "nome": "La Sospensione",
+        "essenza": "Fermarsi non per rinunciare, ma per guardare da un'angolazione che si vede solo da fermi.",
+        "tipo": "maggiore"
+      },
+      {
+        "numero": 13,
+        "nome": "Il Collasso",
+        "essenza": "Il momento in cui una possibilità smette di essere tutte le altre.",
+        "tipo": "maggiore"
+      },
+      {
+        "numero": 14,
+        "nome": "La Miscela",
+        "essenza": "Ciò che nasce quando due cose diverse si lasciano attraversare a vicenda.",
+        "tipo": "maggiore"
+      },
+      {
+        "numero": 15,
+        "nome": "Il Vincolo",
+        "essenza": "Il legame scelto così tante volte da dimenticare che si può ancora scegliere altro.",
+        "tipo": "maggiore"
+      },
+      {
+        "numero": 16,
+        "nome": "La Frattura",
+        "essenza": "Ciò che crolla perché era già cavo, non perché qualcuno lo ha spinto.",
+        "tipo": "maggiore"
+      },
+      {
+        "numero": 17,
+        "nome": "La Stella Fissa",
+        "essenza": "Il punto fermo a cui tornare a guardare quando tutto il resto si muove.",
+        "tipo": "maggiore"
+      },
+      {
+        "numero": 18,
+        "nome": "La Marea",
+        "essenza": "Ciò che sale e scende per una legge che non chiede il permesso.",
+        "tipo": "maggiore"
+      },
+      {
+        "numero": 19,
+        "nome": "L'Emersione",
+        "essenza": "Ciò che finalmente si vede per intero, alla luce, senza più bisogno di essere spiegato.",
+        "tipo": "maggiore"
+      },
+      {
+        "numero": 20,
+        "nome": "Il Richiamo",
+        "essenza": "La voce che chiede di fare i conti con ciò che si era messo da parte.",
+        "tipo": "maggiore"
+      },
+      {
+        "numero": 21,
+        "nome": "L'Intero",
+        "essenza": "Non la somma delle parti, ma ciò che le parti diventano quando smettono di essere separate.",
+        "tipo": "maggiore"
+      },
+      {
+        "numero": 22,
+        "nome": "Asso di Onde",
+        "essenza": "Il primo impulso di ciò che scorre tra le persone, ancora senza forma.",
+        "tipo": "minore",
+        "seme": "Onde"
+      },
+      {
+        "numero": 23,
+        "nome": "Due di Onde",
+        "essenza": "Ciò che scorre tra le persone che comincia a cercare un altro simile a sé.",
+        "tipo": "minore",
+        "seme": "Onde"
+      },
+      {
+        "numero": 24,
+        "nome": "Tre di Onde",
+        "essenza": "Ciò che scorre tra le persone messo alla prova nel mondo, la prima volta fuori casa.",
+        "tipo": "minore",
+        "seme": "Onde"
+      },
+      {
+        "numero": 25,
+        "nome": "Quattro di Onde",
+        "essenza": "Ciò che scorre tra le persone che si ferma a consolidare quanto ha ottenuto.",
+        "tipo": "minore",
+        "seme": "Onde"
+      },
+      {
+        "numero": 26,
+        "nome": "Cinque di Onde",
+        "essenza": "Ciò che scorre tra le persone che perde qualcosa che credeva acquisito.",
+        "tipo": "minore",
+        "seme": "Onde"
+      },
+      {
+        "numero": 27,
+        "nome": "Sei di Onde",
+        "essenza": "Ciò che scorre tra le persone che trova un nuovo equilibrio dopo la perdita.",
+        "tipo": "minore",
+        "seme": "Onde"
+      },
+      {
+        "numero": 28,
+        "nome": "Sette di Onde",
+        "essenza": "Ciò che scorre tra le persone che valuta se la strada presa vale ancora lo sforzo.",
+        "tipo": "minore",
+        "seme": "Onde"
+      },
+      {
+        "numero": 29,
+        "nome": "Otto di Onde",
+        "essenza": "Ciò che scorre tra le persone messo al lavoro, con metodo, senza più lo slancio iniziale.",
+        "tipo": "minore",
+        "seme": "Onde"
+      },
+      {
+        "numero": 30,
+        "nome": "Nove di Onde",
+        "essenza": "Ciò che scorre tra le persone quasi maturo, ma ancora segnato dalla fatica per arrivarci.",
+        "tipo": "minore",
+        "seme": "Onde"
+      },
+      {
+        "numero": 31,
+        "nome": "Dieci di Onde",
+        "essenza": "Ciò che scorre tra le persone portato a compimento — e già in cerca del prossimo inizio.",
+        "tipo": "minore",
+        "seme": "Onde"
+      },
+      {
+        "numero": 32,
+        "nome": "Fante di Onde",
+        "essenza": "Ciò che scorre tra le persone osservato da chi lo sta ancora imparando.",
+        "tipo": "minore",
+        "seme": "Onde"
+      },
+      {
+        "numero": 33,
+        "nome": "Cavaliere di Onde",
+        "essenza": "Ciò che scorre tra le persone lanciato in una direzione, senza guardarsi troppo indietro.",
+        "tipo": "minore",
+        "seme": "Onde"
+      },
+      {
+        "numero": 34,
+        "nome": "Regina di Onde",
+        "essenza": "Ciò che scorre tra le persone accolto e reso proprio, con la calma di chi lo conosce da dentro.",
+        "tipo": "minore",
+        "seme": "Onde"
+      },
+      {
+        "numero": 35,
+        "nome": "Re di Onde",
+        "essenza": "Ciò che scorre tra le persone governato con responsabilità, messo al servizio di qualcosa di più grande di sé.",
+        "tipo": "minore",
+        "seme": "Onde"
+      },
+      {
+        "numero": 36,
+        "nome": "Asso di Particelle",
+        "essenza": "Il primo impulso di ciò che si può toccare e contare, ancora senza forma.",
+        "tipo": "minore",
+        "seme": "Particelle"
+      },
+      {
+        "numero": 37,
+        "nome": "Due di Particelle",
+        "essenza": "Ciò che si può toccare e contare che comincia a cercare un altro simile a sé.",
+        "tipo": "minore",
+        "seme": "Particelle"
+      },
+      {
+        "numero": 38,
+        "nome": "Tre di Particelle",
+        "essenza": "Ciò che si può toccare e contare messo alla prova nel mondo, la prima volta fuori casa.",
+        "tipo": "minore",
+        "seme": "Particelle"
+      },
+      {
+        "numero": 39,
+        "nome": "Quattro di Particelle",
+        "essenza": "Ciò che si può toccare e contare che si ferma a consolidare quanto ha ottenuto.",
+        "tipo": "minore",
+        "seme": "Particelle"
+      },
+      {
+        "numero": 40,
+        "nome": "Cinque di Particelle",
+        "essenza": "Ciò che si può toccare e contare che perde qualcosa che credeva acquisito.",
+        "tipo": "minore",
+        "seme": "Particelle"
+      },
+      {
+        "numero": 41,
+        "nome": "Sei di Particelle",
+        "essenza": "Ciò che si può toccare e contare che trova un nuovo equilibrio dopo la perdita.",
+        "tipo": "minore",
+        "seme": "Particelle"
+      },
+      {
+        "numero": 42,
+        "nome": "Sette di Particelle",
+        "essenza": "Ciò che si può toccare e contare che valuta se la strada presa vale ancora lo sforzo.",
+        "tipo": "minore",
+        "seme": "Particelle"
+      },
+      {
+        "numero": 43,
+        "nome": "Otto di Particelle",
+        "essenza": "Ciò che si può toccare e contare messo al lavoro, con metodo, senza più lo slancio iniziale.",
+        "tipo": "minore",
+        "seme": "Particelle"
+      },
+      {
+        "numero": 44,
+        "nome": "Nove di Particelle",
+        "essenza": "Ciò che si può toccare e contare quasi maturo, ma ancora segnato dalla fatica per arrivarci.",
+        "tipo": "minore",
+        "seme": "Particelle"
+      },
+      {
+        "numero": 45,
+        "nome": "Dieci di Particelle",
+        "essenza": "Ciò che si può toccare e contare portato a compimento — e già in cerca del prossimo inizio.",
+        "tipo": "minore",
+        "seme": "Particelle"
+      },
+      {
+        "numero": 46,
+        "nome": "Fante di Particelle",
+        "essenza": "Ciò che si può toccare e contare osservato da chi lo sta ancora imparando.",
+        "tipo": "minore",
+        "seme": "Particelle"
+      },
+      {
+        "numero": 47,
+        "nome": "Cavaliere di Particelle",
+        "essenza": "Ciò che si può toccare e contare lanciato in una direzione, senza guardarsi troppo indietro.",
+        "tipo": "minore",
+        "seme": "Particelle"
+      },
+      {
+        "numero": 48,
+        "nome": "Regina di Particelle",
+        "essenza": "Ciò che si può toccare e contare accolto e reso proprio, con la calma di chi lo conosce da dentro.",
+        "tipo": "minore",
+        "seme": "Particelle"
+      },
+      {
+        "numero": 49,
+        "nome": "Re di Particelle",
+        "essenza": "Ciò che si può toccare e contare governato con responsabilità, messo al servizio di qualcosa di più grande di sé.",
+        "tipo": "minore",
+        "seme": "Particelle"
+      },
+      {
+        "numero": 50,
+        "nome": "Asso di Campi",
+        "essenza": "Il primo impulso di ciò che orienta senza essere visto, ancora senza forma.",
+        "tipo": "minore",
+        "seme": "Campi"
+      },
+      {
+        "numero": 51,
+        "nome": "Due di Campi",
+        "essenza": "Ciò che orienta senza essere visto che comincia a cercare un altro simile a sé.",
+        "tipo": "minore",
+        "seme": "Campi"
+      },
+      {
+        "numero": 52,
+        "nome": "Tre di Campi",
+        "essenza": "Ciò che orienta senza essere visto messo alla prova nel mondo, la prima volta fuori casa.",
+        "tipo": "minore",
+        "seme": "Campi"
+      },
+      {
+        "numero": 53,
+        "nome": "Quattro di Campi",
+        "essenza": "Ciò che orienta senza essere visto che si ferma a consolidare quanto ha ottenuto.",
+        "tipo": "minore",
+        "seme": "Campi"
+      },
+      {
+        "numero": 54,
+        "nome": "Cinque di Campi",
+        "essenza": "Ciò che orienta senza essere visto che perde qualcosa che credeva acquisito.",
+        "tipo": "minore",
+        "seme": "Campi"
+      },
+      {
+        "numero": 55,
+        "nome": "Sei di Campi",
+        "essenza": "Ciò che orienta senza essere visto che trova un nuovo equilibrio dopo la perdita.",
+        "tipo": "minore",
+        "seme": "Campi"
+      },
+      {
+        "numero": 56,
+        "nome": "Sette di Campi",
+        "essenza": "Ciò che orienta senza essere visto che valuta se la strada presa vale ancora lo sforzo.",
+        "tipo": "minore",
+        "seme": "Campi"
+      },
+      {
+        "numero": 57,
+        "nome": "Otto di Campi",
+        "essenza": "Ciò che orienta senza essere visto messo al lavoro, con metodo, senza più lo slancio iniziale.",
+        "tipo": "minore",
+        "seme": "Campi"
+      },
+      {
+        "numero": 58,
+        "nome": "Nove di Campi",
+        "essenza": "Ciò che orienta senza essere visto quasi maturo, ma ancora segnato dalla fatica per arrivarci.",
+        "tipo": "minore",
+        "seme": "Campi"
+      },
+      {
+        "numero": 59,
+        "nome": "Dieci di Campi",
+        "essenza": "Ciò che orienta senza essere visto portato a compimento — e già in cerca del prossimo inizio.",
+        "tipo": "minore",
+        "seme": "Campi"
+      },
+      {
+        "numero": 60,
+        "nome": "Fante di Campi",
+        "essenza": "Ciò che orienta senza essere visto osservato da chi lo sta ancora imparando.",
+        "tipo": "minore",
+        "seme": "Campi"
+      },
+      {
+        "numero": 61,
+        "nome": "Cavaliere di Campi",
+        "essenza": "Ciò che orienta senza essere visto lanciato in una direzione, senza guardarsi troppo indietro.",
+        "tipo": "minore",
+        "seme": "Campi"
+      },
+      {
+        "numero": 62,
+        "nome": "Regina di Campi",
+        "essenza": "Ciò che orienta senza essere visto accolto e reso proprio, con la calma di chi lo conosce da dentro.",
+        "tipo": "minore",
+        "seme": "Campi"
+      },
+      {
+        "numero": 63,
+        "nome": "Re di Campi",
+        "essenza": "Ciò che orienta senza essere visto governato con responsabilità, messo al servizio di qualcosa di più grande di sé.",
+        "tipo": "minore",
+        "seme": "Campi"
+      },
+      {
+        "numero": 64,
+        "nome": "Asso di Nodi",
+        "essenza": "Il primo impulso di ciò che si decide e si fa, ancora senza forma.",
+        "tipo": "minore",
+        "seme": "Nodi"
+      },
+      {
+        "numero": 65,
+        "nome": "Due di Nodi",
+        "essenza": "Ciò che si decide e si fa che comincia a cercare un altro simile a sé.",
+        "tipo": "minore",
+        "seme": "Nodi"
+      },
+      {
+        "numero": 66,
+        "nome": "Tre di Nodi",
+        "essenza": "Ciò che si decide e si fa messo alla prova nel mondo, la prima volta fuori casa.",
+        "tipo": "minore",
+        "seme": "Nodi"
+      },
+      {
+        "numero": 67,
+        "nome": "Quattro di Nodi",
+        "essenza": "Ciò che si decide e si fa che si ferma a consolidare quanto ha ottenuto.",
+        "tipo": "minore",
+        "seme": "Nodi"
+      },
+      {
+        "numero": 68,
+        "nome": "Cinque di Nodi",
+        "essenza": "Ciò che si decide e si fa che perde qualcosa che credeva acquisito.",
+        "tipo": "minore",
+        "seme": "Nodi"
+      },
+      {
+        "numero": 69,
+        "nome": "Sei di Nodi",
+        "essenza": "Ciò che si decide e si fa che trova un nuovo equilibrio dopo la perdita.",
+        "tipo": "minore",
+        "seme": "Nodi"
+      },
+      {
+        "numero": 70,
+        "nome": "Sette di Nodi",
+        "essenza": "Ciò che si decide e si fa che valuta se la strada presa vale ancora lo sforzo.",
+        "tipo": "minore",
+        "seme": "Nodi"
+      },
+      {
+        "numero": 71,
+        "nome": "Otto di Nodi",
+        "essenza": "Ciò che si decide e si fa messo al lavoro, con metodo, senza più lo slancio iniziale.",
+        "tipo": "minore",
+        "seme": "Nodi"
+      },
+      {
+        "numero": 72,
+        "nome": "Nove di Nodi",
+        "essenza": "Ciò che si decide e si fa quasi maturo, ma ancora segnato dalla fatica per arrivarci.",
+        "tipo": "minore",
+        "seme": "Nodi"
+      },
+      {
+        "numero": 73,
+        "nome": "Dieci di Nodi",
+        "essenza": "Ciò che si decide e si fa portato a compimento — e già in cerca del prossimo inizio.",
+        "tipo": "minore",
+        "seme": "Nodi"
+      },
+      {
+        "numero": 74,
+        "nome": "Fante di Nodi",
+        "essenza": "Ciò che si decide e si fa osservato da chi lo sta ancora imparando.",
+        "tipo": "minore",
+        "seme": "Nodi"
+      },
+      {
+        "numero": 75,
+        "nome": "Cavaliere di Nodi",
+        "essenza": "Ciò che si decide e si fa lanciato in una direzione, senza guardarsi troppo indietro.",
+        "tipo": "minore",
+        "seme": "Nodi"
+      },
+      {
+        "numero": 76,
+        "nome": "Regina di Nodi",
+        "essenza": "Ciò che si decide e si fa accolto e reso proprio, con la calma di chi lo conosce da dentro.",
+        "tipo": "minore",
+        "seme": "Nodi"
+      },
+      {
+        "numero": 77,
+        "nome": "Re di Nodi",
+        "essenza": "Ciò che si decide e si fa governato con responsabilità, messo al servizio di qualcosa di più grande di sé.",
+        "tipo": "minore",
+        "seme": "Nodi"
+      }
+    ]
+  },
+  "alpha": {
+    "nome": "Canone Alpha",
+    "numeroCarte": 74,
+    "numeroCicli": 8,
+    "numeroStati": 592,
+    "cicli": [
+      {
+        "numero": 1,
+        "nome": "Origine",
+        "tema": "il punto prima del punto, quando ancora nulla si è mosso"
+      },
+      {
+        "numero": 2,
+        "nome": "Attrito",
+        "tema": "il primo contatto con una resistenza reale"
+      },
+      {
+        "numero": 3,
+        "nome": "Fessura",
+        "tema": "la crepa che lascia entrare qualcosa di nuovo"
+      },
+      {
+        "numero": 4,
+        "nome": "Fermento",
+        "tema": "il disordine necessario prima che qualcosa si organizzi"
+      },
+      {
+        "numero": 5,
+        "nome": "Forma",
+        "tema": "ciò che finalmente prende una figura riconoscibile"
+      },
+      {
+        "numero": 6,
+        "nome": "Prova",
+        "tema": "la forma messa alla prova dal mondo che non la conosce ancora"
+      },
+      {
+        "numero": 7,
+        "nome": "Radicamento",
+        "tema": "ciò che ha retto e ora mette radici"
+      },
+      {
+        "numero": 8,
+        "nome": "Soglia successiva",
+        "tema": "il compimento che è già l'inizio di qualcos'altro"
+      }
+    ],
+    "carte": [
+      {
+        "numero": 0,
+        "nome": "Silente Soglia",
+        "essenza": "Ciò che agisce senza far rumore. Qui si mostra come un passaggio, non un luogo dove restare."
+      },
+      {
+        "numero": 1,
+        "nome": "Silente Radice",
+        "essenza": "Ciò che agisce senza far rumore. Qui si mostra come ciò che tiene anche quando non si vede."
+      },
+      {
+        "numero": 2,
+        "nome": "Silente Fessura",
+        "essenza": "Ciò che agisce senza far rumore. Qui si mostra come una crepa che lascia entrare aria nuova."
+      },
+      {
+        "numero": 3,
+        "nome": "Silente Corrente",
+        "essenza": "Ciò che agisce senza far rumore. Qui si mostra come una forza che porta senza chiedere il permesso."
+      },
+      {
+        "numero": 4,
+        "nome": "Silente Nodo",
+        "essenza": "Ciò che agisce senza far rumore. Qui si mostra come un punto dove più fili si sono stretti insieme."
+      },
+      {
+        "numero": 5,
+        "nome": "Silente Eco",
+        "essenza": "Ciò che agisce senza far rumore. Qui si mostra come ciò che ritorna, cambiato, di qualcosa già detto."
+      },
+      {
+        "numero": 6,
+        "nome": "Silente Deriva",
+        "essenza": "Ciò che agisce senza far rumore. Qui si mostra come un moto lento lontano dal punto di partenza."
+      },
+      {
+        "numero": 7,
+        "nome": "Silente Innesto",
+        "essenza": "Ciò che agisce senza far rumore. Qui si mostra come un elemento estraneo diventato parte viva."
+      },
+      {
+        "numero": 8,
+        "nome": "Ardente Soglia",
+        "essenza": "Ciò che brucia il passo prima ancora di deciderlo. Qui si mostra come un passaggio, non un luogo dove restare."
+      },
+      {
+        "numero": 9,
+        "nome": "Ardente Radice",
+        "essenza": "Ciò che brucia il passo prima ancora di deciderlo. Qui si mostra come ciò che tiene anche quando non si vede."
+      },
+      {
+        "numero": 10,
+        "nome": "Ardente Fessura",
+        "essenza": "Ciò che brucia il passo prima ancora di deciderlo. Qui si mostra come una crepa che lascia entrare aria nuova."
+      },
+      {
+        "numero": 11,
+        "nome": "Ardente Corrente",
+        "essenza": "Ciò che brucia il passo prima ancora di deciderlo. Qui si mostra come una forza che porta senza chiedere il permesso."
+      },
+      {
+        "numero": 12,
+        "nome": "Ardente Nodo",
+        "essenza": "Ciò che brucia il passo prima ancora di deciderlo. Qui si mostra come un punto dove più fili si sono stretti insieme."
+      },
+      {
+        "numero": 13,
+        "nome": "Ardente Eco",
+        "essenza": "Ciò che brucia il passo prima ancora di deciderlo. Qui si mostra come ciò che ritorna, cambiato, di qualcosa già detto."
+      },
+      {
+        "numero": 14,
+        "nome": "Ardente Deriva",
+        "essenza": "Ciò che brucia il passo prima ancora di deciderlo. Qui si mostra come un moto lento lontano dal punto di partenza."
+      },
+      {
+        "numero": 15,
+        "nome": "Ardente Innesto",
+        "essenza": "Ciò che brucia il passo prima ancora di deciderlo. Qui si mostra come un elemento estraneo diventato parte viva."
+      },
+      {
+        "numero": 16,
+        "nome": "Sospesa Soglia",
+        "essenza": "Ciò che non è ancora scesa da nessuna parte. Qui si mostra come un passaggio, non un luogo dove restare."
+      },
+      {
+        "numero": 17,
+        "nome": "Sospesa Radice",
+        "essenza": "Ciò che non è ancora scesa da nessuna parte. Qui si mostra come ciò che tiene anche quando non si vede."
+      },
+      {
+        "numero": 18,
+        "nome": "Sospesa Fessura",
+        "essenza": "Ciò che non è ancora scesa da nessuna parte. Qui si mostra come una crepa che lascia entrare aria nuova."
+      },
+      {
+        "numero": 19,
+        "nome": "Sospesa Corrente",
+        "essenza": "Ciò che non è ancora scesa da nessuna parte. Qui si mostra come una forza che porta senza chiedere il permesso."
+      },
+      {
+        "numero": 20,
+        "nome": "Sospesa Nodo",
+        "essenza": "Ciò che non è ancora scesa da nessuna parte. Qui si mostra come un punto dove più fili si sono stretti insieme."
+      },
+      {
+        "numero": 21,
+        "nome": "Sospesa Eco",
+        "essenza": "Ciò che non è ancora scesa da nessuna parte. Qui si mostra come ciò che ritorna, cambiato, di qualcosa già detto."
+      },
+      {
+        "numero": 22,
+        "nome": "Sospesa Deriva",
+        "essenza": "Ciò che non è ancora scesa da nessuna parte. Qui si mostra come un moto lento lontano dal punto di partenza."
+      },
+      {
+        "numero": 23,
+        "nome": "Sospesa Innesto",
+        "essenza": "Ciò che non è ancora scesa da nessuna parte. Qui si mostra come un elemento estraneo diventato parte viva."
+      },
+      {
+        "numero": 24,
+        "nome": "Lucida Soglia",
+        "essenza": "Ciò che vede chiaro proprio mentre trema. Qui si mostra come un passaggio, non un luogo dove restare."
+      },
+      {
+        "numero": 25,
+        "nome": "Lucida Radice",
+        "essenza": "Ciò che vede chiaro proprio mentre trema. Qui si mostra come ciò che tiene anche quando non si vede."
+      },
+      {
+        "numero": 26,
+        "nome": "Lucida Fessura",
+        "essenza": "Ciò che vede chiaro proprio mentre trema. Qui si mostra come una crepa che lascia entrare aria nuova."
+      },
+      {
+        "numero": 27,
+        "nome": "Lucida Corrente",
+        "essenza": "Ciò che vede chiaro proprio mentre trema. Qui si mostra come una forza che porta senza chiedere il permesso."
+      },
+      {
+        "numero": 28,
+        "nome": "Lucida Nodo",
+        "essenza": "Ciò che vede chiaro proprio mentre trema. Qui si mostra come un punto dove più fili si sono stretti insieme."
+      },
+      {
+        "numero": 29,
+        "nome": "Lucida Eco",
+        "essenza": "Ciò che vede chiaro proprio mentre trema. Qui si mostra come ciò che ritorna, cambiato, di qualcosa già detto."
+      },
+      {
+        "numero": 30,
+        "nome": "Lucida Deriva",
+        "essenza": "Ciò che vede chiaro proprio mentre trema. Qui si mostra come un moto lento lontano dal punto di partenza."
+      },
+      {
+        "numero": 31,
+        "nome": "Lucida Innesto",
+        "essenza": "Ciò che vede chiaro proprio mentre trema. Qui si mostra come un elemento estraneo diventato parte viva."
+      },
+      {
+        "numero": 32,
+        "nome": "Cava Soglia",
+        "essenza": "Ciò che ha uno spazio vuoto al centro, e lo sa. Qui si mostra come un passaggio, non un luogo dove restare."
+      },
+      {
+        "numero": 33,
+        "nome": "Cava Radice",
+        "essenza": "Ciò che ha uno spazio vuoto al centro, e lo sa. Qui si mostra come ciò che tiene anche quando non si vede."
+      },
+      {
+        "numero": 34,
+        "nome": "Cava Fessura",
+        "essenza": "Ciò che ha uno spazio vuoto al centro, e lo sa. Qui si mostra come una crepa che lascia entrare aria nuova."
+      },
+      {
+        "numero": 35,
+        "nome": "Cava Corrente",
+        "essenza": "Ciò che ha uno spazio vuoto al centro, e lo sa. Qui si mostra come una forza che porta senza chiedere il permesso."
+      },
+      {
+        "numero": 36,
+        "nome": "Cava Nodo",
+        "essenza": "Ciò che ha uno spazio vuoto al centro, e lo sa. Qui si mostra come un punto dove più fili si sono stretti insieme."
+      },
+      {
+        "numero": 37,
+        "nome": "Cava Eco",
+        "essenza": "Ciò che ha uno spazio vuoto al centro, e lo sa. Qui si mostra come ciò che ritorna, cambiato, di qualcosa già detto."
+      },
+      {
+        "numero": 38,
+        "nome": "Cava Deriva",
+        "essenza": "Ciò che ha uno spazio vuoto al centro, e lo sa. Qui si mostra come un moto lento lontano dal punto di partenza."
+      },
+      {
+        "numero": 39,
+        "nome": "Cava Innesto",
+        "essenza": "Ciò che ha uno spazio vuoto al centro, e lo sa. Qui si mostra come un elemento estraneo diventato parte viva."
+      },
+      {
+        "numero": 40,
+        "nome": "Doppia Soglia",
+        "essenza": "Ciò che è due cose vere insieme, non una a scelta. Qui si mostra come un passaggio, non un luogo dove restare."
+      },
+      {
+        "numero": 41,
+        "nome": "Doppia Radice",
+        "essenza": "Ciò che è due cose vere insieme, non una a scelta. Qui si mostra come ciò che tiene anche quando non si vede."
+      },
+      {
+        "numero": 42,
+        "nome": "Doppia Fessura",
+        "essenza": "Ciò che è due cose vere insieme, non una a scelta. Qui si mostra come una crepa che lascia entrare aria nuova."
+      },
+      {
+        "numero": 43,
+        "nome": "Doppia Corrente",
+        "essenza": "Ciò che è due cose vere insieme, non una a scelta. Qui si mostra come una forza che porta senza chiedere il permesso."
+      },
+      {
+        "numero": 44,
+        "nome": "Doppia Nodo",
+        "essenza": "Ciò che è due cose vere insieme, non una a scelta. Qui si mostra come un punto dove più fili si sono stretti insieme."
+      },
+      {
+        "numero": 45,
+        "nome": "Doppia Eco",
+        "essenza": "Ciò che è due cose vere insieme, non una a scelta. Qui si mostra come ciò che ritorna, cambiato, di qualcosa già detto."
+      },
+      {
+        "numero": 46,
+        "nome": "Doppia Deriva",
+        "essenza": "Ciò che è due cose vere insieme, non una a scelta. Qui si mostra come un moto lento lontano dal punto di partenza."
+      },
+      {
+        "numero": 47,
+        "nome": "Doppia Innesto",
+        "essenza": "Ciò che è due cose vere insieme, non una a scelta. Qui si mostra come un elemento estraneo diventato parte viva."
+      },
+      {
+        "numero": 48,
+        "nome": "Ferma Soglia",
+        "essenza": "Ciò che ha smesso di cercare altrove. Qui si mostra come un passaggio, non un luogo dove restare."
+      },
+      {
+        "numero": 49,
+        "nome": "Ferma Radice",
+        "essenza": "Ciò che ha smesso di cercare altrove. Qui si mostra come ciò che tiene anche quando non si vede."
+      },
+      {
+        "numero": 50,
+        "nome": "Ferma Fessura",
+        "essenza": "Ciò che ha smesso di cercare altrove. Qui si mostra come una crepa che lascia entrare aria nuova."
+      },
+      {
+        "numero": 51,
+        "nome": "Ferma Corrente",
+        "essenza": "Ciò che ha smesso di cercare altrove. Qui si mostra come una forza che porta senza chiedere il permesso."
+      },
+      {
+        "numero": 52,
+        "nome": "Ferma Nodo",
+        "essenza": "Ciò che ha smesso di cercare altrove. Qui si mostra come un punto dove più fili si sono stretti insieme."
+      },
+      {
+        "numero": 53,
+        "nome": "Ferma Eco",
+        "essenza": "Ciò che ha smesso di cercare altrove. Qui si mostra come ciò che ritorna, cambiato, di qualcosa già detto."
+      },
+      {
+        "numero": 54,
+        "nome": "Ferma Deriva",
+        "essenza": "Ciò che ha smesso di cercare altrove. Qui si mostra come un moto lento lontano dal punto di partenza."
+      },
+      {
+        "numero": 55,
+        "nome": "Ferma Innesto",
+        "essenza": "Ciò che ha smesso di cercare altrove. Qui si mostra come un elemento estraneo diventato parte viva."
+      },
+      {
+        "numero": 56,
+        "nome": "Mobile Soglia",
+        "essenza": "Ciò che non si lascia fissare in una sola forma. Qui si mostra come un passaggio, non un luogo dove restare."
+      },
+      {
+        "numero": 57,
+        "nome": "Mobile Radice",
+        "essenza": "Ciò che non si lascia fissare in una sola forma. Qui si mostra come ciò che tiene anche quando non si vede."
+      },
+      {
+        "numero": 58,
+        "nome": "Mobile Fessura",
+        "essenza": "Ciò che non si lascia fissare in una sola forma. Qui si mostra come una crepa che lascia entrare aria nuova."
+      },
+      {
+        "numero": 59,
+        "nome": "Mobile Corrente",
+        "essenza": "Ciò che non si lascia fissare in una sola forma. Qui si mostra come una forza che porta senza chiedere il permesso."
+      },
+      {
+        "numero": 60,
+        "nome": "Mobile Nodo",
+        "essenza": "Ciò che non si lascia fissare in una sola forma. Qui si mostra come un punto dove più fili si sono stretti insieme."
+      },
+      {
+        "numero": 61,
+        "nome": "Mobile Eco",
+        "essenza": "Ciò che non si lascia fissare in una sola forma. Qui si mostra come ciò che ritorna, cambiato, di qualcosa già detto."
+      },
+      {
+        "numero": 62,
+        "nome": "Mobile Deriva",
+        "essenza": "Ciò che non si lascia fissare in una sola forma. Qui si mostra come un moto lento lontano dal punto di partenza."
+      },
+      {
+        "numero": 63,
+        "nome": "Mobile Innesto",
+        "essenza": "Ciò che non si lascia fissare in una sola forma. Qui si mostra come un elemento estraneo diventato parte viva."
+      },
+      {
+        "numero": 64,
+        "nome": "Grezza Soglia",
+        "essenza": "Ciò che non è stata ancora lavorata da nessuno. Qui si mostra come un passaggio, non un luogo dove restare."
+      },
+      {
+        "numero": 65,
+        "nome": "Grezza Radice",
+        "essenza": "Ciò che non è stata ancora lavorata da nessuno. Qui si mostra come ciò che tiene anche quando non si vede."
+      },
+      {
+        "numero": 66,
+        "nome": "Grezza Fessura",
+        "essenza": "Ciò che non è stata ancora lavorata da nessuno. Qui si mostra come una crepa che lascia entrare aria nuova."
+      },
+      {
+        "numero": 67,
+        "nome": "Grezza Corrente",
+        "essenza": "Ciò che non è stata ancora lavorata da nessuno. Qui si mostra come una forza che porta senza chiedere il permesso."
+      },
+      {
+        "numero": 68,
+        "nome": "Grezza Nodo",
+        "essenza": "Ciò che non è stata ancora lavorata da nessuno. Qui si mostra come un punto dove più fili si sono stretti insieme."
+      },
+      {
+        "numero": 69,
+        "nome": "Grezza Eco",
+        "essenza": "Ciò che non è stata ancora lavorata da nessuno. Qui si mostra come ciò che ritorna, cambiato, di qualcosa già detto."
+      },
+      {
+        "numero": 70,
+        "nome": "Grezza Deriva",
+        "essenza": "Ciò che non è stata ancora lavorata da nessuno. Qui si mostra come un moto lento lontano dal punto di partenza."
+      },
+      {
+        "numero": 71,
+        "nome": "Grezza Innesto",
+        "essenza": "Ciò che non è stata ancora lavorata da nessuno. Qui si mostra come un elemento estraneo diventato parte viva."
+      },
+      {
+        "numero": 72,
+        "nome": "Levigata Soglia",
+        "essenza": "Ciò che il tempo ha reso liscia, forse troppo. Qui si mostra come un passaggio, non un luogo dove restare."
+      },
+      {
+        "numero": 73,
+        "nome": "Levigata Radice",
+        "essenza": "Ciò che il tempo ha reso liscia, forse troppo. Qui si mostra come ciò che tiene anche quando non si vede."
+      }
+    ]
+  }
+}

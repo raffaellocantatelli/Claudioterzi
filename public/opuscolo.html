@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Opuscolo — Claudio Terzi</title>
+<meta name="description" content="Schede pensate per la stampa in formato A6 — su schermo si adattano, in stampa tornano al formato esatto." />
+<link rel="stylesheet" href="/css/style.css" />
+<link rel="stylesheet" href="/css/nav.css" />
+<style>
+  /*
+    Le schede erano fisse a 397px (formato di stampa A6, 105mm) e sbordavano
+    di 23px sotto i 420px di larghezza. Su schermo ora usano min(100%, 105mm):
+    prendono il formato di stampa solo quando c'è spazio, altrimenti si
+    restringono. In stampa (@media print) tornano alle dimensioni esatte.
+  */
+  .schede {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    margin: 1.5rem 0;
+  }
+  .a6 {
+    width: min(100%, 105mm);
+    min-height: 148mm;
+    box-sizing: border-box;
+    background: var(--fondo-carta);
+    border: 1px solid var(--oro-tenue);
+    border-radius: 4px;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .a6 h3 { margin-top: 0; }
+  .a6 .numero-scheda { color: var(--testo-tenue); font-size: 0.8rem; }
+
+  @media print {
+    body { background: #fff; color: #000; }
+    #costellazione, footer.piede, .riquadro:not(.a6) { display: none; }
+    .a6 { width: 105mm; height: 148mm; border-color: #000; page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div id="costellazione"></div>
+<main class="pagina">
+  <h1><span class="oro">Opuscolo</span></h1>
+  <p class="sottotitolo">Schede pensate per la stampa in formato A6. Su schermo si adattano, in stampa tornano al formato esatto.</p>
+
+  <div class="riquadro">
+    <p>Ogni scheda qui sotto è pensata per essere ritagliata dopo la stampa — usa <code>Ctrl/Cmd + P</code>. Su schermo le schede si restringono per non sbordare; in stampa riprendono le loro misure reali (105 × 148 mm).</p>
+  </div>
+
+  <div class="schede">
+    <div class="a6">
+      <div>
+        <span class="numero-scheda">01</span>
+        <h3>La regola dei tarocchi</h3>
+        <p>Carta + asse + polarità = significato. Non assegnano, permettono ai significati di emergere.</p>
+      </div>
+      <span class="numero-scheda">tarocchi_quantici — R³∞</span>
+    </div>
+    <div class="a6">
+      <div>
+        <span class="numero-scheda">02</span>
+        <h3>La soglia</h3>
+        <p>Una parola prima di entrare. Rituale, non sicurezza — lo dice il codice stesso, apertamente.</p>
+      </div>
+      <span class="numero-scheda">soglia.js</span>
+    </div>
+    <div class="a6">
+      <div>
+        <span class="numero-scheda">03</span>
+        <h3>Luce e ombra</h3>
+        <p>Due manifestazioni della stessa energia. Non una in opposizione all'altra — una accanto all'altra.</p>
+      </div>
+      <span class="numero-scheda">polarità</span>
+    </div>
+  </div>
+</main>
+<footer class="piede">Claudio Terzi — Bruxelles.</footer>
+<script src="/js/soglia.js"></script>
+<script src="/js/nav.js"></script>
+</body>
+</html>

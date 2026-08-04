@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>La stesa delle tre luci — Claudio Terzi</title>
+<meta name="description" content="Una lettura estesa a tre posizioni: ciò che si deposita, ciò che si sente ora, ciò verso cui si tende." />
+<link rel="stylesheet" href="/css/style.css" />
+<link rel="stylesheet" href="/css/nav.css" />
+<style>
+  .tre-posizioni { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); margin: 1.5rem 0; }
+  .posizione h3 { margin-bottom: 0.25rem; }
+  .posizione .etichetta { color: var(--testo-tenue); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; }
+</style>
+</head>
+<body>
+<div id="costellazione"></div>
+<main class="pagina">
+  <h1><span class="oro">La stesa delle tre luci</span></h1>
+  <p class="sottotitolo">Tre carte. Tre posizioni. Non passato-presente-futuro in senso stretto — piuttosto: ciò che si è depositato, ciò che si sente adesso, ciò verso cui si tende.</p>
+
+  <div class="riquadro">
+    <p>Ovest è la memoria: ciò che è già successo e ha lasciato un segno. Sud è il corpo: ciò che si sente ora, prima ancora di capirlo. Nord è la volontà: la direzione verso cui qualcosa vuole ancora arrivare. Tre assi, tre carte, una sola domanda tenuta in mente mentre le tiri.</p>
+  </div>
+
+  <button class="bottone" id="tira" type="button">Tira le tre carte</button>
+  <p class="sottotitolo" id="stato-lettura"></p>
+
+  <div class="tre-posizioni" id="posizioni"></div>
+</main>
+<footer class="piede">Claudio Terzi — Bruxelles. <a href="/tarocchi.html">Esplora il mazzo intero</a></footer>
+<script src="/js/soglia.js"></script>
+<script src="/js/nav.js"></script>
+<script>
+(function () {
+  var POSIZIONI = [
+    { asse: "ovest", etichetta: "Ciò che si è depositato" },
+    { asse: "sud", etichetta: "Ciò che si sente adesso" },
+    { asse: "nord", etichetta: "Ciò verso cui si tende" }
+  ];
+
+  var bottone = document.getElementById("tira");
+  var stato = document.getElementById("stato-lettura");
+  var contenitore = document.getElementById("posizioni");
+  var carte = [];
+
+  function estrai(escluse) {
+    var scelta;
+    do {
+      scelta = carte[Math.floor(Math.random() * carte.length)];
+    } while (escluse.indexOf(scelta) !== -1 && carte.length > escluse.length);
+    return scelta;
+  }
+
+  function tira() {
+    stato.textContent = "Tiro le carte…";
+    contenitore.innerHTML = "";
+    var usate = [];
+
+    var richieste = POSIZIONI.map(function (pos) {
+      var carta = estrai(usate);
+      usate.push(carta);
+      var polarita = Math.random() < 0.5 ? "luce" : "ombra";
+      return fetch("/api/leggi", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mazzo: "r3", carta: carta.numero, asse: pos.asse, polarita: polarita })
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (dati) { return { pos: pos, dati: dati }; });
+    });
+
+    Promise.all(richieste)
+      .then(function (risultati) {
+        stato.textContent = "";
+        risultati.forEach(function (r) {
+          var div = document.createElement("div");
+          div.className = "riquadro posizione";
+          div.innerHTML =
+            '<span class="etichetta">' + r.pos.etichetta + "</span>" +
+            "<h3>" + r.dati.carta.nome + " — " + r.dati.polarita + "</h3>" +
+            "<p>" + r.dati.significato + "</p>";
+          contenitore.appendChild(div);
+        });
+      })
+      .catch(function () {
+        stato.textContent = "Non riesco a comporre la lettura in questo momento.";
+      });
+  }
+
+  fetch("/api/mazzo?mazzo=r3")
+    .then(function (r) { return r.json(); })
+    .then(function (dati) {
+      carte = dati.carte || [];
+      bottone.disabled = false;
+    })
+    .catch(function () {
+      stato.textContent = "Non riesco a caricare il mazzo in questo momento.";
+    });
+
+  bottone.disabled = true;
+  bottone.addEventListener("click", tira);
+})();
+</script>
+</body>
+</html>

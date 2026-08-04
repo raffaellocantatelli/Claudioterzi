@@ -1,0 +1,22 @@
+[
+  { "citta": "Lisbona", "iata": "LIS", "paese": "Portogallo", "regione": "ovest", "polarita": "luce", "stile": ["mare", "città"], "note": "Luce atlantica, salite e discese, il fiume che si apre al mare." },
+  { "citta": "Porto", "iata": "OPO", "paese": "Portogallo", "regione": "ovest", "polarita": "ombra", "stile": ["città", "natura"], "note": "Pietra grigia, vino nelle cantine buie, il fiume che scorre lento." },
+  { "citta": "Siviglia", "iata": "SVQ", "paese": "Spagna", "regione": "ovest", "polarita": "luce", "stile": ["città", "mare"], "note": "Calore diretto, aranci nelle strade, tutto scoperto alla luce." },
+  { "citta": "Marrakech", "iata": "RAK", "paese": "Marocco", "regione": "ovest", "polarita": "ombra", "stile": ["città", "natura"], "note": "Il souk come labirinto, la luce che filtra a fatica tra le mura." },
+  { "citta": "Palermo", "iata": "PMO", "paese": "Italia", "regione": "sud", "polarita": "luce", "stile": ["mare", "città"], "note": "Il sud pieno, mercati aperti, il mare visibile da ogni salita." },
+  { "citta": "Napoli", "iata": "NAP", "paese": "Italia", "regione": "sud", "polarita": "ombra", "stile": ["città"], "note": "Vicoli stretti sotto la luce piena, il sotterraneo sempre presente." },
+  { "citta": "Atene", "iata": "ATH", "paese": "Grecia", "regione": "sud", "polarita": "luce", "stile": ["città", "natura"], "note": "Pietra antica esposta al sole, niente da nascondere." },
+  { "citta": "Malta", "iata": "MLA", "paese": "Malta", "regione": "sud", "polarita": "luce", "stile": ["mare"], "note": "Un'isola piccola, tutta perimetro, tutta costa." },
+  { "citta": "Cracovia", "iata": "KRK", "paese": "Polonia", "regione": "est", "polarita": "ombra", "stile": ["città"], "note": "Città vecchia e stratificata, memoria che pesa sotto la superficie." },
+  { "citta": "Budapest", "iata": "BUD", "paese": "Ungheria", "regione": "est", "polarita": "ombra", "stile": ["città"], "note": "Terme sotterranee, un fiume che divide, storia che non si vede subito." },
+  { "citta": "Bucarest", "iata": "OTP", "paese": "Romania", "regione": "est", "polarita": "ombra", "stile": ["città"], "note": "Contrasti bruschi, ciò che è stato costruito sopra ciò che c'era prima." },
+  { "citta": "Vilnius", "iata": "VNO", "paese": "Lituania", "regione": "est", "polarita": "ombra", "stile": ["natura", "città"], "note": "Foreste vicine, silenzio baltico, poche luci artificiali." },
+  { "citta": "Stoccolma", "iata": "NYO", "paese": "Svezia", "regione": "nord", "polarita": "luce", "stile": ["città", "natura"], "note": "Acqua ovunque, luce lunga d'estate, ordine visibile." },
+  { "citta": "Bergen", "iata": "BGO", "paese": "Norvegia", "regione": "nord", "polarita": "ombra", "stile": ["natura"], "note": "Fiordi stretti, nuvole basse, la natura che sovrasta senza chiedere permesso." },
+  { "citta": "Edimburgo", "iata": "EDI", "paese": "Regno Unito", "regione": "nord", "polarita": "ombra", "stile": ["città", "natura"], "note": "Pietra scura, un castello su una rupe vulcanica, vento costante." },
+  { "citta": "Dublino", "iata": "DUB", "paese": "Irlanda", "regione": "nord", "polarita": "luce", "stile": ["città"], "note": "Verde umido, conversazioni che si aprono facilmente." },
+  { "citta": "Berlino", "iata": "BER", "paese": "Germania", "regione": "est", "polarita": "luce", "stile": ["città"], "note": "Spazio ricostruito, niente di finito, tutto ancora in discussione." },
+  { "citta": "Copenaghen", "iata": "CPH", "paese": "Danimarca", "regione": "nord", "polarita": "luce", "stile": ["città"], "note": "Design essenziale, biciclette, poco decoro superfluo." },
+  { "citta": "Barcellona", "iata": "BCN", "paese": "Spagna", "regione": "ovest", "polarita": "luce", "stile": ["mare", "città"], "note": "Mare e montagna nella stessa vista, linee curve ovunque." },
+  { "citta": "Valencia", "iata": "VLC", "paese": "Spagna", "regione": "ovest", "polarita": "luce", "stile": ["mare", "città"], "note": "Un fiume trasformato in parco, la costa a due passi." }
+]

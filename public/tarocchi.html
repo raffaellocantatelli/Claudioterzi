@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tarocchi Quantici R³∞ — Claudio Terzi</title>
+<meta name="description" content="Il mazzo R³∞: 78 carte, quattro assi, due polarità. I significati non sono assegnati, emergono." />
+<link rel="stylesheet" href="/css/style.css" />
+<link rel="stylesheet" href="/css/nav.css" />
+<style>
+  .griglia-carte {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+    gap: 0.75rem;
+    margin: 1.5rem 0 2rem;
+  }
+  .carta-mini {
+    background: var(--fondo-carta);
+    border: 1px solid var(--linea);
+    border-radius: 6px;
+    padding: 0.75rem;
+    cursor: pointer;
+    text-align: left;
+    color: var(--testo);
+    font-family: var(--serif);
+    font-size: 0.85rem;
+    width: 100%;
+  }
+  .carta-mini:hover,
+  .carta-mini:focus-visible {
+    border-color: var(--oro);
+  }
+  .carta-mini.selezionata {
+    border-color: var(--oro);
+    background: var(--oro-ombra);
+  }
+  .carta-mini .numero {
+    display: block;
+    color: var(--testo-tenue);
+    font-size: 0.75rem;
+  }
+  .comandi {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: flex-end;
+    margin-bottom: 1.5rem;
+  }
+  .comando label {
+    display: block;
+    color: var(--testo-tenue);
+    font-size: 0.8rem;
+    margin-bottom: 0.35rem;
+  }
+  .comando select {
+    background: var(--fondo-carta);
+    color: var(--testo);
+    border: 1px solid var(--linea);
+    font-family: var(--serif);
+    padding: 0.5rem 0.6rem;
+    border-radius: 4px;
+    min-width: 9rem;
+  }
+  #esito {
+    display: none;
+  }
+  #esito.visibile {
+    display: block;
+  }
+  #esito p {
+    font-size: 1.05rem;
+  }
+</style>
+</head>
+<body>
+<div id="costellazione"></div>
+
+<main class="pagina">
+  <h1><span class="oro">Tarocchi Quantici</span> — R³∞</h1>
+  <p class="sottotitolo">78 carte. Quattro assi. Due polarità. CARTA + ASSE + POLARITÀ = SIGNIFICATO.</p>
+
+  <div class="riquadro">
+    <p>Non assegnano significati: permettono ai significati di emergere. Scegli una carta, un asse, una polarità — luce e ombra sono due manifestazioni della stessa energia, non un bene e un male.</p>
+  </div>
+
+  <div class="comandi">
+    <div class="comando">
+      <label for="asse">Asse</label>
+      <select id="asse">
+        <option value="nord">Nord</option>
+        <option value="est">Est</option>
+        <option value="sud">Sud</option>
+        <option value="ovest">Ovest</option>
+      </select>
+    </div>
+    <div class="comando">
+      <label for="polarita">Polarità</label>
+      <select id="polarita">
+        <option value="luce">Luce</option>
+        <option value="ombra">Ombra</option>
+      </select>
+    </div>
+    <button class="bottone" id="carta-casuale" type="button">Carta a caso</button>
+  </div>
+
+  <div class="riquadro" id="esito">
+    <h2 id="esito-titolo"></h2>
+    <p id="esito-testo"></p>
+  </div>
+
+  <p class="sottotitolo" id="stato-caricamento">Carico il mazzo…</p>
+  <div class="griglia-carte" id="griglia" aria-live="polite"></div>
+</main>
+
+<footer class="piede">Claudio Terzi — Bruxelles. <a href="/lettura.html">La stesa delle tre luci</a> · <a href="/alpha.html">Canone Alpha</a></footer>
+
+<script src="/js/soglia.js"></script>
+<script src="/js/nav.js"></script>
+<script>
+(function () {
+  var griglia = document.getElementById("griglia");
+  var stato = document.getElementById("stato-caricamento");
+  var esito = document.getElementById("esito");
+  var esitoTitolo = document.getElementById("esito-titolo");
+  var esitoTesto = document.getElementById("esito-testo");
+  var selAsse = document.getElementById("asse");
+  var selPolarita = document.getElementById("polarita");
+  var selezionata = null;
+  var carte = [];
+
+  function mostraLettura(carta) {
+    fetch("/api/leggi", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ mazzo: "r3", carta: carta.numero, asse: selAsse.value, polarita: selPolarita.value })
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (dati) {
+        if (dati.errore) {
+          esitoTitolo.textContent = carta.nome;
+          esitoTesto.textContent = "Non è stato possibile comporre la lettura: " + dati.errore;
+        } else {
+          esitoTitolo.textContent = dati.carta.nome + " — " + dati.asse + " / " + dati.polarita;
+          esitoTesto.textContent = dati.significato;
+        }
+        esito.classList.add("visibile");
+        esito.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      })
+      .catch(function () {
+        esitoTitolo.textContent = carta.nome;
+        esitoTesto.textContent = carta.essenza;
+        esito.classList.add("visibile");
+      });
+  }
+
+  function seleziona(carta, bottone) {
+    if (selezionata) selezionata.classList.remove("selezionata");
+    selezionata = bottone;
+    bottone.classList.add("selezionata");
+    mostraLettura(carta);
+  }
+
+  function disegnaGriglia() {
+    griglia.innerHTML = "";
+    carte.forEach(function (carta) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "carta-mini";
+      b.innerHTML = '<span class="numero">' + carta.numero + "</span>" + carta.nome;
+      b.addEventListener("click", function () { seleziona(carta, b); });
+      griglia.appendChild(b);
+    });
+  }
+
+  fetch("/api/mazzo?mazzo=r3")
+    .then(function (r) { return r.json(); })
+    .then(function (dati) {
+      carte = dati.carte || [];
+      stato.textContent = carte.length + " carte caricate.";
+      disegnaGriglia();
+    })
+    .catch(function () {
+      stato.textContent = "Non riesco a caricare il mazzo in questo momento.";
+    });
+
+  document.getElementById("carta-casuale").addEventListener("click", function () {
+    if (carte.length === 0) return;
+    var carta = carte[Math.floor(Math.random() * carte.length)];
+    var bottoni = griglia.querySelectorAll(".carta-mini");
+    var indice = carte.indexOf(carta);
+    seleziona(carta, bottoni[indice]);
+  });
+
+  selAsse.addEventListener("change", function () { if (selezionata) mostraLettura(carte[Array.prototype.indexOf.call(griglia.children, selezionata)]); });
+  selPolarita.addEventListener("change", function () { if (selezionata) mostraLettura(carte[Array.prototype.indexOf.call(griglia.children, selezionata)]); });
+})();
+</script>
+</body>
+</html>
