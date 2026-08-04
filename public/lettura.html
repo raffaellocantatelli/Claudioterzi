@@ -11,6 +11,16 @@
   .tre-posizioni { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); margin: 1.5rem 0; }
   .posizione h3 { margin-bottom: 0.25rem; }
   .posizione .etichetta { color: var(--testo-tenue); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  #blocco-falsificazione { display: none; }
+  #blocco-falsificazione.visibile { display: block; }
+  #campo-falsificazione {
+    width: 100%; min-height: 5rem; resize: vertical;
+    background: var(--fondo); color: var(--testo); border: 1px solid var(--linea);
+    font-family: var(--serif); padding: 0.6rem 0.8rem; border-radius: 4px; margin: 0.75rem 0;
+  }
+  #lista-criteri { list-style: none; padding: 0; margin: 1rem 0 0; }
+  #lista-criteri li { border-top: 1px solid var(--linea); padding: 0.6rem 0; font-size: 0.88rem; color: var(--testo-tenue); }
+  #lista-criteri time { color: var(--oro-tenue); display: block; font-size: 0.75rem; margin-bottom: 0.2rem; }
 </style>
 </head>
 <body>
@@ -27,6 +37,14 @@
   <p class="sottotitolo" id="stato-lettura"></p>
 
   <div class="tre-posizioni" id="posizioni"></div>
+
+  <div class="riquadro" id="blocco-falsificazione">
+    <h2>Come sapresti se questa lettura era sbagliata?</h2>
+    <p class="sottotitolo" style="margin-top:0;">Non "cosa vuol dire" — cosa dimostrerebbe, tra qualche settimana, che non aveva colto niente. Se non riesci a rispondere, questa lettura non ti ha dato niente da verificare (P5/P6 — <a href="/libro/capitolo-6.html">vedi il capitolo</a>). Resta solo in questo browser, nessuno la legge.</p>
+    <textarea id="campo-falsificazione" placeholder="Es: se tra un mese non è cambiato nulla in…"></textarea>
+    <button class="bottone" id="salva-falsificazione" type="button">Salva nel browser</button>
+    <ul id="lista-criteri"></ul>
+  </div>
 </main>
 <footer class="piede">Claudio Terzi — Bruxelles. <a href="/tarocchi.html">Esplora il mazzo intero</a></footer>
 <script src="/js/soglia.js"></script>
@@ -43,6 +61,42 @@
   var stato = document.getElementById("stato-lettura");
   var contenitore = document.getElementById("posizioni");
   var carte = [];
+
+  var CHIAVE_CRITERI = "lettura-criteri-falsificazione";
+  var bloccoFalsificazione = document.getElementById("blocco-falsificazione");
+  var campoFalsificazione = document.getElementById("campo-falsificazione");
+  var listaCriteri = document.getElementById("lista-criteri");
+
+  function criteriSalvati() {
+    try {
+      return JSON.parse(localStorage.getItem(CHIAVE_CRITERI) || "[]");
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function disegnaCriteri() {
+    var criteri = criteriSalvati();
+    listaCriteri.innerHTML = "";
+    criteri.slice().reverse().forEach(function (c) {
+      var li = document.createElement("li");
+      var data = new Date(c.quando).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" });
+      li.innerHTML = "<time>" + data + "</time>" + c.testo;
+      listaCriteri.appendChild(li);
+    });
+  }
+
+  document.getElementById("salva-falsificazione").addEventListener("click", function () {
+    var testo = campoFalsificazione.value.trim();
+    if (!testo) return;
+    var criteri = criteriSalvati();
+    criteri.push({ quando: new Date().toISOString(), testo: testo });
+    localStorage.setItem(CHIAVE_CRITERI, JSON.stringify(criteri));
+    campoFalsificazione.value = "";
+    disegnaCriteri();
+  });
+
+  disegnaCriteri();
 
   function estrai(escluse) {
     var scelta;
@@ -82,6 +136,7 @@
             "<p>" + r.dati.significato + "</p>";
           contenitore.appendChild(div);
         });
+        bloccoFalsificazione.classList.add("visibile");
       })
       .catch(function () {
         stato.textContent = "Non riesco a comporre la lettura in questo momento.";

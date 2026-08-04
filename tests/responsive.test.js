@@ -30,6 +30,7 @@ const PAGINE = [
   "/valigia.html",
   "/libro.html",
   "/libro/capitolo-1.html",
+  "/libro/capitolo-6.html",
   "/atelier.html",
   "/opera.html",
   "/creazioni.html",
