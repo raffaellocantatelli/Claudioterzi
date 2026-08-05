@@ -1,0 +1,53 @@
+{
+  "nota": "Il cuore della Galleria. Ogni marketplace dell'usato cataloga per COSA una cosa è (libri > storia > anni '70). Qui si cataloga per PERCHÉ una cosa merita attenzione. È questa la chiave di navigazione: nessuno pensa 'voglio ceramica italiana del XVI secolo', si pensa 'fammi vedere cose fatte con una tecnica che oggi nessuno sa più fare'.",
+  "motivi": [
+    {
+      "codice": "soppresso",
+      "nome": "Soppresso",
+      "domanda": "Cose che qualcuno ha provato a far sparire",
+      "spiegazione": "Ritirato, censurato, rinnegato dal suo stesso editore o produttore. Vale perché è stato fatto sparire: la rarità non è casuale, è il risultato di una decisione."
+    },
+    {
+      "codice": "primo",
+      "nome": "Primo",
+      "domanda": "La prima volta che un'idea è apparsa al mondo",
+      "spiegazione": "Prima edizione, primo esemplare, prima apparizione stampata di una teoria — prima che diventasse ovvia, quando ancora nessuno sapeva se avrebbe retto."
+    },
+    {
+      "codice": "appartenuto",
+      "nome": "Appartenuto a",
+      "domanda": "Oggetti segnati da chi li ha posseduti",
+      "spiegazione": "Provenienza, dediche, annotazioni a margine, ex libris. L'identità del proprietario precedente cambia il senso dell'oggetto, non solo il suo prezzo."
+    },
+    {
+      "codice": "tecnica-perduta",
+      "nome": "Tecnica perduta",
+      "domanda": "Fatto in un modo che oggi quasi nessuno sa più fare",
+      "spiegazione": "Smalto champlevé, cloisonné, legatura a mano, vetro soffiato a bocca, tipi mobili. Il valore sta nel gesto che non si ripete più, non nel materiale."
+    },
+    {
+      "codice": "interrotto",
+      "nome": "Interrotto",
+      "domanda": "L'ultimo prima che qualcosa finisse",
+      "spiegazione": "L'autore ha smesso, è morto, ha cambiato mestiere; la manifattura ha chiuso; la serie non è mai stata completata. Ciò che esiste è tutto ciò che esisterà."
+    },
+    {
+      "codice": "sopravvissuto",
+      "nome": "Sopravvissuto per caso",
+      "domanda": "Cose che non dovevano arrivare fino a qui",
+      "spiegazione": "Fragile, deperibile, o prodotto in una tiratura che è stata quasi interamente distrutta. Sopravvive per un caso che non si ripeterà."
+    },
+    {
+      "codice": "errore",
+      "nome": "Errore",
+      "domanda": "Difetti diventati valore",
+      "spiegazione": "Errore di stampa, variante di stato, colore sbagliato in fabbrica, ritiro immediato. L'errore rende identificabile un momento preciso della produzione."
+    },
+    {
+      "codice": "quotidiano",
+      "nome": "Quotidiano scomparso",
+      "domanda": "Oggetti comuni che nessuno pensava di conservare",
+      "spiegazione": "Proprio perché era ordinario nessuno lo ha messo da parte — e ora è raro. Utensili, insegne, imballaggi, oggetti d'uso di un mondo che non c'è più."
+    }
+  ]
+}

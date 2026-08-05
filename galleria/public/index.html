@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>La Galleria — sfoglia per motivo</title>
+<link rel="stylesheet" href="/css/galleria.css" />
+</head>
+<body>
+<header class="testata">
+  <span class="nome">La Galleria</span>
+  <nav>
+    <a href="/">Sfoglia</a>
+    <a href="/aggiungi.html">Aggiungi un oggetto</a>
+  </nav>
+</header>
+
+<main class="pagina">
+  <h1>Cosa vuoi vedere?</h1>
+  <p class="sottotitolo">Non per categoria — per <strong>motivo di interesse</strong>. Nessuno pensa «voglio ceramica del XVI secolo»: si pensa «fammi vedere cose fatte con una tecnica che oggi nessuno sa più fare».</p>
+
+  <div class="motivi" id="motivi"></div>
+
+  <div class="campo">
+    <label for="cerca">Oppure cerca</label>
+    <input type="search" id="cerca" placeholder="tecnica, autore, materiale…" />
+  </div>
+
+  <p class="avviso" id="stato"></p>
+  <div class="oggetti" id="oggetti"></div>
+</main>
+
+<script>
+(function () {
+  var contMotivi = document.getElementById("motivi");
+  var contOggetti = document.getElementById("oggetti");
+  var stato = document.getElementById("stato");
+  var cerca = document.getElementById("cerca");
+  var motivoAttivo = null;
+
+  function testo(s) { return String(s == null ? "" : s); }
+
+  function disegnaOggetti(oggetti) {
+    contOggetti.innerHTML = "";
+    if (oggetti.length === 0) {
+      stato.textContent = "Nessun oggetto corrisponde.";
+      return;
+    }
+    stato.textContent = oggetti.length + (oggetti.length === 1 ? " oggetto." : " oggetti.");
+    oggetti.forEach(function (o) {
+      var a = document.createElement("a");
+      a.className = "oggetto";
+      a.href = "/oggetto.html?id=" + encodeURIComponent(o.id);
+
+      var h3 = document.createElement("h3");
+      h3.textContent = testo(o.titolo);
+      a.appendChild(h3);
+
+      var meta = document.createElement("p");
+      meta.className = "meta";
+      meta.textContent = [o.autore, o.datazione, o.tecnica].filter(Boolean).join(" · ");
+      a.appendChild(meta);
+
+      (o.motivi || []).forEach(function (m) {
+        var span = document.createElement("span");
+        span.className = "etichetta";
+        span.textContent = m.codice;
+        a.appendChild(span);
+      });
+
+      var primo = (o.motivi || [])[0];
+      if (primo) {
+        var p = document.createElement("p");
+        p.className = "perche";
+        p.textContent = testo(primo.spiegazione);
+        a.appendChild(p);
+      }
+      contOggetti.appendChild(a);
+    });
+  }
+
+  function carica() {
+    var params = new URLSearchParams();
+    if (motivoAttivo) params.set("motivo", motivoAttivo);
+    if (cerca.value.trim()) params.set("q", cerca.value.trim());
+    stato.textContent = "Cerco…";
+    fetch("/api/oggetti?" + params.toString())
+      .then(function (r) { return r.json(); })
+      .then(function (d) { disegnaOggetti(d.oggetti || []); })
+      .catch(function () { stato.textContent = "Non riesco a caricare il catalogo."; });
+  }
+
+  fetch("/api/motivi")
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      (d.motivi || []).forEach(function (m) {
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "motivo";
+        var domanda = document.createElement("span");
+        domanda.className = "domanda";
+        domanda.textContent = m.domanda;
+        var sp = document.createElement("span");
+        sp.className = "spiegazione";
+        sp.textContent = m.spiegazione;
+        var q = document.createElement("span");
+        q.className = "quanti";
+        q.textContent = m.quanti === 1 ? " — 1 oggetto" : " — " + m.quanti + " oggetti";
+        sp.appendChild(q);
+        b.appendChild(domanda);
+        b.appendChild(sp);
+        b.addEventListener("click", function () {
+          var giaAttivo = motivoAttivo === m.codice;
+          motivoAttivo = giaAttivo ? null : m.codice;
+          Array.prototype.forEach.call(contMotivi.children, function (el) {
+            el.classList.remove("attivo");
+          });
+          if (!giaAttivo) b.classList.add("attivo");
+          carica();
+        });
+        contMotivi.appendChild(b);
+      });
+    });
+
+  var attesa;
+  cerca.addEventListener("input", function () {
+    clearTimeout(attesa);
+    attesa = setTimeout(carica, 250);
+  });
+
+  carica();
+})();
+</script>
+</body>
+</html>

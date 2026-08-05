@@ -1,0 +1,13 @@
+{
+  "name": "galleria",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Da foto a scheda esperta, e navigazione per motivo di interesse invece che per categoria merceologica.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.70.0"
+  }
+}

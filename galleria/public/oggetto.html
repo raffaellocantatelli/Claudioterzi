@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Scheda — La Galleria</title>
+<link rel="stylesheet" href="/css/galleria.css" />
+</head>
+<body>
+<header class="testata">
+  <span class="nome">La Galleria</span>
+  <nav>
+    <a href="/">Sfoglia</a>
+    <a href="/aggiungi.html">Aggiungi un oggetto</a>
+  </nav>
+</header>
+
+<main class="pagina" id="pagina">
+  <p class="avviso" id="stato">Carico la scheda…</p>
+</main>
+
+<script>
+(function () {
+  var id = new URLSearchParams(window.location.search).get("id");
+  var pagina = document.getElementById("pagina");
+  var stato = document.getElementById("stato");
+
+  function riquadro(titolo, contenuto) {
+    var div = document.createElement("div");
+    div.className = "riquadro";
+    if (titolo) {
+      var h = document.createElement("h2");
+      h.textContent = titolo;
+      div.appendChild(h);
+    }
+    if (typeof contenuto === "string") {
+      var p = document.createElement("p");
+      p.textContent = contenuto;
+      div.appendChild(p);
+    } else if (contenuto) {
+      div.appendChild(contenuto);
+    }
+    return div;
+  }
+
+  if (!id) {
+    stato.textContent = "Nessun oggetto indicato.";
+    return;
+  }
+
+  fetch("/api/oggetti/" + encodeURIComponent(id))
+    .then(function (r) {
+      if (!r.ok) throw new Error("non trovato");
+      return r.json();
+    })
+    .then(function (o) {
+      pagina.innerHTML = "";
+
+      var h1 = document.createElement("h1");
+      h1.textContent = o.titolo;
+      pagina.appendChild(h1);
+
+      var meta = document.createElement("p");
+      meta.className = "sottotitolo";
+      meta.textContent = [o.autore, o.datazione, o.tecnica].filter(Boolean).join(" · ");
+      pagina.appendChild(meta);
+
+      if (o.descrizione) pagina.appendChild(riquadro(null, o.descrizione));
+
+      if ((o.motivi || []).length) {
+        var lista = document.createElement("div");
+        (o.motivi || []).forEach(function (m) {
+          var blocco = document.createElement("div");
+          blocco.style.marginBottom = "0.9rem";
+          var et = document.createElement("span");
+          et.className = "etichetta";
+          et.textContent = m.codice;
+          var p = document.createElement("p");
+          p.style.margin = "0.35rem 0 0";
+          p.textContent = m.spiegazione;
+          blocco.appendChild(et);
+          blocco.appendChild(p);
+          lista.appendChild(blocco);
+        });
+        pagina.appendChild(riquadro("Perché merita attenzione", lista));
+      }
+
+      if (o.condizione) pagina.appendChild(riquadro("Condizione", o.condizione));
+      if (o.valore) pagina.appendChild(riquadro("Valore", o.valore));
+
+      if ((o.domande_da_verificare || []).length) {
+        var ul = document.createElement("ul");
+        ul.className = "pulita";
+        o.domande_da_verificare.forEach(function (d) {
+          var li = document.createElement("li");
+          li.textContent = d;
+          ul.appendChild(li);
+        });
+        pagina.appendChild(riquadro("Da verificare di persona", ul));
+      }
+
+      var piede = document.createElement("p");
+      piede.className = "avviso";
+      piede.textContent =
+        "Confidenza dell'identificazione: " + (o.confidenza || "non indicata") +
+        (o.aggiunto ? " · in catalogo dal " + o.aggiunto : "");
+      pagina.appendChild(piede);
+
+      var torna = document.createElement("p");
+      torna.innerHTML = '<a href="/">← Torna alla galleria</a>';
+      pagina.appendChild(torna);
+    })
+    .catch(function () {
+      stato.textContent = "Questa scheda non esiste.";
+    });
+})();
+</script>
+</body>
+</html>

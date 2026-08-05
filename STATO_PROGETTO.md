@@ -8,7 +8,22 @@
 
 ## Ultimo aggiornamento
 
-2026-08-04 — sessione che ha costruito il sito da zero e integrato P5/P6.
+2026-08-05 — aggiunta `galleria/` (vedi sotto). Prima: sito costruito da zero,
+P5/P6 integrati.
+
+## galleria/ — progetto separato nella stessa repo
+
+MVP di un'idea diversa dal sito: **da foto a scheda esperta**, e navigazione per
+**motivo di interesse** (soppresso · primo · appartenuto a · tecnica perduta ·
+interrotto · sopravvissuto · errore · quotidiano) invece che per categoria
+merceologica. Gira in locale (`cd galleria && npm start`, porta 3100), non è
+deployato su Vercel. Vedi `galleria/README.md` per cosa è deliberatamente fuori
+da questa versione (VR, aste, logistica, valutazione automatica).
+
+L'arricchimento da foto usa l'API Claude e richiede `ANTHROPIC_API_KEY`; senza
+chiave tutto il resto funziona e le schede si compilano a mano. **Non è mai
+stato eseguito con una chiave reale** — quel percorso va verificato al primo
+uso con credenziali.
 
 ## Stato attuale
 

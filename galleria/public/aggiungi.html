@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Aggiungi un oggetto — La Galleria</title>
+<link rel="stylesheet" href="/css/galleria.css" />
+</head>
+<body>
+<header class="testata">
+  <span class="nome">La Galleria</span>
+  <nav>
+    <a href="/">Sfoglia</a>
+    <a href="/aggiungi.html">Aggiungi un oggetto</a>
+  </nav>
+</header>
+
+<main class="pagina">
+  <h1>Aggiungi un oggetto</h1>
+  <p class="sottotitolo">Fotografa, aggiungi una riga se vuoi, e lascia comporre la scheda. Poi correggila: quello che sai tu dell'oggetto vale più di quello che si vede in foto.</p>
+
+  <div class="riquadro">
+    <div class="campo">
+      <label for="foto">Foto (una o più — copertina, marchi, firme, difetti)</label>
+      <input type="file" id="foto" accept="image/*" multiple />
+      <div class="anteprime" id="anteprime"></div>
+    </div>
+
+    <div class="campo">
+      <label for="nota">Cosa sai di quest'oggetto? (facoltativo)</label>
+      <textarea id="nota" placeholder="Es: era di mio nonno, comprato a Bruxelles negli anni '70…"></textarea>
+    </div>
+
+    <button class="bottone" id="componi" type="button">Componi la scheda</button>
+    <p class="avviso" id="stato"></p>
+  </div>
+
+  <form class="riquadro" id="modulo" hidden>
+    <h2>Scheda — correggi quello che serve</h2>
+    <div class="campo"><label for="titolo">Titolo</label><input type="text" id="titolo" required /></div>
+    <div class="campo"><label for="autore">Autore / produttore</label><input type="text" id="autore" /></div>
+    <div class="campo"><label for="datazione">Datazione</label><input type="text" id="datazione" /></div>
+    <div class="campo"><label for="tecnica">Tecnica</label><input type="text" id="tecnica" /></div>
+    <div class="campo"><label for="categoria">Categoria</label><input type="text" id="categoria" /></div>
+    <div class="campo"><label for="descrizione">Descrizione</label><textarea id="descrizione"></textarea></div>
+    <div class="campo"><label for="condizione">Condizione</label><textarea id="condizione"></textarea></div>
+    <div class="campo"><label for="valore">Valore</label><textarea id="valore"></textarea></div>
+    <div class="campo">
+      <label>Motivi di interesse</label>
+      <div id="motivi-scelti" class="avviso"></div>
+    </div>
+    <div class="campo">
+      <label for="domande">Da verificare di persona (una per riga)</label>
+      <textarea id="domande"></textarea>
+    </div>
+    <button class="bottone" type="submit">Salva in catalogo</button>
+    <p class="avviso" id="stato-salva"></p>
+  </form>
+</main>
+
+<script>
+(function () {
+  var input = document.getElementById("foto");
+  var anteprime = document.getElementById("anteprime");
+  var stato = document.getElementById("stato");
+  var modulo = document.getElementById("modulo");
+  var immagini = [];
+  var motiviScelti = [];
+
+  function leggiFile(file) {
+    return new Promise(function (risolvi, rifiuta) {
+      var lettore = new FileReader();
+      lettore.onload = function () {
+        var risultato = String(lettore.result);
+        var virgola = risultato.indexOf(",");
+        risolvi({ tipo: file.type, base64: risultato.slice(virgola + 1), url: risultato });
+      };
+      lettore.onerror = function () { rifiuta(new Error("lettura fallita")); };
+      lettore.readAsDataURL(file);
+    });
+  }
+
+  input.addEventListener("change", function () {
+    anteprime.innerHTML = "";
+    immagini = [];
+    var file = Array.prototype.slice.call(input.files);
+    Promise.all(file.map(leggiFile)).then(function (lette) {
+      immagini = lette;
+      lette.forEach(function (i) {
+        var img = document.createElement("img");
+        img.src = i.url;
+        img.alt = "";
+        anteprime.appendChild(img);
+      });
+      stato.textContent = lette.length + (lette.length === 1 ? " foto pronta." : " foto pronte.");
+    });
+  });
+
+  function riempi(scheda) {
+    document.getElementById("titolo").value = scheda.titolo || "";
+    document.getElementById("autore").value = scheda.autore || "";
+    document.getElementById("datazione").value = scheda.datazione || "";
+    document.getElementById("tecnica").value = scheda.tecnica || "";
+    document.getElementById("categoria").value = scheda.categoria || "";
+    document.getElementById("descrizione").value = scheda.descrizione || "";
+    document.getElementById("condizione").value = scheda.condizione || "";
+    document.getElementById("valore").value = scheda.valore || "";
+    document.getElementById("domande").value = (scheda.domande_da_verificare || []).join("\n");
+    motiviScelti = scheda.motivi || [];
+    document.getElementById("motivi-scelti").textContent =
+      motiviScelti.length
+        ? motiviScelti.map(function (m) { return m.codice + " — " + m.spiegazione; }).join("  |  ")
+        : "Nessun motivo particolare individuato.";
+    modulo.hidden = false;
+  }
+
+  document.getElementById("componi").addEventListener("click", function () {
+    if (immagini.length === 0) {
+      stato.textContent = "Servono una o più foto.";
+      stato.className = "avviso errore";
+      return;
+    }
+    stato.className = "avviso";
+    stato.textContent = "Guardo le foto… (può richiedere un minuto)";
+    fetch("/api/scheda", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        immagini: immagini.map(function (i) { return { tipo: i.tipo, base64: i.base64 }; }),
+        nota: document.getElementById("nota").value
+      })
+    })
+      .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, dati: d }; }); })
+      .then(function (esito) {
+        if (!esito.ok) {
+          stato.className = "avviso errore";
+          stato.textContent = esito.dati.errore || "Non riesco a comporre la scheda.";
+          if (esito.dati.codice === "chiave_mancante") {
+            stato.textContent += " Puoi comunque compilarla a mano qui sotto.";
+            riempi({});
+          }
+          return;
+        }
+        stato.textContent = "Scheda composta. Controllala prima di salvare.";
+        riempi(esito.dati.scheda);
+      })
+      .catch(function () {
+        stato.className = "avviso errore";
+        stato.textContent = "Il servizio non risponde.";
+      });
+  });
+
+  modulo.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var salva = document.getElementById("stato-salva");
+    salva.textContent = "Salvo…";
+    var domande = document.getElementById("domande").value
+      .split("\n").map(function (s) { return s.trim(); }).filter(Boolean);
+
+    fetch("/api/oggetti", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        titolo: document.getElementById("titolo").value,
+        autore: document.getElementById("autore").value,
+        datazione: document.getElementById("datazione").value,
+        tecnica: document.getElementById("tecnica").value,
+        categoria: document.getElementById("categoria").value,
+        descrizione: document.getElementById("descrizione").value,
+        condizione: document.getElementById("condizione").value,
+        valore: document.getElementById("valore").value,
+        motivi: motiviScelti,
+        domande_da_verificare: domande
+      })
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (o) {
+        if (o.errore) { salva.textContent = o.errore; return; }
+        window.location.href = "/oggetto.html?id=" + encodeURIComponent(o.id);
+      })
+      .catch(function () { salva.textContent = "Salvataggio fallito."; });
+  });
+})();
+</script>
+</body>
+</html>

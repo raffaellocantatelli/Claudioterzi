@@ -1,0 +1,144 @@
+:root {
+  --fondo: #0c0c0e;
+  --fondo-carta: #17171b;
+  --oro: #c9a84c;
+  --oro-tenue: #8a7638;
+  --oro-ombra: rgba(201, 168, 76, 0.14);
+  --testo: #e9e6da;
+  --testo-tenue: #a39d8a;
+  --linea: #2a2a2f;
+  --serif: Georgia, "Times New Roman", serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--fondo);
+  color: var(--testo);
+  font-family: var(--serif);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+a { color: var(--oro); text-decoration: none; }
+a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+.pagina { max-width: 60rem; width: 100%; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+
+header.testata {
+  border-bottom: 1px solid var(--linea);
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+  align-items: baseline;
+}
+header.testata .nome {
+  color: var(--oro);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.95rem;
+}
+header.testata nav { display: flex; flex-wrap: wrap; gap: 1rem; }
+header.testata nav a { color: var(--testo-tenue); font-size: 0.9rem; }
+
+h1 { font-weight: normal; font-size: clamp(1.5rem, 4vw, 2.2rem); margin: 0 0 0.5rem; }
+h2 { font-weight: normal; font-size: 1.25rem; }
+.sottotitolo { color: var(--testo-tenue); font-style: italic; margin-top: 0; }
+
+.motivi {
+  display: grid;
+  gap: 0.85rem;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  margin: 1.5rem 0 2.5rem;
+}
+.motivo {
+  background: var(--fondo-carta);
+  border: 1px solid var(--linea);
+  border-radius: 6px;
+  padding: 1rem 1.1rem;
+  cursor: pointer;
+  text-align: left;
+  color: var(--testo);
+  font-family: var(--serif);
+  font-size: 0.95rem;
+  width: 100%;
+}
+.motivo:hover, .motivo:focus-visible { border-color: var(--oro-tenue); }
+.motivo.attivo { border-color: var(--oro); background: var(--oro-ombra); }
+.motivo .domanda { display: block; color: var(--oro); margin-bottom: 0.3rem; }
+.motivo .spiegazione { color: var(--testo-tenue); font-size: 0.85rem; }
+.motivo .quanti { color: var(--oro-tenue); font-size: 0.75rem; }
+
+.oggetti { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); }
+.oggetto {
+  background: var(--fondo-carta);
+  border: 1px solid var(--linea);
+  border-radius: 6px;
+  padding: 1.1rem 1.25rem;
+  display: block;
+  color: var(--testo);
+}
+.oggetto:hover { border-color: var(--oro-tenue); text-decoration: none; }
+.oggetto h3 { margin: 0 0 0.2rem; font-weight: normal; font-size: 1.05rem; }
+.oggetto .meta { color: var(--testo-tenue); font-size: 0.85rem; margin-bottom: 0.6rem; }
+.oggetto .perche { font-size: 0.9rem; }
+.etichetta {
+  display: inline-block;
+  border: 1px solid var(--oro-tenue);
+  color: var(--oro);
+  border-radius: 3px;
+  padding: 0.1rem 0.45rem;
+  font-size: 0.75rem;
+  margin: 0 0.3rem 0.3rem 0;
+}
+
+.riquadro {
+  background: var(--fondo-carta);
+  border: 1px solid var(--linea);
+  border-radius: 6px;
+  padding: 1.1rem 1.35rem;
+  margin-bottom: 1.1rem;
+}
+.riquadro h2 { margin-top: 0; }
+
+.campo { margin-bottom: 1rem; }
+.campo label { display: block; color: var(--testo-tenue); font-size: 0.85rem; margin-bottom: 0.3rem; }
+input[type="text"], input[type="search"], input[type="file"], textarea, select {
+  width: 100%;
+  background: var(--fondo);
+  color: var(--testo);
+  border: 1px solid var(--linea);
+  font-family: var(--serif);
+  font-size: 1rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 4px;
+}
+textarea { min-height: 6rem; resize: vertical; }
+
+.bottone {
+  background: transparent;
+  border: 1px solid var(--oro-tenue);
+  color: var(--oro);
+  font-family: var(--serif);
+  font-size: 1rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.bottone:hover { background: var(--oro-ombra); }
+.bottone[disabled] { opacity: 0.45; cursor: not-allowed; }
+
+.anteprime { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.75rem; }
+.anteprime img { width: 6rem; height: 6rem; object-fit: cover; border: 1px solid var(--linea); border-radius: 4px; }
+
+.avviso { color: var(--testo-tenue); font-size: 0.9rem; }
+.errore { color: #c98a4c; }
+ul.pulita { list-style: none; padding: 0; }
+ul.pulita li { border-top: 1px solid var(--linea); padding: 0.55rem 0; }
+
+@media (max-width: 480px) {
+  .pagina { padding: 1.25rem 1rem 3rem; }
+  header.testata { padding: 0.85rem 1rem; }
+}
