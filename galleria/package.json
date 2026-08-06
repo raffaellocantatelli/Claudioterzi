@@ -5,7 +5,8 @@
   "description": "Da foto a scheda esperta, e navigazione per motivo di interesse invece che per categoria merceologica.",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "test": "node --test tests/"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.70.0"

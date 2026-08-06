@@ -1,0 +1,32 @@
+{
+  "titolo": "The Sacred Mushroom and the Cross — prima edizione, 1970",
+  "autore": "John M. Allegro",
+  "datazione": "1970",
+  "tecnica": "Stampa tipografica, legatura editoriale in tela con sovraccoperta illustrata",
+  "categoria": "libro",
+  "descrizione": "Hodder & Stoughton, Londra, 1970 — prima edizione, prima tiratura, con sovraccoperta originale. La pagina del copyright riporta «Copyright © 1970 by John M. Allegro», «First Printed 1970» e SBN 340 12875 5: il prefisso 340 identifica Hodder & Stoughton, e la numerazione SBN a nove cifre colloca la stampa prima del passaggio all'ISBN. Allegro era uno dei pochi studiosi del team internazionale incaricato di editare i Rotoli del Mar Morto — i due titoli citati in copertina, The Dead Sea Scrolls e The Treasure of the Copper Scroll, sono i suoi lavori accademici. Questo libro sostiene invece che il cristianesimo delle origini derivi da un culto legato all'Amanita muscaria e che i Vangeli siano linguaggio cifrato. La reazione fu immediata: un gruppo di accademici britannici prese pubblicamente le distanze sul Times, l'editore stesso si dissociò dall'opera che aveva pubblicato, e Allegro lasciò l'università.",
+  "motivi": [
+    {
+      "codice": "soppresso",
+      "spiegazione": "Rinnegato dal proprio editore poco dopo l'uscita: è la decisione di farlo sparire, non il caso, a renderne scarse le prime edizioni complete di sovraccoperta."
+    },
+    {
+      "codice": "primo",
+      "spiegazione": "Prima edizione e prima tiratura della prima apparizione stampata della tesi, prima che il libro diventasse un classico di culto per chi studia entheogeni e storia delle religioni eterodossa."
+    },
+    {
+      "codice": "interrotto",
+      "spiegazione": "Segna la fine della carriera accademica dell'autore. Il lavoro che sarebbe venuto dopo, da uno studioso con quel posto e quell'accesso ai testi, non esiste."
+    }
+  ],
+  "condizione": "Sovraccoperta presente e non restaurata. Il nero lucido mostra sfregature e graffi superficiali diffusi, ben visibili in luce radente. Mancanze e sfrangiature agli angoli e in corrispondenza delle cuffie; una piega lungo il bordo superiore. Il blocco libro appare integro e saldo, il taglio pulito nelle foto disponibili.",
+  "valore": "Non fornisco una cifra: su questo titolo la forbice è ampia e dipende quasi interamente dalla sovraccoperta. Va verificata sui prezzi realizzati (venduti conclusi su AbeBooks, Biblio, eBay), non sui prezzi richiesti, confrontando solo esemplari di prima tiratura con sovraccoperta e stato dichiarato in modo comparabile.",
+  "domande_da_verificare": [
+    "Il prezzo stampato sul risvolto anteriore è stato tagliato (price-clipped)? Incide sul valore.",
+    "Ci sono dediche, firme, ex libris o timbri di biblioteca sui risguardi o sul frontespizio?",
+    "Le tavole fuori testo sono tutte presenti? Contarle contro l'elenco delle illustrazioni.",
+    "Il dorso ha scoloriture o mancanze alle cuffie oltre a quelle visibili nelle foto?",
+    "La legatura è salda: aprire a metà e controllare che le segnature non siano allentate."
+  ],
+  "confidenza": "alta"
+}

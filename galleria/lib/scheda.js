@@ -136,4 +136,4 @@ async function componiScheda(immagini, notaVenditore) {
   return { scheda: JSON.parse(blocco.text), uso: risposta.usage };
 }
 
-module.exports = { componiScheda, motivi, MODELLO };
+module.exports = { componiScheda, motivi, schemaScheda, MODELLO };
