@@ -5,6 +5,17 @@
 
 ---
 
+## 0. Stato epistemico di questo documento
+
+Perché la tabella della sezione 2 non sia letta come se fosse tutta dello stesso tipo:
+
+- **RECUPERATO** — le componenti giudicate e il loro funzionamento reale, verificati leggendo ed eseguendo il codice in [`RICOSTRUZIONE_R3.md`](RICOSTRUZIONE_R3.md); le date di deprecazione EdDSA, dal NIST IR 8547 linkato in fondo.
+- **INFERITO** — i verdetti «sopravvive / muore». Discendono dalle proprietà verificate (dipendenza da un modello, da un servizio, da un algoritmo con scadenza), non da una previsione tecnologica.
+- **IPOTESI** — le tre H2055 della sezione 7, ciascuna col proprio criterio di falsificazione.
+- **UNKNOWN** — quali algoritmi, modelli e formati esisteranno effettivamente nel 2055. Non è oggetto di questo documento, ed è il motivo per cui la domanda è stata invertita.
+
+---
+
 ## 1. Come ho posto la domanda
 
 C'è un modo sbagliato di rispondere e uno utile.
