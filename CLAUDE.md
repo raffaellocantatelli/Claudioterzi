@@ -32,6 +32,7 @@ Ricostruzione verificata del sistema R3∞ / SDQ-1, il cui codice vive in `claud
 | `RICOSTRUZIONE_R3.md` | Analisi del codice reale: architettura, difetti bloccanti, correzioni al Sommario Esecutivo |
 | `baseline_r3.json` | La stessa baseline in forma leggibile da macchina, per ripartire senza contesto |
 | `SOLUZIONE_2055.md` | Il sistema passato al filtro dei trent'anni |
+| `SEME.md` | Da incollare in qualsiasi chat di qualsiasi modello: ricostituisce il contesto |
 | `PROTOCOLLO_ROSSO.md` | Definizione canonica del protocollo, trasportabile fuori di qui |
 | `patches/` | Due fix testati per i difetti bloccanti, da applicare con `git apply` |
 | `test_r3.py` | Controllo eseguibile degli invarianti del protocollo |

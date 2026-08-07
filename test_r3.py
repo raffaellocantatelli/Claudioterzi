@@ -43,7 +43,8 @@ REPO_DEFAULT = RADICE / ".lavoro" / "Claudio"
 COMMIT = "155cb5f"
 
 ETICHETTE = ("RECUPERATO", "INFERITO", "IPOTESI", "UNKNOWN")
-CANONICI = ("PROTOCOLLO_ROSSO.md", "RICOSTRUZIONE_R3.md", "baseline_r3.json")
+CANONICI = ("SEME.md", "PROTOCOLLO_ROSSO.md", "RICOSTRUZIONE_R3.md",
+             "baseline_r3.json")
 ANALISI = ("RICOSTRUZIONE_R3.md", "SOLUZIONE_2055.md")
 FINESTRA_FALSIFICAZIONE = 12
 
@@ -188,6 +189,15 @@ def test_protocollo(r: Rapporto) -> None:
                 "P5" in testo and "P6" in testo, "principi incompleti")
     r.controlla(g, "limite dichiarato", "comando magico" in testo,
                 "manca la dichiarazione di cio' che il protocollo NON e'")
+
+    seme = leggi_locale("SEME.md") or ""
+    r.controlla(g, "SEME.md autosufficiente",
+                all(x in seme for x in ETICHETTE) and "P5" in seme
+                and "P6" in seme and "TRACCIA" in seme,
+                "il seme non trasporta piu' il protocollo completo")
+    r.controlla(g, "SEME.md dichiara i propri limiti",
+                "non esiste un meccanismo che lo faccia" in seme,
+                "il seme non dichiara piu' cosa non puo' fare")
 
     b = leggi_locale("baseline_r3.json")
     if b is None:
