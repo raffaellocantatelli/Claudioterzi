@@ -2,14 +2,14 @@
 
 Ricostruzione verificata del sistema **R3∞ / SDQ-1**, sotto Protocollo Rosso Rosso Rosso.
 
-Il protocollo qui **non va attivato**: è lo stato predefinito. `CLAUDE.md` lo carica a ogni sessione, un hook `SessionStart` lo inietta nel contesto, e `verifica_protocollo.py` controlla che regga davvero invece di darlo per scontato.
+Il protocollo qui **non va attivato**: è lo stato predefinito. `CLAUDE.md` lo carica a ogni sessione, un hook `SessionStart` lo inietta nel contesto, e `test_r3.py` controlla che regga davvero invece di darlo per scontato.
 
 ## Contenuto
 
 | File | Cosa contiene |
 |---|---|
 | [`PROTOCOLLO_ROSSO.md`](PROTOCOLLO_ROSSO.md) | Definizione canonica del protocollo, autosufficiente e trasportabile fuori di qui |
-| [`verifica_protocollo.py`](verifica_protocollo.py) | Controllo eseguibile degli invarianti — la contro-forza di P6 resa automatica |
+| [`test_r3.py`](test_r3.py) | Controllo eseguibile degli invarianti — la contro-forza di P6 resa automatica |
 | [`RICOSTRUZIONE_R3.md`](RICOSTRUZIONE_R3.md) | Analisi completa: architettura reale, difetti bloccanti, correzioni al Sommario Esecutivo, piano di ricostruzione |
 | [`baseline_r3.json`](baseline_r3.json) | Stessa baseline in forma leggibile da macchina, per ripartire senza contesto di chat |
 | [`patches/`](patches/) | I due fix, scritti e testati sul codice reale, pronti da applicare con `git apply` |

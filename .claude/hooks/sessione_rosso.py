@@ -41,7 +41,7 @@ Definizione canonica: PROTOCOLLO_ROSSO.md"""
 
 
 def stato_invarianti() -> str:
-    verifica = RADICE / "verifica_protocollo.py"
+    verifica = RADICE / "test_r3.py"
     if not verifica.is_file():
         return "Verificatore assente: invarianti non controllati."
     try:
@@ -55,7 +55,7 @@ def stato_invarianti() -> str:
         return "Invarianti del protocollo: rispettati."
     return (f"Invarianti del protocollo: {r.returncode} violazion"
             f"{'e' if r.returncode == 1 else 'i'}. "
-            "Eseguire `python3 verifica_protocollo.py` prima di procedere.")
+            "Eseguire `python3 test_r3.py` prima di procedere.")
 
 
 def main() -> int:

@@ -34,14 +34,14 @@ Ricostruzione verificata del sistema R3∞ / SDQ-1, il cui codice vive in `claud
 | `SOLUZIONE_2055.md` | Il sistema passato al filtro dei trent'anni |
 | `PROTOCOLLO_ROSSO.md` | Definizione canonica del protocollo, trasportabile fuori di qui |
 | `patches/` | Due fix testati per i difetti bloccanti, da applicare con `git apply` |
-| `verifica_protocollo.py` | Controllo eseguibile degli invarianti del protocollo |
+| `test_r3.py` | Controllo eseguibile degli invarianti del protocollo |
 
 ---
 
 ## Prima di concludere un lavoro
 
 ```bash
-python3 verifica_protocollo.py
+python3 test_r3.py
 ```
 
 Esce diverso da zero se la disciplina è decaduta: documenti canonici mancanti, etichette epistemiche assenti, o un'ipotesi senza criterio di falsificazione. Non è cerimoniale — ha già intercettato una violazione in questo stesso repository.

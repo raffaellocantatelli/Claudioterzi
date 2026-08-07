@@ -133,7 +133,7 @@ Applicando il filtro di [`SOLUZIONE_2055.md`](SOLUZIONE_2055.md): questo file è
 Il protocollo non si autocertifica — sarebbe auto-conferma, cioè P5 violato dal protocollo che lo enuncia.
 
 ```bash
-python3 verifica_protocollo.py
+python3 test_r3.py
 ```
 
 Controlla che gli invarianti tengano davvero: presenza dei documenti canonici, etichette epistemiche nei documenti di analisi, criterio di falsificazione per ogni ipotesi dichiarata. Esce diverso da zero se la disciplina è decaduta.
