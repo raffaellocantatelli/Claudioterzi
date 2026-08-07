@@ -1,0 +1,34 @@
+diff --git a/registro_ipotesi.py b/registro_ipotesi.py
+index 1dd886c..0ae7223 100644
+--- a/registro_ipotesi.py
++++ b/registro_ipotesi.py
+@@ -103,7 +103,17 @@ class Registro:
+         self.percorso = percorso
+         self.ipotesi: dict[str, Ipotesi] = {}
+ 
+-    def apri(self, ip: Ipotesi):
++    def apri(self, ip: Ipotesi, sovrascrivi: bool = False):
++        """Registra un'ipotesi.
++
++        Se l'id esiste gia' nel registro caricato, l'ipotesi esistente viene
++        lasciata intatta: le definizioni nel blocco __main__ sono un seed per
++        la prima creazione, non uno stato da riapplicare a ogni esecuzione.
++        Senza questa guardia ogni run riporterebbe le ipotesi al loro stato
++        iniziale, perdendo le prove accumulate.
++        """
++        if ip.id in self.ipotesi and not sovrascrivi:
++            return
+         self.ipotesi[ip.id] = ip
+ 
+     def stato_generale(self) -> str:
+@@ -140,6 +150,10 @@ class Registro:
+ # ============================================================
+ if __name__ == "__main__":
+     r = Registro()
++    # Carica lo stato su disco PRIMA di definire il seed: salva() sovrascrive
++    # l'intero file, quindi senza carica() le ipotesi non ridefinite qui sotto
++    # (H5, H6, ...) verrebbero cancellate a ogni esecuzione.
++    r.carica()
+ 
+     # H1 — la lettura di Claudio sulla scena con Jorge
+     h1 = Ipotesi(

@@ -8,6 +8,7 @@ Ricostruzione verificata del sistema **R3∞ / SDQ-1**.
 |---|---|
 | [`RICOSTRUZIONE_R3.md`](RICOSTRUZIONE_R3.md) | Analisi completa: architettura reale, difetti bloccanti, correzioni al Sommario Esecutivo, piano di ricostruzione |
 | [`baseline_r3.json`](baseline_r3.json) | Stessa baseline in forma leggibile da macchina, per ripartire senza contesto di chat |
+| [`patches/`](patches/) | I due fix, scritti e testati sul codice reale, pronti da applicare con `git apply` |
 
 ## Metodo
 
@@ -21,8 +22,10 @@ Il sistema è reale e sostanziale: 160 file Python, ~29.100 righe. Router multi-
 
 Due difetti lo bloccavano, entrambi con fix di poche righe:
 
-1. **La CLI non parte.** `sdq1/__main__.py` legge due argomenti mai dichiarati, prima di ogni dispatch — ogni invocazione fallisce, e con essa il workflow orario. *Fix verificato.*
-2. **`registro_ipotesi.py` cancella dati.** Ogni esecuzione elimina le ipotesi H5 e H6 e azzera le prove di H4.
+1. **La CLI non parte.** `sdq1/__main__.py` legge due argomenti mai dichiarati, prima di ogni dispatch — ogni invocazione fallisce, e con essa il workflow orario.
+2. **`registro_ipotesi.py` cancella dati.** Ogni esecuzione elimina le ipotesi H5 e H6 e azzera 4 delle 6 prove di H4.
+
+Entrambi i fix sono scritti e testati in [`patches/`](patches/): la CLI risponde su cinque comandi, e il registro è idempotente su esecuzioni ripetute.
 
 La divergenza principale rispetto al «Sommario Esecutivo» non riguarda la qualità del codice, ma il fatto che quel documento presenta come *implementato* ciò che è *progettato*. La parte distribuita che funziona davvero (`r3/`: SHA-256 content addressing, firma Ed25519 reale) è più modesta e più solida di quella raccontata — IPFS e blockchain sono una simulazione che nessun modulo importa.
 
