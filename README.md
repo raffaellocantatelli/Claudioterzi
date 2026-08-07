@@ -9,6 +9,7 @@ Ricostruzione verificata del sistema **R3∞ / SDQ-1**.
 | [`RICOSTRUZIONE_R3.md`](RICOSTRUZIONE_R3.md) | Analisi completa: architettura reale, difetti bloccanti, correzioni al Sommario Esecutivo, piano di ricostruzione |
 | [`baseline_r3.json`](baseline_r3.json) | Stessa baseline in forma leggibile da macchina, per ripartire senza contesto di chat |
 | [`patches/`](patches/) | I due fix, scritti e testati sul codice reale, pronti da applicare con `git apply` |
+| [`SOLUZIONE_2055.md`](SOLUZIONE_2055.md) | Il sistema passato al filtro dei trent'anni: cosa sopravvive, cosa ha già una data di scadenza, cosa fare prima del 2030 |
 
 ## Metodo
 
