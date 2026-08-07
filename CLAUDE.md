@@ -41,7 +41,8 @@ Ricostruzione verificata del sistema R3∞ / SDQ-1, il cui codice vive in `claud
 ## Prima di concludere un lavoro
 
 ```bash
-python3 test_r3.py
+python3 test_r3.py            # rapporto leggibile
+python3 test_r3.py --json     # stesso rapporto in JSON, deterministico
 ```
 
 Esce diverso da zero se la disciplina è decaduta: documenti canonici mancanti, etichette epistemiche assenti, o un'ipotesi senza criterio di falsificazione. Non è cerimoniale — ha già intercettato una violazione in questo stesso repository.

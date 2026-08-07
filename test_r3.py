@@ -20,6 +20,7 @@ come RECUPERATO, cioe' violare il protocollo che questo file verifica.
 Uso:
     python3 test_r3.py                      # rapporto completo
     python3 test_r3.py --quiet              # solo exit code
+    python3 test_r3.py --json               # rapporto leggibile da macchina
     python3 test_r3.py --repo /path/Claudio # sorgente altrove
     python3 test_r3.py --self-test          # prova che sa fallire
 
@@ -73,6 +74,45 @@ class Rapporto:
     @property
     def saltati(self) -> int:
         return sum(1 for *_, e, _n in self.righe if e == SKIP)
+
+    def come_json(self, repo: Path | None) -> dict:
+        """Rapporto leggibile da macchina.
+
+        Deterministico a parita' di stato verificato: nessun timestamp,
+        nessun percorso assoluto. Due esecuzioni sullo stesso stato
+        producono byte identici, quindi il rapporto si puo' diffare e
+        se ne puo' calcolare l'hash — che e' cio' che serve per usarlo
+        come prova nel tempo invece che come stampa di un momento.
+        """
+        return {
+            "verifica": "R3∞ / SDQ-1",
+            "schema": 1,
+            "commit_riferimento": COMMIT,
+            "sorgente_disponibile": repo is not None,
+            # "ok" solo quando nulla e' rimasto non verificato: con dei SKIP
+            # l'esito e' "parziale". E' il primo campo che un consumatore
+            # legge, e un "ok" con 13 controlli saltati farebbe passare
+            # UNKNOWN per RECUPERATO.
+            "esito": ("fallito" if self.falliti
+                      else "parziale" if self.saltati
+                      else "ok"),
+            "exit_code": self.falliti,
+            "conteggi": {
+                "totale": len(self.righe),
+                "superati": len(self.righe) - self.falliti - self.saltati,
+                "falliti": self.falliti,
+                "saltati": self.saltati,
+            },
+            "nota_saltati": (
+                "I controlli saltati NON sono superati: restano UNKNOWN."
+                if self.saltati else None
+            ),
+            "controlli": [
+                {"gruppo": g, "nome": n, "esito": e.lower(),
+                 "nota": nota or None}
+                for g, n, e, nota in self.righe
+            ],
+        }
 
 
 # --------------------------------------------------------------------------- #
@@ -340,6 +380,8 @@ def main(argv: list[str]) -> int:
     ap.add_argument("--repo", type=Path, default=REPO_DEFAULT,
                     help="copia di claudioterzi/Claudio (default: .lavoro/Claudio)")
     ap.add_argument("--quiet", action="store_true")
+    ap.add_argument("--json", action="store_true",
+                    help="rapporto su stdout in JSON, leggibile da macchina")
     ap.add_argument("--self-test", action="store_true")
     args = ap.parse_args(argv)
 
@@ -352,6 +394,10 @@ def main(argv: list[str]) -> int:
     test_protocollo(r)
     test_difetti(r, repo)
     test_reperti(r, repo)
+
+    if args.json:
+        print(json.dumps(r.come_json(repo), ensure_ascii=False, indent=2))
+        return r.falliti
 
     if not args.quiet:
         print("VERIFICA UNICA — R3∞ / SDQ-1")
