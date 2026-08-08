@@ -44,6 +44,15 @@ recupero è il codice o il dato, mai un altro documento che ne parla** — è il
 modo più comune di sbagliare, e non richiede malafede: basta ereditare
 un'affermazione da un testo che sembrava autorevole.
 
+Il caso più insidioso è il rapporto di un test. Un rapporto verde dice che i
+controlli scritti sono passati **quando è stato prodotto**: non dice che il
+sistema è corretto, non copre ciò che nessuno ha pensato di controllare, e
+invecchia. Se l'elenco dei risultati è troncato, i risultati non mostrati
+restano UNKNOWN anche quando il totale in cima afferma il contrario — fidarsi
+del totale è lasciare che il rapporto confermi se stesso, cioè violare P5.
+Osservato davvero: un modello competente ha riferito «29 su 29 superati»
+avendone letto uno, mentre l'esecuzione reale ne contava già 32.
+
 **P5 — niente auto-conferma.** Confermare un'ipotesi richiede una fonte diversa
 da chi l'ha formulata.
 
