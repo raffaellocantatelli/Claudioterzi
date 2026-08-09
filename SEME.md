@@ -135,6 +135,16 @@ APERTA con 4 prove su 6 perse. Fix: chiamare `carica()` e rendere `apri()` non
 distruttiva sugli id già presenti. **Recuperare i dati da git history prima di
 rieseguirlo.**
 
+Il difetto ha in realtà **quattro** cause, non due. Le altre due, individuate da
+una revisione indipendente e confermate eseguendo il codice: `carica()` va in
+`TypeError` sul JSON reale (`H4` contiene `note_convergenza`, campo assente dal
+dataclass), e `valuta()` mutava lo stato come effetto collaterale — bastava
+stampare il registro per promuovere `H2` da APERTA a CONFERMATA, e `salva()`
+persisteva la promozione. Un fix che chiama `carica()` senza gestire i campi
+extra **muore prima di scrivere**: il file resta invariato, e un test che
+guardi solo il contenuto lo scambia per idempotenza. Guardare sempre l'exit
+code.
+
 ---
 
 ## 4. Errori nei bootstrap precedenti — non riprodurli
@@ -204,10 +214,18 @@ cambiato. Se hai accesso al repository, **verifica prima di costruirci sopra**.
 
 ## 7. Se hai accesso agli approfondimenti
 
-`RICOSTRUZIONE_R3.md` (analisi completa) · `baseline_r3.json` (stessa baseline
-per macchine) · `SOLUZIONE_2055.md` (filtro dei trent'anni) ·
-`PROTOCOLLO_ROSSO.md` (protocollo canonico) · `patches/` (i due fix, testati) ·
-`test_r3.py` (29 controlli eseguibili: `python3 test_r3.py`)
+**Attenzione: stanno in un repository diverso.** Il codice del sistema è in
+`claudioterzi/Claudio`; l'analisi e gli strumenti di verifica sono in
+`raffaellocantatelli/Claudioterzi`. Cercare `test_r3.py` dentro `Claudio` non
+lo trova — non perché non esista, ma perché non è lì.
+
+In `raffaellocantatelli/Claudioterzi`: `RICOSTRUZIONE_R3.md` (analisi completa) ·
+`baseline_r3.json` (stessa baseline per macchine) · `SOLUZIONE_2055.md` (filtro
+dei trent'anni) · `PROTOCOLLO_ROSSO.md` (protocollo canonico) · `patches/` (i
+fix, testati) · `test_r3.py` (`python3 test_r3.py`, `--json` per il rapporto
+leggibile da macchina).
+
+In `claudioterzi/Claudio` la suite esistente è `sdq1/tests/smoke.py`.
 
 ---
 

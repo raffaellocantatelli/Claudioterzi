@@ -43,9 +43,9 @@ La patch dichiara i due flag. Il codice a valle era già corretto.
 
 ## 0002 — `registro_ipotesi.py` cancella ipotesi a ogni esecuzione
 
-**File:** `registro_ipotesi.py` · **Aggiunge:** 1 chiamata + guardia in `apri()`
+**File:** `registro_ipotesi.py` · **Corregge:** 4 difetti, non 2
 
-Il comando documentato nel README distrugge il registro. Due cause che si sommano:
+Il comando documentato nel README distrugge il registro. **Quattro** cause che si sommano — le ultime due individuate da una revisione indipendente (Kimi, `SEME_v1.1`) e confermate eseguendo il codice:
 
 1. `__main__` costruisce `Registro()` senza chiamare `carica()`, e chiude con `salva()` — che fa un `json.dump` di sovrascrittura totale. Le ipotesi non ridefinite nel blocco (H5, H6) spariscono.
 2. Anche caricando, `apri()` fa `self.ipotesi[ip.id] = ip`: le definizioni hardcoded di H1–H4 sovrascrivono quelle su disco, azzerando le prove accumulate dopo la loro creazione.
@@ -59,15 +59,26 @@ DOPO : H1 APERTA(2), H2 APERTA(4), H3 CONFERMATA(1), H4 APERTA(2)
 
 H5 e H6 eliminate. H4 retrocessa da CONFERMATA ad APERTA, 4 delle sue 6 prove perse.
 
-La patch chiama `carica()` prima di definire il seed, e rende `apri()` non distruttiva per gli id già presenti — le definizioni in `__main__` tornano a essere ciò che devono essere: un seed per la prima creazione, non uno stato riapplicato a ogni run. Resta possibile forzare con `apri(ip, sovrascrivi=True)`.
+3. **`carica()` va in `TypeError`** sul JSON reale: `H4` contiene `note_convergenza`, campo assente dal dataclass. Chiamare `carica()` senza gestirlo fa morire lo script.
+4. **`valuta()` mutava lo stato come effetto collaterale**: bastava stampare il registro per promuovere `H2` da APERTA a CONFERMATA, e `salva()` persisteva la promozione. Descrivere un'ipotesi non deve confermarla.
 
-**Verificato dopo l'applicazione** — due esecuzioni consecutive lasciano il file invariato:
+La patch chiama `carica()` prima di definire il seed, rende `apri()` non distruttiva sugli id già presenti, fa tollerare a `carica()` i campi extra preservandoli in `salva()`, e rende `valuta()` pura (la transizione richiede `applica=True`).
+
+**Errore mio da non ripetere.** La prima versione di questa patch correggeva solo le cause 1 e 2, e il mio test la dichiarava idempotente. Il test era un falso positivo: confrontavo il JSON prima e dopo con l'output soppresso, e lo script moriva in `TypeError` *prima* di scrivere. File invariato per crash e file invariato per idempotenza sono indistinguibili se non si guarda l'exit code. Ora il test verifica `RC=0` **e** la stabilità del contenuto.
+
+**Verificato dopo l'applicazione**, su albero pulito estratto da `155cb5f`:
 
 ```
-PRIMA: H1 APERTA(2), H2 APERTA(4), H3 CONFERMATA(1), H4 CONFERMATA(6), H5 APERTA(1), H6 APERTA(1)
-RUN 1: identico
-RUN 2: identico
+run 1  RC=0
+run 2  RC=0
+ipotesi: 6 — H1 APERTA · H2 APERTA · H3 CONFERMATA · H4 CONFERMATA · H5 APERTA · H6 APERTA
+note_convergenza su H4: preservata
+hash del JSON stabile fra run 1 e run 2
 ```
+
+Il primo run riordina le chiavi del JSON: confrontato campo per campo contro
+l'originale, **nessuna differenza semantica** — stesse chiavi, stessi valori,
+solo ordine di serializzazione. Dal secondo run in poi il file è byte-stabile.
 
 ## Nota
 
