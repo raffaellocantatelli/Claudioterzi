@@ -331,9 +331,18 @@ Secondo P6, ciascuna dichiara cosa la falsificherebbe.
 **HR2** — Il livello 5 mancante nella SAR è un residuo di refactoring, non un livello rimosso deliberatamente.
 *Falsificata se:* git history mostra un livello 5 implementato e poi rimosso con motivazione esplicita.
 
-**HR3** — La CLI è rotta da poco e non è stata notata perché i workflow falliscono silenziosamente.
-*Falsificata se:* `git log -S "args.chat_telegram"` mostra che il riferimento esiste da molte settimane, o se esiste un meccanismo di alert sui workflow falliti.
-*Nota:* verificabile in un comando. Non l'ho eseguita — il clone è `--depth 1`.
+**HR3** — ~~La CLI è rotta da poco~~ → **RISOLTA, e la prima metà era sbagliata.**
+Eseguita su storia completa (523 commit) dopo `git fetch --unshallow`:
+
+- `2026-06-25` · `13cf1a5` — il flag `--chat-telegram` viene dichiarato **correttamente**, insieme a `if args.chat_telegram`
+- `2026-06-26` · `54b173a` «porta tutte le skill bot su main» — la riga `add_argument` viene **rimossa**, la riga `if args.chat_telegram` **resta**. La CLI muore qui.
+- `2026-06-26` · `0bff3ff` — **ultimo commit su `output/`**, lo stesso giorno
+
+Non è rotta «da poco»: è rotta da **45 giorni**, e la seconda metà dell'ipotesi era esatta — nessuno se n'è accorto perché i workflow falliscono in silenzio.
+
+Il conteggio dei commit su `output/`: 79 in 13 giorni distinti a giugno, **zero a luglio, zero ad agosto**. Il battito si ferma il giorno della rottura. Correlazione temporale perfetta, con causa meccanica nota.
+
+*La risoluzione sarebbe falsificata se:* si trovassero commit su `output/` prodotti dai workflow schedulati dopo `54b173a`, oppure se i log di GitHub Actions mostrassero esecuzioni riuscite di `agente_orario` dopo il 26/06 — nel qual caso la coincidenza delle date sarebbe casuale e la causa del silenzio starebbe altrove.
 
 **HR4** — Il gap tra ciò che il PDF descrive e ciò che il codice fa non nasce dal codice, ma dal fatto che il PDF è stato generato senza accesso al repository, ricostruendo per inferenza da documentazione.
 *Falsificata se:* si trova nel repository una versione della SAR con classi FACT/INFER/UNKNOWN e pesi dinamici.

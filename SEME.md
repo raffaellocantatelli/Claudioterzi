@@ -123,7 +123,14 @@ falsificazione. Sei ipotesi H1–H6. H2 ha scadenza 11/12/2026.
 
 ## 3. Due difetti bloccanti — non riscoprirli
 
-**La CLI è morta.** `sdq1/__main__.py` legge `args.chat_telegram` (riga 300) e
+**La CLI è morta dal 26 giugno 2026.** Il flag `--chat-telegram` era stato
+dichiarato correttamente (`13cf1a5`, 25/06); il giorno dopo `54b173a` ne rimuove
+la riga `add_argument` lasciando il `if args.chat_telegram`. **Lo stesso giorno
+si ferma l'ultimo commit su `output/`**: 79 commit in 13 giorni distinti a
+giugno, zero a luglio, zero ad agosto. Verificato anche da fonti esterne al
+repository (Drive, Gmail, Notion): nessuna traccia del heartbeat, mai.
+
+`sdq1/__main__.py` legge `args.chat_telegram` (riga 300) e
 `args.briefing_operativo` (306) senza `add_argument` corrispondenti, prima di
 ogni dispatch: **ogni** invocazione di `python -m sdq1` fallisce. Rompe anche il
 workflow orario. Fix: dichiarare i due flag. Quattro righe.
