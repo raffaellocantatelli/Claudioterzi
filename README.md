@@ -15,6 +15,7 @@ Il protocollo qui **non va attivato**: è lo stato predefinito. `CLAUDE.md` lo c
 | [`baseline_r3.json`](baseline_r3.json) | Stessa baseline in forma leggibile da macchina, per ripartire senza contesto di chat |
 | [`DIMOSTRAZIONE.md`](DIMOSTRAZIONE.md) | Sequenza in sette atti per dimostrare di persona che il progetto esiste |
 | [`patches/`](patches/) | I due fix, scritti e testati sul codice reale, pronti da applicare con `git apply` |
+| [`APERTURE.md`](APERTURE.md) | La stessa severità applicata in avanti: ogni blocco convertito in apertura, col prezzo scritto accanto — e ciò che resta chiuso |
 | [`SOLUZIONE_2055.md`](SOLUZIONE_2055.md) | Il sistema passato al filtro dei trent'anni: cosa sopravvive, cosa ha già una data di scadenza, cosa fare prima del 2030 |
 
 ## Metodo
