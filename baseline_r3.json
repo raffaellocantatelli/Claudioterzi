@@ -41,7 +41,19 @@
         "rotto_dal": "2026-06-26",
         "commit_che_rompe": "54b173a",
         "storia": "13cf1a5 (25/06) dichiara il flag correttamente; 54b173a (26/06) rimuove add_argument lasciando la lettura di args.chat_telegram",
-        "effetto_misurato": "ultimo commit su output/ lo stesso giorno (0bff3ff, 26/06). 79 commit su output/ in 13 giorni distinti a giugno, zero a luglio e agosto"
+        "effetto_misurato": "ultimo commit su output/ lo stesso giorno (0bff3ff, 26/06). 79 commit su output/ in 13 giorni distinti a giugno, zero a luglio e agosto",
+        "portata_reale": {
+          "spiega_interamente": "sdq1_daily — tutti e tre i comandi passano dal __main__ rotto; il commit chore(daily): non compare mai in 523 commit",
+          "spiega_parzialmente": "agente_orario — il passo Telegram fallisce ma ha continue-on-error: true",
+          "NON_spiega": "caccia-voli usa python -m sdq1.voli (entry point diverso, RC=0 anche non patchato) e non ha passo di commit; scripts/agente_orario.py non importa sdq1 e scrive in output/task_output/ ma non produce nulla dal 26/06",
+          "conclusione": "BUG-1 e' condizione necessaria da rimuovere, non causa unica. Almeno un secondo fattore non e' visibile senza i log di GitHub Actions.",
+          "candidati_secondo_fattore_IPOTESI": [
+            "workflow schedulati disabilitati",
+            "ANTHROPIC_API_KEY revocata o scaduta",
+            "secrets rimossi",
+            "commit 17d85c2 del 26/06 sui workflow"
+          ]
+        }
       },
       {
         "id": "BUG-2",
@@ -443,10 +455,21 @@
         "novita": "firme composite classica+PQ; lo schema MLDSA65-Ed25519-SHA512 e' specificato ma al 2026 non implementato su alcuna piattaforma"
       },
       "expedia": {
-        "stato": "FALLITO",
-        "errore": "Unknown error su due tentativi (BRU-MXP, con e senza parametri opzionali)",
-        "nota": "nessun uso rilevante per il protocollo; il fallimento e' riportato invece che omesso"
+        "stato": "FUNZIONA",
+        "correzione": "i due fallimenti precedenti erano miei: usavo codici IATA (BRU, MXP). Con nomi di citta' ('Brussels', 'Rome') risponde",
+        "prova": "BRU/CRL -> FCO 15/09/2026: Ryanair 31.10 USD, easyJet 57.12, Brussels Airlines e ITA 74.61"
       }
+    },
+    "telegram": {
+      "connettore_mcp": "non esiste tra quelli attivati",
+      "integrazione_nel_sistema": "reale e diffusa — 20 file la toccano",
+      "richiede": [
+        "TELEGRAM_BOT_TOKEN",
+        "TELEGRAM_CHAT_ID"
+      ],
+      "endpoint": "api.telegram.org/bot{token}/{method}",
+      "nota": "--chat-telegram e' proprio il flag la cui rimozione ha rotto la CLI: Telegram e' il centro del guasto, non un accessorio",
+      "verificabile_da_qui": "no — i token sono GitHub Secrets, non leggibili. Se fossero scaduti, la patch 0001 da sola non ripristinerebbe la chat"
     }
   }
 }

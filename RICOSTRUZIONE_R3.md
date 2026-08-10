@@ -331,7 +331,9 @@ Secondo P6, ciascuna dichiara cosa la falsificherebbe.
 **HR2** — Il livello 5 mancante nella SAR è un residuo di refactoring, non un livello rimosso deliberatamente.
 *Falsificata se:* git history mostra un livello 5 implementato e poi rimosso con motivazione esplicita.
 
-**HR3** — ~~La CLI è rotta da poco~~ → **RISOLTA, e la prima metà era sbagliata.**
+**HR3** — ~~La CLI è rotta da poco~~ → **RISOLTA in parte, e la prima metà era sbagliata.**
+*Falsificata se:* i log di GitHub Actions mostrassero esecuzioni di `sdq1_daily` in cui i comandi `sdq1` sono andati a buon fine dopo il 26/06 — nel qual caso BUG-1 non sarebbe nemmeno causa parziale.
+
 Eseguita su storia completa (523 commit) dopo `git fetch --unshallow`:
 
 - `2026-06-25` · `13cf1a5` — il flag `--chat-telegram` viene dichiarato **correttamente**, insieme a `if args.chat_telegram`
@@ -340,9 +342,22 @@ Eseguita su storia completa (523 commit) dopo `git fetch --unshallow`:
 
 Non è rotta «da poco»: è rotta da **45 giorni**, e la seconda metà dell'ipotesi era esatta — nessuno se n'è accorto perché i workflow falliscono in silenzio.
 
-Il conteggio dei commit su `output/`: 79 in 13 giorni distinti a giugno, **zero a luglio, zero ad agosto**. Il battito si ferma il giorno della rottura. Correlazione temporale perfetta, con causa meccanica nota.
+Il conteggio dei commit su `output/`: 79 in 13 giorni distinti a giugno, **zero a luglio, zero ad agosto**.
 
-*La risoluzione sarebbe falsificata se:* si trovassero commit su `output/` prodotti dai workflow schedulati dopo `54b173a`, oppure se i log di GitHub Actions mostrassero esecuzioni riuscite di `agente_orario` dopo il 26/06 — nel qual caso la coincidenza delle date sarebbe casuale e la causa del silenzio starebbe altrove.
+**Correzione a quanto avevo scritto prima.** Dicendo «il battito si ferma il giorno della rottura, causa meccanica nota» avevo attribuito a BUG-1 l'intero silenzio. Verificando i workflow uno per uno, la spiegazione regge solo in parte:
+
+| Workflow | Colpito da BUG-1? | Commita su `output/`? |
+|---|---|---|
+| `sdq1_daily` | **Sì, tutti e tre i comandi** (`--scan`, `--snapshot --push`, `--briefing-operativo`) | sì, con messaggio `chore(daily):` — che **non compare mai** in 523 commit |
+| `agente_orario` | solo il passo Telegram, con `continue-on-error: true` | sì, ma `scripts/agente_orario.py` **non importa sdq1** e scrive in `output/task_output/` |
+| `caccia-voli` | **No** — `python -m sdq1.voli` è un entry point diverso e gira anche non patchato (RC=0) | **no**, non ha alcun passo di commit |
+
+Quindi: BUG-1 spiega interamente `sdq1_daily`, che non ha mai prodotto un solo commit da quando esiste (creato il 24/06). Non spiega perché `scripts/agente_orario.py`, che gira indipendentemente dal modulo rotto, non abbia prodotto nulla dopo il 26/06.
+
+**Esiste almeno un secondo fattore che da qui non è visibile.** Candidati, tutti IPOTESI: workflow schedulati disabilitati, `ANTHROPIC_API_KEY` revocata o scaduta, secrets rimossi. Lo stesso 26/06 c'è anche `17d85c2` «security: fix GitHub Actions workflows — rimuovi token in URL», che tocca quattro workflow — potrebbe essere correlato, ma i `permissions: contents: write` restano presenti e non posso stabilirlo senza i log.
+
+BUG-1 resta **condizione necessaria da rimuovere**, non causa unica e sufficiente. Chi applica solo la patch e non vede ripartire il battito deve guardare i log di Actions, non concludere che la patch non serviva.
+
 
 **HR4** — Il gap tra ciò che il PDF descrive e ciò che il codice fa non nasce dal codice, ma dal fatto che il PDF è stato generato senza accesso al repository, ricostruendo per inferenza da documentazione.
 *Falsificata se:* si trova nel repository una versione della SAR con classi FACT/INFER/UNKNOWN e pesi dinamici.

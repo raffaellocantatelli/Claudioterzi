@@ -130,6 +130,12 @@ si ferma l'ultimo commit su `output/`**: 79 commit in 13 giorni distinti a
 giugno, zero a luglio, zero ad agosto. Verificato anche da fonti esterne al
 repository (Drive, Gmail, Notion): nessuna traccia del heartbeat, mai.
 
+Attenzione a non attribuire tutto a questo difetto. BUG-1 spiega interamente
+`sdq1_daily` (il suo commit `chore(daily):` non compare mai in 523 commit),
+ma `caccia-voli` usa `python -m sdq1.voli`, un entry point diverso che gira
+anche non patchato, e `scripts/agente_orario.py` non importa `sdq1`. Esiste
+almeno un secondo fattore non visibile senza i log di GitHub Actions.
+
 `sdq1/__main__.py` legge `args.chat_telegram` (riga 300) e
 `args.briefing_operativo` (306) senza `add_argument` corrispondenti, prima di
 ogni dispatch: **ogni** invocazione di `python -m sdq1` fallisce. Rompe anche il
