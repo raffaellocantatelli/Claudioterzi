@@ -401,6 +401,52 @@
       "conclusione": "INFERITO: il heartbeat Argo non ha mai girato in modo schedulato, o non da questo account. UNKNOWN: se sia mai stato attivato altrove.",
       "h2_criterio_a_battito": "a rischio — output/ silente da 45 giorni, deadline 11/12/2026",
       "h2_criterio_b_contatto": "soddisfatto — 7 voci valide su 8 in output/contatti.jsonl"
+    },
+    "canali_esterni_creati": {
+      "data": "2026-08-10",
+      "motivo": "H5 e' APERTA perche' manca un canale esterno verificabile. Questi artefatti lo rendono esistente.",
+      "notion": {
+        "titolo": "R3∞ / SDQ-1 — Stato verificato del sistema",
+        "url": "https://app.notion.com/p/3b8a70765a9681f681b4f482befe5330",
+        "contenuto": "stato verificato, catena causale del guasto, criterio H2, scadenza 2030"
+      },
+      "google_drive": {
+        "titolo": "R3∞ — Kit verificato (2026-08-10)",
+        "url": "https://docs.google.com/document/d/1osFBzaYKDNJBph9qs35lrwq4qdR-hZ6aUWqqQcYHhN0/edit",
+        "contenuto": "protocollo portabile + architettura reale + scadenza 2030. Copia cloud, una delle cinque ridondanze previste"
+      },
+      "gamma": {
+        "titolo": "R3∞ — Cosa è stato verificato",
+        "url": "https://gamma.app/docs/xy6ntxqqgivlpbl",
+        "uso": "documento da lasciare DOPO la dimostrazione, non da presentare"
+      },
+      "canva": {
+        "tipo": "infografica timeline della catena causale",
+        "candidati": [
+          "https://www.canva.com/d/uzswuuuaKPpUGx-",
+          "https://www.canva.com/d/eBLx_2OBluDJdtU",
+          "https://www.canva.com/d/797nWsru9TAs88v",
+          "https://www.canva.com/d/I00R4nbqtEHG_7P"
+        ],
+        "stato": "candidati da scegliere, non ancora salvati nell'account"
+      },
+      "gmail": {
+        "tipo": "bozza NON inviata",
+        "oggetto": "SEME v1.1 — puoi pushare il branch fix-bloccanti?",
+        "destinatario": "da compilare — non conosco l'indirizzo",
+        "nota": "creata come bozza per scelta: inviare a terzi e' una decisione di Claudio"
+      },
+      "microsoft_learn": {
+        "uso": "P5 — seconda fonte indipendente sulla migrazione post-quantum",
+        "conferma": "FIPS 203/204/205 e il modello di minaccia sulle firme a lunga vita",
+        "non_conferma": "le date 2030/2035 restano su fonte singola (NIST IR 8547)",
+        "novita": "firme composite classica+PQ; lo schema MLDSA65-Ed25519-SHA512 e' specificato ma al 2026 non implementato su alcuna piattaforma"
+      },
+      "expedia": {
+        "stato": "FALLITO",
+        "errore": "Unknown error su due tentativi (BRU-MXP, con e senza parametri opzionali)",
+        "nota": "nessun uso rilevante per il protocollo; il fallimento e' riportato invece che omesso"
+      }
     }
   }
 }
