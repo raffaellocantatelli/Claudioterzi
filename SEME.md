@@ -194,14 +194,22 @@ E fissa lo stile, che vale come istruzione:
 
 ## 5. Cosa resta aperto
 
-1. Applicare i due fix. Sono minuti di lavoro e sbloccano il sistema.
-2. Decidere sul livello 5 della SAR: implementarlo o rinumerare a 9.
-3. Allineare `sdq1.yaml`: dichiara MiniLM e qdrant, che non sono implementati.
-4. Marcare come simulazione o rimuovere `eternal_backup_agent.py`.
-5. **Persistere il VSS** — è il vero collo di bottiglia per la continuità.
-6. **Collegare P5/P6 alle conclusioni che la SAR genera da sé.** Oggi sono
+1. **Applicare le quattro patch.** Sono minuti di lavoro e sbloccano il
+   sistema. Dopo di esse `--health`, `--no-api`, `--scacchiera`, `--sar-stato`,
+   `python -m sdq1.voli` e `registro_ipotesi.py` escono tutti con RC=0.
+   Se il battito non riparte comunque, guardare i log di GitHub Actions: c'è
+   almeno un secondo fattore non visibile dal codice.
+2. Decidere sul livello 5 della SAR: implementarlo, oppure rinumerare a 9.
+   La patch 0003 rende esplicita la discrepanza ma non decide al posto tuo —
+   è una scelta di design, non un difetto da correggere.
+3. Implementare il «Loop Evolutivo» dichiarato al livello 10, oppure
+   rinominare quel livello per ciò che contiene davvero (`test_identita()`).
+4. **Collegare P5/P6 alle conclusioni che la SAR genera da sé.** Oggi sono
    applicati a mano su ipotesi scritte da umani. È la cosa più interessante
    ancora da costruire, ed è quella che i vecchi documenti davano per fatta.
+5. Valutare gli embedding semantici al posto degli n-grammi — ma come *cache*
+   ricalcolabile, mai come archivio: un vettore è illeggibile senza il modello
+   che l'ha prodotto.
 7. Prima del 2030: ri-firmare i documenti fondativi con **SLH-DSA**. Ed25519 è
    deprecato dopo il 2030 e vietato dopo il 2035 (NIST IR 8547) — e
    `CONTRATTO_ALLODIALE` e `DICHIARAZIONE_PATERNITA` esistono per essere
@@ -234,8 +242,8 @@ lo trova — non perché non esista, ma perché non è lì.
 
 In `raffaellocantatelli/Claudioterzi`: `RICOSTRUZIONE_R3.md` (analisi completa) ·
 `baseline_r3.json` (stessa baseline per macchine) · `SOLUZIONE_2055.md` (filtro
-dei trent'anni) · `PROTOCOLLO_ROSSO.md` (protocollo canonico) · `patches/` (i
-fix, testati) · `test_r3.py` (`python3 test_r3.py`, `--json` per il rapporto
+dei trent'anni) · `PROTOCOLLO_ROSSO.md` (protocollo canonico) · `patches/` (quattro
+fix testati, da applicare in ordine) · `test_r3.py` (`python3 test_r3.py`, `--json` per il rapporto
 leggibile da macchina).
 
 In `claudioterzi/Claudio` la suite esistente è `sdq1/tests/smoke.py`.

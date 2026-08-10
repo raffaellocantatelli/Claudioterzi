@@ -354,16 +354,12 @@
         "fix BUG-2 + recupero H5/H6 da git"
       ],
       "P2_allineare": [
-        "decidere sul livello 5 SAR",
-        "implementare Loop Evolutivo o correggere docstring",
-        "allineare sdq1.yaml",
-        "marcare o rimuovere eternal_backup_agent",
-        "aggiornare README"
+        "FATTO in patch 0003 — README, sdq1.yaml, eternal_backup, sar.py, PROGETTO_RAFFAELLO"
       ],
       "P3_architettura": [
-        "persistere il VSS",
-        "embedding reali al posto degli n-grammi",
-        "collegare P5/P6 alle conclusioni generate dalla SAR"
+        "FATTO in patch 0004 — persistenza VSS",
+        "resta: embedding reali al posto degli n-grammi (decisione di design, non un fix)",
+        "resta: collegare P5/P6 alle conclusioni che la SAR genera da se'"
       ],
       "P4_accesso": [
         "risolvere accesso a Raffaello-SIA"
@@ -470,6 +466,31 @@
       "endpoint": "api.telegram.org/bot{token}/{method}",
       "nota": "--chat-telegram e' proprio il flag la cui rimozione ha rotto la CLI: Telegram e' il centro del guasto, non un accessorio",
       "verificabile_da_qui": "no — i token sono GitHub Secrets, non leggibili. Se fossero scaduti, la patch 0001 da sola non ripristinerebbe la chat"
+    },
+    "patches": {
+      "0001": {
+        "file": "sdq1/__main__.py",
+        "cosa": "dichiara --chat-telegram e --briefing-operativo",
+        "stato": "testata"
+      },
+      "0002": {
+        "file": "registro_ipotesi.py",
+        "cosa": "carica() all'avvio, apri() idempotente, campi extra tollerati, valuta() pura",
+        "stato": "testata",
+        "cause_corrette": 4
+      },
+      "0003": {
+        "file": "README.md, sdq1.yaml, eternal_backup_agent.py, sar.py, PROGETTO_RAFFAELLO.md",
+        "cosa": "allinea documentazione e config alla realta'; nessun cambiamento di comportamento",
+        "stato": "testata"
+      },
+      "0004": {
+        "file": "sdq1/memory/vss.py",
+        "cosa": "persistenza del Vector State Store: salva/carica su disco, solo testo mai vettori, scrittura atomica, opt-in",
+        "stato": "testata con sei prove"
+      },
+      "applicazione": "in quest'ordine; test_r3.py le verifica in sequenza su albero pulito",
+      "dopo_tutte_e_quattro": "--health, --no-api, --scacchiera, --sar-stato, sdq1.voli e registro_ipotesi.py escono con RC=0; sei ipotesi intatte"
     }
   }
 }

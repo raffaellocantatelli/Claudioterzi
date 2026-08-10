@@ -1,6 +1,6 @@
 # Patch per `claudioterzi/Claudio`
 
-Due fix per i difetti bloccanti documentati in [`../RICOSTRUZIONE_R3.md`](../RICOSTRUZIONE_R3.md).
+Quattro patch per i difetti e i disallineamenti documentati in [`../RICOSTRUZIONE_R3.md`](../RICOSTRUZIONE_R3.md).
 
 **Base:** `claudioterzi/Claudio` @ `155cb5f` (2026-07-24)
 **Stato:** scritte, applicate e testate sul codice reale. Applicabilità su albero pulito verificata con `git apply --check`.
@@ -15,7 +15,17 @@ cd Claudio
 git checkout -b fix/cli-e-registro
 git apply /percorso/patches/0001-fix-cli-argomenti-mancanti.patch
 git apply /percorso/patches/0002-fix-registro-ipotesi-perdita-dati.patch
+git apply /percorso/patches/0003-allinea-documentazione-e-config.patch
+git apply /percorso/patches/0004-persistenza-vector-state-store.patch
 ```
+
+**Vanno applicate in quest'ordine.** `test_r3.py` le verifica in sequenza su
+un albero pulito estratto da `155cb5f`, non una per una su alberi separati:
+applicarle a una a una nasconderebbe i conflitti fra patch.
+
+Dopo tutte e quattro, verificato: `--health`, `--no-api`, `--scacchiera`,
+`--sar-stato`, `python -m sdq1.voli` e `registro_ipotesi.py` escono tutti
+con `RC=0`, e le sei ipotesi restano intatte.
 
 ## 0001 — Argomenti CLI mancanti
 
@@ -83,3 +93,61 @@ solo ordine di serializzazione. Dal secondo run in poi il file è byte-stabile.
 ## Nota
 
 Il fix 0002 non recupera i dati già persi in esecuzioni passate. H5, H6 e le prove di H4 sono recuperabili dalla git history di `registro_ipotesi.json`, e vanno ripristinate prima di eseguire di nuovo lo script.
+
+
+## 0003 — Allineare documentazione e configurazione alla realtà
+
+**File:** `README.md` · `sdq1/config/sdq1.yaml` · `sdq1/agents/eternal_backup_agent.py` · `sdq1/sar/sar.py` · `PROGETTO_RAFFAELLO.md`
+
+Nessun cambiamento di comportamento: solo smettere di dichiarare cose che il
+codice smentisce. Una documentazione che descrive un sistema diverso da quello
+in esecuzione è un generatore di errori futuri — il «Sommario Esecutivo» ne è
+la prova.
+
+| Dove | Prima | Dopo |
+|---|---|---|
+| `README.md` | cascata `Anthropic → Gemini → DeepSeek → Ollama → Stub` | l'ordine reale di `sdq1.yaml`: `gemini → anthropic → grok → openai → deepseek → stub` |
+| `README.md` | «Ipotesi attive» con tre voci | sei, con H4 CONFERMATA e H5/H6 aperte |
+| `sdq1.yaml` | `modello_embedding: all-MiniLM-L6-v2`, `dimensione_vettori: 384`, blocco `qdrant` come config attiva | commentati, con la spiegazione che il VSS usa n-grammi e che nessun modulo legge quelle chiavi |
+| `eternal_backup_agent.py` | intestazione «Blockchain + IPFS + Orbital Redundancy» | docstring che dichiara **SIMULAZIONE**, elenca cosa non fa, e rimanda a `r3/node.py` per la parte reale |
+| `sar.py` | «Sistema a 10 livelli» | «9 livelli implementati su 10 dichiarati», con il livello 5 assente e il livello 10 che contiene `test_identita()`, non il loop |
+| `PROGETTO_RAFFAELLO.md` | `[ ] raffaello.py implementato` | `[x]` — verificato: 486 righe, classi `RaffaelloIdentity`, `AnalisiGiornaliera`, `Raffaello`, importabile e istanziabile |
+
+L'ultima riga va nella direzione opposta alle altre: il progetto **si
+sottostimava**. La deriva documentale non è sistematicamente auto-elogiativa.
+
+**Verificato:** `sdq1.yaml` resta YAML valido; i due file Python restano
+sintatticamente corretti; il sistema gira invariato.
+
+## 0004 — Persistenza del Vector State Store
+
+**File:** `sdq1/memory/vss.py` · **Aggiunge:** `salva()`, `carica()`, e due parametri opzionali al costruttore
+
+Il VSS era un `dict` in-process: moriva col processo. Riduceva il contesto
+*dentro* un run, non forniva continuità *tra* sessioni — che è ciò per cui
+esiste. Questo era il vero collo di bottiglia architetturale.
+
+**Scelta di progetto: si salva solo il testo, mai i vettori.** L'indice si
+ricalcola dalla definizione dell'algoritmo. Un vettore salvato resterebbe
+legato all'implementazione che l'ha prodotto; il testo no. È la stessa
+conclusione di [`../SOLUZIONE_2055.md`](../SOLUZIONE_2055.md): gli embedding
+sono cache, mai archivio.
+
+Scrittura atomica via file temporaneo e `replace()`: non esiste uno stato in
+cui il file è mezzo scritto.
+
+**Verificato con sei prove:**
+
+| Prova | Esito |
+|---|---|
+| Sopravvive alla morte del processo — scrivi, distruggi l'oggetto, ricarica in uno nuovo | 3 voci su 3, lettura per pointer e ricerca semantica intatte |
+| Idempotenza — `carica()` due volte | 0 voci duplicate |
+| Determinismo — due `salva()` consecutivi | hash identico |
+| Nessun vettore su disco | campi salvati: `agente_id`, `chiave`, `ptr`, `run_id`, `testo` |
+| File assente o corrotto | 0 voci, nessuna eccezione |
+| Retrocompatibilità — costruttore a un solo argomento | funziona come prima |
+
+Percorso di default `output/vss_state.json`, sovrascrivibile con
+`SDQ1_VSS_PATH`. La persistenza è **opt-in**: senza `autocarica=True` il
+comportamento resta identico a prima, quindi la patch non cambia nulla per
+chi non la usa.

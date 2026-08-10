@@ -54,6 +54,11 @@ FINESTRA_FALSIFICAZIONE = 12
 _RE_IPOTESI = re.compile(r"^\*\*(H[A-Z]*\d+[\w-]*)\*\*", re.MULTILINE)
 _RE_FALSIF = re.compile(r"falsificat[ao]\s+se|criterio_falsificazione", re.I)
 
+PATCHES = ("0001-fix-cli-argomenti-mancanti.patch",
+           "0002-fix-registro-ipotesi-perdita-dati.patch",
+           "0003-allinea-documentazione-e-config.patch",
+           "0004-persistenza-vector-state-store.patch")
+
 PASS, FAIL, SKIP = "PASS", "FAIL", "SKIP"
 
 
@@ -241,32 +246,33 @@ def test_difetti(r: Rapporto, repo: Path | None) -> None:
                     "salva()" in blocco and "carica()" not in blocco,
                     "il blocco __main__ non mostra piu' salva() senza carica()")
 
-    # Le patch devono restare applicabili su albero pulito.
-    for nome in ("0001-fix-cli-argomenti-mancanti.patch",
-                 "0002-fix-registro-ipotesi-perdita-dati.patch"):
-        p = RADICE / "patches" / nome
-        if not p.is_file():
+    # Le patch devono restare applicabili IN SEQUENCE su albero pulito: e' il
+    # modo in cui verranno usate davvero. Verificarle una per una su alberi
+    # separati nasconderebbe i conflitti fra patch.
+    for nome in PATCHES:
+        if not (RADICE / "patches" / nome).is_file():
             r.controlla(g, f"patch {nome[:4]} presente", False, "assente")
-            continue
-        if repo is None:
-            r.add(g, f"patch {nome[:4]} applicabile", SKIP,
+
+    if repo is None:
+        for nome in PATCHES:
+            r.add(g, f"patch {nome[:4]} applicabile in sequenza", SKIP,
                   "sorgente non disponibile")
-            continue
+    else:
         with tempfile.TemporaryDirectory() as td:
             ok_ck = subprocess.run(
                 ["git", "-C", str(repo), "--work-tree", td, "checkout", COMMIT, "--", "."],
                 capture_output=True, text=True,
             ).returncode == 0
-            if not ok_ck:
-                r.add(g, f"patch {nome[:4]} applicabile", SKIP,
-                      "impossibile materializzare l'albero pulito")
-                continue
-            res = subprocess.run(
-                ["git", "apply", "--check", str(p)],
-                cwd=td, capture_output=True, text=True,
-            )
-            r.controlla(g, f"patch {nome[:4]} applicabile",
-                        res.returncode == 0, res.stderr.strip()[:120])
+            for nome in PATCHES:
+                p = RADICE / "patches" / nome
+                if not ok_ck or not p.is_file():
+                    r.add(g, f"patch {nome[:4]} applicabile in sequenza", SKIP,
+                          "albero pulito non disponibile")
+                    continue
+                res = subprocess.run(["git", "apply", str(p)],
+                                     cwd=td, capture_output=True, text=True)
+                r.controlla(g, f"patch {nome[:4]} applicabile in sequenza",
+                            res.returncode == 0, res.stderr.strip()[:120])
 
 
 # --------------------------------------------------------------------------- #
@@ -286,6 +292,9 @@ def test_reperti(r: Rapporto, repo: Path | None) -> None:
                      "VSS a n-grammi, non embedding", "VSS non persiste",
                      "eternal_backup simula IPFS",
                      "eternal_backup non importato da moduli",
+                     "agente_orario ha continue-on-error sul passo Telegram",
+                     "caccia-voli usa un entry point separato",
+                     "sdq1_daily dipende interamente dal modulo rotto",
                      "r3/node.py usa Ed25519 reale"):
             r.add(g, nome, SKIP, "sorgente non disponibile")
         return
@@ -339,6 +348,22 @@ def test_reperti(r: Rapporto, repo: Path | None) -> None:
     except (subprocess.SubprocessError, OSError) as exc:
         r.add(g, "eternal_backup non importato da moduli", SKIP,
               exc.__class__.__name__)
+
+    # Portata reale di BUG-1: non tutti i workflow ne sono colpiti.
+    wf_orario = git_show(repo, ".github/workflows/agente_orario.yml") or ""
+    r.controlla(g, "agente_orario ha continue-on-error sul passo Telegram",
+                "continue-on-error: true" in wf_orario and "--chat-telegram" in wf_orario,
+                "il passo Telegram non e' piu' tollerante agli errori: BUG-1 ucciderebbe l'intero workflow")
+
+    wf_voli = git_show(repo, ".github/workflows/caccia-voli.yml") or ""
+    r.controlla(g, "caccia-voli usa un entry point separato",
+                "sdq1.voli" in wf_voli and "git add" not in wf_voli,
+                "caccia-voli ora passa dal __main__ o committa: la portata di BUG-1 e' cambiata")
+
+    daily = git_show(repo, ".github/workflows/sdq1_daily.yml") or ""
+    r.controlla(g, "sdq1_daily dipende interamente dal modulo rotto",
+                daily.count("python3 -m sdq1 ") >= 3,
+                "sdq1_daily non usa piu' tre comandi sdq1: rivedere l'analisi causale")
 
     node = git_show(repo, "r3/node.py") or ""
     r.controlla(g, "r3/node.py usa Ed25519 reale",
