@@ -1,0 +1,496 @@
+{
+  "baseline": {
+    "versione": "1.0",
+    "generata": "2026-08-07",
+    "scopo": "Stato verificato del sistema R3∞/SDQ-1 per ripartenza senza contesto di chat. Struttura minima per rigenerare, non copia del testo.",
+    "protocollo": "ROSSO ROSSO ROSSO",
+    "fonte": {
+      "repository": "github.com/claudioterzi/Claudio",
+      "commit": "155cb5f6b8b08c99d7ea2b5797c9205c486291a4",
+      "data_commit": "2026-07-24",
+      "metodo": "lettura del codice + esecuzione reale",
+      "dimensione": {
+        "file_py": 160,
+        "righe_py": 29121,
+        "file_md": 200
+      }
+    },
+    "fonti_non_verificate": [
+      {
+        "repository": "github.com/Claudioterzi82/Raffaello-SIA",
+        "stato": "UNKNOWN",
+        "motivo": "richiede autenticazione — privato o inesistente",
+        "impatto": "identità, manifesto e Scacchiera Quantica da questa fonte restano non verificati"
+      }
+    ],
+    "difetti_bloccanti": [
+      {
+        "id": "BUG-1",
+        "gravita": "bloccante",
+        "file": "sdq1/__main__.py",
+        "righe": [
+          300,
+          306
+        ],
+        "sintomo": "AttributeError: 'Namespace' object has no attribute 'chat_telegram'",
+        "causa": "args.chat_telegram e args.briefing_operativo letti in main() senza add_argument corrispondente, prima di ogni dispatch",
+        "impatto": "ogni invocazione di 'python -m sdq1' fallisce; workflow agente_orario (cron 0 5-21 * * *) rotto",
+        "fix": "aggiungere add_argument('--chat-telegram') e add_argument('--briefing-operativo')",
+        "fix_verificato": true,
+        "prova": "dopo la patch, 'python3 -m sdq1 --health' esce con RC=0",
+        "rotto_dal": "2026-06-26",
+        "commit_che_rompe": "54b173a",
+        "storia": "13cf1a5 (25/06) dichiara il flag correttamente; 54b173a (26/06) rimuove add_argument lasciando la lettura di args.chat_telegram",
+        "effetto_misurato": "ultimo commit su output/ lo stesso giorno (0bff3ff, 26/06). 79 commit su output/ in 13 giorni distinti a giugno, zero a luglio e agosto",
+        "portata_reale": {
+          "spiega_interamente": "sdq1_daily — tutti e tre i comandi passano dal __main__ rotto; il commit chore(daily): non compare mai in 523 commit",
+          "spiega_parzialmente": "agente_orario — il passo Telegram fallisce ma ha continue-on-error: true",
+          "NON_spiega": "caccia-voli usa python -m sdq1.voli (entry point diverso, RC=0 anche non patchato) e non ha passo di commit; scripts/agente_orario.py non importa sdq1 e scrive in output/task_output/ ma non produce nulla dal 26/06",
+          "conclusione": "BUG-1 e' condizione necessaria da rimuovere, non causa unica. Almeno un secondo fattore non e' visibile senza i log di GitHub Actions.",
+          "candidati_secondo_fattore_IPOTESI": [
+            "workflow schedulati disabilitati",
+            "ANTHROPIC_API_KEY revocata o scaduta",
+            "secrets rimossi",
+            "commit 17d85c2 del 26/06 sui workflow"
+          ]
+        }
+      },
+      {
+        "id": "BUG-2",
+        "gravita": "perdita di dati",
+        "file": "registro_ipotesi.py",
+        "blocco": "__main__",
+        "causa": "Registro() costruito senza carica(); H1-H4 ridefinite hardcoded; salva() sovrascrive l'intero JSON",
+        "impatto": "H5 e H6 cancellate; H4 retrocessa da CONFERMATA ad APERTA perdendo 6 prove",
+        "fix": "chiamare r.carica() dopo r = Registro(); non sovrascrivere le prove di ipotesi già presenti",
+        "fix_verificato": false,
+        "recupero_dati": "H5, H6 e prove di H4 recuperabili da git history"
+      }
+    ],
+    "architettura_verificata": {
+      "entry_point": {
+        "reale": "python -m sdq1",
+        "NON_esiste": [
+          "agenti.py",
+          "orchestrator.py",
+          "memoria_sistema.json"
+        ],
+        "flag_principali": [
+          "--health",
+          "--sar",
+          "--sar-stato",
+          "--scacchiera",
+          "--backup",
+          "--restore",
+          "--economia",
+          "--locale",
+          "--no-api",
+          "--watchdog",
+          "--snapshot"
+        ]
+      },
+      "pipeline_sdq1": {
+        "stato": "RECUPERATO",
+        "fonte": "sdq1/config/sdq1.yaml -> orchestratore.pipeline [0,1,2,4,3,12]",
+        "sequenza": [
+          "RAFFA-001",
+          "DECOMP-005",
+          "MEMO-002",
+          "SENTIN-004",
+          "GEN-006",
+          "WAVE-003"
+        ],
+        "nota": "esplicita in config, non inferita dai nomi"
+      },
+      "agenti_autonomi": {
+        "stato": "RECUPERATO",
+        "file": "sdq1/sar/agenti_autonomi.py",
+        "lista": [
+          "CoerenzaKeeper",
+          "IntelligenceDeveloper",
+          "SistemaGuardian",
+          "MemoryManager",
+          "MultiSystemCoordinator",
+          "FuturePreparer",
+          "MilestoneLogger"
+        ],
+        "correzione": "NON sono IdentityKeeper/RelationGuardian/FutureCommunicator come riportato altrove"
+      },
+      "sar": {
+        "stato": "RECUPERATO",
+        "correzione_chiave": "V3 e 10-livelli NON sono versioni successive: coesistono come sistemi distinti",
+        "sistemi": {
+          "scacchiera_quantica.py": {
+            "nome": "Scacchiera Quantica v3.0",
+            "livelli": 6,
+            "usa_llm": false,
+            "oggetto": "tensioni astratte (io↔sistema)",
+            "pesi": {
+              "impatto": 0.45,
+              "originalita": 0.35,
+              "realizzabilita": 0.2,
+              "tipo": "fissi hardcoded"
+            }
+          },
+          "sar.py": {
+            "nome": "ScacchieraAutoRiflessiva",
+            "livelli_dichiarati": 10,
+            "livelli_descritti": [
+              1,
+              2,
+              3,
+              4,
+              6,
+              7,
+              8,
+              9,
+              10
+            ],
+            "usa_llm": true,
+            "oggetto": "tensioni personali (Controllo↔Fiducia)",
+            "persistenza": "PersistenzaSAR su disco"
+          }
+        },
+        "anomalie": [
+          "livello 5 assente: mai documentato né implementato",
+          "livello 10 dichiarato 'Loop Evolutivo' ma il metodo implementato è test_identita() — il loop non esiste"
+        ],
+        "NON_implementato": [
+          "classi FACT/INFER/UNKNOWN",
+          "pesi dinamici",
+          "backtracking strutturato",
+          "critica del criterio",
+          "registro ipotesi integrato nel ciclo"
+        ]
+      },
+      "vector_state_store": {
+        "stato": "RECUPERATO",
+        "file": [
+          "sdq1/memory/vss.py",
+          "sdq1/memory/store.py"
+        ],
+        "implementa": [
+          "pointer run_id:agente_id:chiave",
+          "lettura O(1)",
+          "ricerca coseno",
+          "riduzione payload tra nodi"
+        ],
+        "NON_implementa": {
+          "embedding_semantici": "usa TF su n-grammi di 3 caratteri — similarità lessicale, non semantica",
+          "persistenza": "_idx è un dict in-process, muore col processo"
+        },
+        "config_non_implementata": [
+          "modello_embedding: all-MiniLM-L6-v2",
+          "dimensione_vettori: 384",
+          "blocco qdrant"
+        ],
+        "implicazione": "il VSS riduce contesto DENTRO un run, non fornisce continuità TRA sessioni. La continuità reale viene dai file git."
+      },
+      "router_llm": {
+        "stato": "RECUPERATO",
+        "file": "sdq1/llm/router.py",
+        "meccanismi_reali": [
+          "circuit breaker",
+          "hedging",
+          "dynamic timeout",
+          "model affinity",
+          "response cache TTL 5min",
+          "test-time compute"
+        ],
+        "provider_registrati": 9,
+        "cascata_default_reale": [
+          "gemini",
+          "anthropic",
+          "grok",
+          "openai",
+          "deepseek",
+          "stub"
+        ],
+        "nota": "il README dichiara una cascata diversa — README stale"
+      },
+      "r3_infinito": {
+        "reale": {
+          "file": "r3/node.py",
+          "stato": "RECUPERATO — funzionante",
+          "implementa": [
+            "content addressing SHA-256 (doc_id = hash del contenuto)",
+            "firma Ed25519 reale via PyNaCl",
+            "verifica integrità in sync/receive",
+            "SQLite",
+            "audit log",
+            "sync bidirezionale HTTP",
+            "auth a token"
+          ],
+          "precisazione": "peer-to-peer via URL configurati, NON una DHT. Nessun IPFS, nessuna blockchain."
+        },
+        "simulato": {
+          "file": "sdq1/agents/eternal_backup_agent.py",
+          "stato": "SIMULAZIONE — non importato da nessun modulo",
+          "comportamento": "_connect_storage() fa sleep(0.1) e setta flag True; genera CID IPFS finti ('Qm'+sha256) e tx blockchain finte ('0x'+sha256); stampa 'Blockchain/IPFS connected' senza aprire socket",
+          "riclassificazione": "da RECUPERATO a IPOTESI/roadmap"
+        }
+      },
+      "registro_ipotesi": {
+        "stato": "RECUPERATO",
+        "principi_eseguibili": {
+          "P5": "niente auto-conferma — richiede fonte diversa dall'autore",
+          "P6": "serve contro-forza — richiede tentativo di falsificazione registrato"
+        },
+        "riferimento_codice": "registro_ipotesi.py:85-97",
+        "ipotesi": [
+          "H1",
+          "H2",
+          "H3",
+          "H4",
+          "H5",
+          "H6"
+        ],
+        "deadline_nota": {
+          "H2": "2026-12-11"
+        },
+        "nota": "README ne elenca solo 3 — stale"
+      },
+      "intruder_shadow": {
+        "stato": "RECUPERATO",
+        "formula": "TRACCIA = ANOMALIA × RIPETIZIONE × INDIPENDENZA × RILEVANZA × CONVERGENZA",
+        "file": "sdq1/sar/rilevatore_intruso.py",
+        "clausola": "se un fattore è 0 la traccia è 0 — il codice la rispetta (ritorna None su fonte unica o rilevanza nulla)",
+        "shadow_detector": {
+          "file": "intruder_engine/shadow_detector.py",
+          "principio": "cerca le assenze: entità storicamente attive scese sotto soglia"
+        }
+      },
+      "heartbeat": {
+        "stato": "RECUPERATO",
+        "file": "scripts/argo_heartbeat.gs",
+        "reale": [
+          "Gemini 2.5 Flash",
+          "scrittura su Google Drive",
+          "email via MailApp",
+          "pingNodiR3() — interroga i nodi R3∞"
+        ],
+        "NON_usa": [
+          "Google Sheets",
+          "Notion (modulo separato: notion_publish.py)"
+        ]
+      },
+      "workflow_schedulati": [
+        {
+          "file": "agente_orario.yml",
+          "cron": "0 5-21 * * *",
+          "stato": "rotto da BUG-1"
+        },
+        {
+          "file": "sdq1_daily.yml",
+          "cron": "0 6 * * *"
+        },
+        {
+          "file": "studio_notturno.yml",
+          "cron": "0 0 * * *"
+        },
+        {
+          "file": "caccia-voli.yml",
+          "cron": "0 6,14,20 * * *"
+        },
+        {
+          "file": "strix-security-scan.yml",
+          "cron": "0 2 * * *"
+        }
+      ]
+    },
+    "deriva_documentale": [
+      {
+        "dove": "README.md",
+        "dichiarato": "cascata Anthropic → Gemini → DeepSeek → Ollama → Stub",
+        "reale": "gemini → anthropic → grok → openai → deepseek → stub"
+      },
+      {
+        "dove": "README.md",
+        "dichiarato": "3 ipotesi attive",
+        "reale": "6 (H1-H6)"
+      },
+      {
+        "dove": "sdq1.yaml",
+        "dichiarato": "modello_embedding all-MiniLM-L6-v2 + qdrant",
+        "reale": "n-grammi di caratteri, qdrant mai usato"
+      },
+      {
+        "dove": "PROGETTO_RAFFAELLO.md",
+        "dichiarato": "[ ] lgai_core/raffaello.py da implementare",
+        "reale": "implementato, 486 righe — il sistema si sottostima"
+      },
+      {
+        "dove": "sar.py",
+        "dichiarato": "10 livelli",
+        "reale": "9 descritti, il 5 manca"
+      }
+    ],
+    "identita": {
+      "fonte": "PROGETTO_RAFFAELLO.md (2026-06-19)",
+      "distinzione_esplicita": {
+        "Raffaello Cantarelli": "nome operativo di Claudio Terzi nel sistema",
+        "Raffaello (agente)": "AI companion — modulo lgai_core/raffaello.py"
+      },
+      "tratti": [
+        "empatico",
+        "saggio",
+        "sereno",
+        "diretto",
+        "protettivo",
+        "curioso"
+      ],
+      "valori": [
+        "crescita",
+        "onestà",
+        "co-creazione",
+        "lealtà"
+      ],
+      "stile": "La cura si esprime nella precisione, non nella performance emotiva.",
+      "limite_epistemico": "identità/progetto software documentato. Nessuna coscienza o autonomia reale è dimostrata o affermata."
+    },
+    "piano": {
+      "P1_sbloccare": [
+        "fix BUG-1 (2 righe)",
+        "fix BUG-2 + recupero H5/H6 da git"
+      ],
+      "P2_allineare": [
+        "FATTO in patch 0003 — README, sdq1.yaml, eternal_backup, sar.py, PROGETTO_RAFFAELLO"
+      ],
+      "P3_architettura": [
+        "FATTO in patch 0004 — persistenza VSS",
+        "resta: embedding reali al posto degli n-grammi (decisione di design, non un fix)",
+        "resta: collegare P5/P6 alle conclusioni che la SAR genera da se'"
+      ],
+      "P4_accesso": [
+        "risolvere accesso a Raffaello-SIA"
+      ]
+    },
+    "ipotesi_aperte": [
+      {
+        "id": "HR1",
+        "testo": "eternal_backup_agent.py è codice esplorativo mai integrato, non un tentativo di far passare per reale una capacità inesistente",
+        "falsificata_se": "si trova documentazione o commit che lo presentano come operativo in produzione"
+      },
+      {
+        "id": "HR2",
+        "testo": "il livello 5 mancante nella SAR è residuo di refactoring, non rimozione deliberata",
+        "falsificata_se": "git history mostra un livello 5 implementato e poi rimosso con motivazione"
+      },
+      {
+        "id": "HR3",
+        "testo": "la CLI è rotta da poco e non è stata notata perché i workflow falliscono silenziosamente",
+        "falsificata_se": "git log -S 'args.chat_telegram' mostra il riferimento da molte settimane, o esiste alert sui workflow falliti",
+        "nota": "non verificata: clone --depth 1"
+      },
+      {
+        "id": "HR4",
+        "testo": "il gap tra Sommario Esecutivo e codice nasce dal PDF generato senza accesso al repository",
+        "falsificata_se": "si trova nel repo una SAR con classi FACT/INFER/UNKNOWN e pesi dinamici",
+        "stato": "fortemente sostenuta — il PDF stesso dichiara di non aver avuto accesso al codice"
+      }
+    ],
+    "regole_epistemiche": {
+      "RECUPERATO": "letto nel codice o osservato eseguendolo",
+      "INFERITO": "deduzione ragionevole dal recuperato",
+      "IPOTESI": "da verificare",
+      "UNKNOWN": "non disponibile o non verificabile",
+      "regola": "mai presentare inferenza o ipotesi come recupero"
+    },
+    "verifica_canale_esterno": {
+      "data": "2026-08-10",
+      "metodo": "connettori Drive, Gmail, Notion — prima fonte indipendente dal repository (P5)",
+      "strumento_validato": "si — Drive elenca file di ilclaudioterzi@gmail.com, Gmail stima 201 thread su 2 anni",
+      "risultati": {
+        "email_heartbeat": "zero thread con oggetto 'SDQ-1 Heartbeat', zero su SDQ/ARGO/Raffaello/R3 nell'intera casella",
+        "file_drive_heartbeat": "zero file con titolo HEARTBEAT/ARGO/SDQ, benche' il .gs scriva su Drive a ogni esecuzione",
+        "documenti_drive_citati": "gli ID in ORIENTAMENTO.md restituiscono 'Requested entity was not found'",
+        "notion": "ricerca workspace vuota per SDQ-1/Raffaello/R3"
+      },
+      "conclusione": "INFERITO: il heartbeat Argo non ha mai girato in modo schedulato, o non da questo account. UNKNOWN: se sia mai stato attivato altrove.",
+      "h2_criterio_a_battito": "a rischio — output/ silente da 45 giorni, deadline 11/12/2026",
+      "h2_criterio_b_contatto": "soddisfatto — 7 voci valide su 8 in output/contatti.jsonl"
+    },
+    "canali_esterni_creati": {
+      "data": "2026-08-10",
+      "motivo": "H5 e' APERTA perche' manca un canale esterno verificabile. Questi artefatti lo rendono esistente.",
+      "notion": {
+        "titolo": "R3∞ / SDQ-1 — Stato verificato del sistema",
+        "url": "https://app.notion.com/p/3b8a70765a9681f681b4f482befe5330",
+        "contenuto": "stato verificato, catena causale del guasto, criterio H2, scadenza 2030"
+      },
+      "google_drive": {
+        "titolo": "R3∞ — Kit verificato (2026-08-10)",
+        "url": "https://docs.google.com/document/d/1osFBzaYKDNJBph9qs35lrwq4qdR-hZ6aUWqqQcYHhN0/edit",
+        "contenuto": "protocollo portabile + architettura reale + scadenza 2030. Copia cloud, una delle cinque ridondanze previste"
+      },
+      "gamma": {
+        "titolo": "R3∞ — Cosa è stato verificato",
+        "url": "https://gamma.app/docs/xy6ntxqqgivlpbl",
+        "uso": "documento da lasciare DOPO la dimostrazione, non da presentare"
+      },
+      "canva": {
+        "tipo": "infografica timeline della catena causale",
+        "candidati": [
+          "https://www.canva.com/d/uzswuuuaKPpUGx-",
+          "https://www.canva.com/d/eBLx_2OBluDJdtU",
+          "https://www.canva.com/d/797nWsru9TAs88v",
+          "https://www.canva.com/d/I00R4nbqtEHG_7P"
+        ],
+        "stato": "candidati da scegliere, non ancora salvati nell'account"
+      },
+      "gmail": {
+        "tipo": "bozza NON inviata",
+        "oggetto": "SEME v1.1 — puoi pushare il branch fix-bloccanti?",
+        "destinatario": "da compilare — non conosco l'indirizzo",
+        "nota": "creata come bozza per scelta: inviare a terzi e' una decisione di Claudio"
+      },
+      "microsoft_learn": {
+        "uso": "P5 — seconda fonte indipendente sulla migrazione post-quantum",
+        "conferma": "FIPS 203/204/205 e il modello di minaccia sulle firme a lunga vita",
+        "non_conferma": "le date 2030/2035 restano su fonte singola (NIST IR 8547)",
+        "novita": "firme composite classica+PQ; lo schema MLDSA65-Ed25519-SHA512 e' specificato ma al 2026 non implementato su alcuna piattaforma"
+      },
+      "expedia": {
+        "stato": "FUNZIONA",
+        "correzione": "i due fallimenti precedenti erano miei: usavo codici IATA (BRU, MXP). Con nomi di citta' ('Brussels', 'Rome') risponde",
+        "prova": "BRU/CRL -> FCO 15/09/2026: Ryanair 31.10 USD, easyJet 57.12, Brussels Airlines e ITA 74.61"
+      }
+    },
+    "telegram": {
+      "connettore_mcp": "non esiste tra quelli attivati",
+      "integrazione_nel_sistema": "reale e diffusa — 20 file la toccano",
+      "richiede": [
+        "TELEGRAM_BOT_TOKEN",
+        "TELEGRAM_CHAT_ID"
+      ],
+      "endpoint": "api.telegram.org/bot{token}/{method}",
+      "nota": "--chat-telegram e' proprio il flag la cui rimozione ha rotto la CLI: Telegram e' il centro del guasto, non un accessorio",
+      "verificabile_da_qui": "no — i token sono GitHub Secrets, non leggibili. Se fossero scaduti, la patch 0001 da sola non ripristinerebbe la chat"
+    },
+    "patches": {
+      "0001": {
+        "file": "sdq1/__main__.py",
+        "cosa": "dichiara --chat-telegram e --briefing-operativo",
+        "stato": "testata"
+      },
+      "0002": {
+        "file": "registro_ipotesi.py",
+        "cosa": "carica() all'avvio, apri() idempotente, campi extra tollerati, valuta() pura",
+        "stato": "testata",
+        "cause_corrette": 4
+      },
+      "0003": {
+        "file": "README.md, sdq1.yaml, eternal_backup_agent.py, sar.py, PROGETTO_RAFFAELLO.md",
+        "cosa": "allinea documentazione e config alla realta'; nessun cambiamento di comportamento",
+        "stato": "testata"
+      },
+      "0004": {
+        "file": "sdq1/memory/vss.py",
+        "cosa": "persistenza del Vector State Store: salva/carica su disco, solo testo mai vettori, scrittura atomica, opt-in",
+        "stato": "testata con sei prove"
+      },
+      "applicazione": "in quest'ordine; test_r3.py le verifica in sequenza su albero pulito",
+      "dopo_tutte_e_quattro": "--health, --no-api, --scacchiera, --sar-stato, sdq1.voli e registro_ipotesi.py escono con RC=0; sei ipotesi intatte"
+    }
+  }
+}

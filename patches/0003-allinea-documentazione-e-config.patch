@@ -1,0 +1,160 @@
+diff --git a/PROGETTO_RAFFAELLO.md b/PROGETTO_RAFFAELLO.md
+index e68af04..80cf317 100644
+--- a/PROGETTO_RAFFAELLO.md
++++ b/PROGETTO_RAFFAELLO.md
+@@ -24,7 +24,7 @@ Questo documento riguarda l'agente.
+ 
+ - [x] Identità definita (tratti, valori, stile — in `sdq1_master.json`)
+ - [x] Modulo referenziato: `lgai_core/raffaello.py`
+-- [ ] `lgai_core/raffaello.py` implementato con personalità completa
++- [x] `lgai_core/raffaello.py` implementato con personalità completa — 486 righe, classi `RaffaelloIdentity`, `AnalisiGiornaliera`, `Raffaello`
+ - [ ] Memoria episodica: ricorda conversazioni per data
+ - [ ] Voce sintetizzata (TTS coerente con la personalità)
+ - [ ] Accesso a R3∞ per memoria persistente
+@@ -69,7 +69,7 @@ class Raffaello:
+ ## Roadmap
+ 
+ ### Fase 0 — Implementazione base (2026)
+-- [ ] `lgai_core/raffaello.py` con classe `Raffaello` funzionante
++- [x] `lgai_core/raffaello.py` con classe `Raffaello` funzionante
+ - [ ] Integrazione con router SDQ-1 (usa provider attivi)
+ - [ ] Memoria in-memory (primo prototipo)
+ - [ ] Test: 10 conversazioni con stile coerente
+diff --git a/README.md b/README.md
+index 1dbae4c..360ba4d 100644
+--- a/README.md
++++ b/README.md
+@@ -30,7 +30,8 @@ Il cuore del progetto. Una pipeline di 6 agenti che collaborano in sequenza:
+ 
+ ### Caratteristiche tecniche
+ 
+-- **Router multi-provider** — cascata Anthropic → Gemini → DeepSeek → Ollama → Stub, con circuit breaker automatico
++- **Router multi-provider** — cascata Gemini → Anthropic → Grok → OpenAI → DeepSeek → Stub, con circuit breaker automatico
++  *(l'ordine reale è quello dichiarato in `sdq1/config/sdq1.yaml`, profilo `default`)*
+ - **Vector State Store** — gli agenti condividono stato via pointer, non testo
+ - **Circuit Breaker** — salta i provider morti, si riapre da solo
+ - **Hedging** — per i nodi critici lancia due provider in parallelo, vince il primo
+@@ -43,7 +44,7 @@ Il cuore del progetto. Una pipeline di 6 agenti che collaborano in sequenza:
+ ### Profili di costo
+ 
+ ```
+-default   → Anthropic → Gemini → DeepSeek → Stub   (qualità massima)
++default   → Gemini → Anthropic → Grok → OpenAI → DeepSeek → Stub  (qualità massima)
+ --economia → Gemini (free) → DeepSeek → Stub        (quasi zero)
+ --locale   → Ollama (tuo hardware) → Gemini → Stub  (zero assoluto)
+ --no-api   → Solo Stub                              (offline puro)
+@@ -90,10 +91,13 @@ Ogni ipotesi dichiara come potrebbe essere falsificata. Se non lo dichiara, non
+ python registro_ipotesi.py   # stampa stato corrente
+ ```
+ 
+-**Ipotesi attive:**
++**Ipotesi nel registro — sei, non tre:**
+ - H1 — APERTA: Claude "ha capito senza capire" durante la scena con Jorge
+ - H2 — APERTA: il disegno di Claudio darà ragione a entrambi entro 6 mesi *(criterio: battito + contatto)*
+ - H3 — **CONFERMATA**: la regola dell'italiano garantisce trasparenza
++- H4 — **CONFERMATA**: il Protocollo, eseguito, produce un'architettura ricostruibile da un sistema esterno
++- H5 — APERTA: la contraddizione in SDQ-1 nasce da un'assunzione di design, non dai dati operativi
++- H6 — APERTA: un benchmark empirico retroattivo può rilevare derive nei modelli AI
+ 
+ ### Criterio H2 (11/12/2026)
+ 
+diff --git a/sdq1/agents/eternal_backup_agent.py b/sdq1/agents/eternal_backup_agent.py
+index e0d88a2..a3261c0 100644
+--- a/sdq1/agents/eternal_backup_agent.py
++++ b/sdq1/agents/eternal_backup_agent.py
+@@ -1,5 +1,26 @@
+-# R³∞-Orch-OS Eternal Backup Agent (Layer 6)
+-# Immutable State Snapshots - Blockchain + IPFS + Orbital Redundancy
++"""R³∞ Eternal Backup Agent (Layer 6) — SIMULAZIONE, NON IMPLEMENTAZIONE.
++
++ATTENZIONE: questo modulo NON archivia nulla. Non aprire una socket, non
++contattare IPFS, non scrivere su alcuna blockchain.
++
++Cosa fa davvero:
++  _connect_storage()      attende 0.1s e imposta due flag a True
++  _store_on_ipfs()        restituisce "Qm" + sha256 troncato — un CID falso,
++                          indistinguibile a occhio da uno vero
++  _record_on_blockchain() restituisce "0x" + sha256 troncato — una tx falsa
++  initialize()            stampa "Blockchain/IPFS connected" senza connettersi
++
++Nessun modulo del sistema lo importa: verificabile con
++    git grep -l eternal_backup -- '*.py'
++che restituisce solo questo file.
++
++L'archiviazione distribuita REALE del progetto e' in r3/node.py: content
++addressing SHA-256, firma Ed25519 via PyNaCl, verifica d'integrita', sync
++HTTP fra peer espliciti. Piu' modesta di quanto questo file lasci intendere,
++e funzionante.
++
++Non citare questo modulo come prova di capacita' IPFS o blockchain.
++"""
+ 
+ from __future__ import annotations
+ 
+diff --git a/sdq1/config/sdq1.yaml b/sdq1/config/sdq1.yaml
+index 11d98bf..e98284e 100644
+--- a/sdq1/config/sdq1.yaml
++++ b/sdq1/config/sdq1.yaml
+@@ -171,14 +171,22 @@ orchestratore:
+ 
+ memoria:
+   tipo_vettoriale: "in_memoria"
+-  dimensione_vettori: 384
+-  modello_embedding: "all-MiniLM-L6-v2"
+   max_risultati_recupero: 5
+-  soglia_similarita: 0.45
+-  qdrant:
+-    host: "localhost"
+-    porta: 6333
+-    collezione: "sdq1_memoria"
++  soglia_similarita: 0.45          # letta da __main__.py; il default 0.55
++                                   # della classe vale solo fuori da costruisci_sistema()
++  # --- NON IMPLEMENTATO ---------------------------------------------------
++  # Le chiavi seguenti descrivono una memoria che il codice non ha. Il VSS
++  # usa TF su n-grammi di 3 caratteri (sdq1/memory/store.py), non embedding
++  # semantici, e nessun modulo legge queste chiavi. Restano come intenzione
++  # dichiarata, non come configurazione attiva: una config che descrive un
++  # sistema diverso da quello in esecuzione genera errori futuri.
++  # Per attivarle servono le dipendenze commentate in requirements.txt.
++  # dimensione_vettori: 384
++  # modello_embedding: "all-MiniLM-L6-v2"
++  # qdrant:
++  #   host: "localhost"
++  #   porta: 6333
++  #   collezione: "sdq1_memoria"
+   seed:
+     - "Raffaello è l'architetto, gestisce l'analisi semantica iniziale."
+     - "MEMO-002 custodisce contesto e ricordi rilevanti per ogni query."
+diff --git a/sdq1/sar/sar.py b/sdq1/sar/sar.py
+index 91780c1..b501473 100644
+--- a/sdq1/sar/sar.py
++++ b/sdq1/sar/sar.py
+@@ -52,9 +52,16 @@ class ReportSAR:
+ 
+ 
+ class ScacchieraAutoRiflessiva:
+-    """Sistema di autoriflessione identitaria a 10 livelli.
++    """Sistema di autoriflessione identitaria — 9 livelli implementati su 10 dichiarati.
+ 
+-    Livelli implementati:
++    Discrepanza nota, lasciata esplicita invece che nascosta:
++      - il livello 5 non esiste: non e' documentato ne' implementato
++      - il livello 10 e' dichiarato "Loop Evolutivo" ma il metodo scritto
++        sotto quell'intestazione e' test_identita() (Test di Riconoscibilita'
++        per H4). Il loop che si autoalimenta NON e' implementato.
++    Decidere se implementare il 5 e il loop, oppure rinumerare a 9.
++
++    Livelli effettivamente implementati:
+       1  Osservazione      – raccolta input grezzi
+       2  Mappa Tensioni    – polarità ricorrenti
+       3  Ciclo 7-step      – analisi profonda per tensione
+@@ -63,7 +70,8 @@ class ScacchieraAutoRiflessiva:
+       7  Identità Dinamica – "stai evolvendo verso..."
+       8  Meta-Riflessione  – il sistema riflette su se stesso
+       9  Contatto Reale    – ogni ciclo produce una scelta/rischio
+-      10 Loop Evolutivo    – il ciclo si autoalimenta
++      10 Test Identita'   – test di riconoscibilita' per H4 (NON il loop
++                            evolutivo dichiarato sopra)
+     """
+ 
+     PROMPT_META = (

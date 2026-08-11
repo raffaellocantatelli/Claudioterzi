@@ -1,0 +1,15 @@
+diff --git a/sdq1/__main__.py b/sdq1/__main__.py
+index 0971a18..8611d66 100644
+--- a/sdq1/__main__.py
++++ b/sdq1/__main__.py
+@@ -227,6 +227,10 @@ def main(argv: list[str]) -> int:
+                         help="Invia messaggio di test su Telegram (verifica connessione bot)")
+     parser.add_argument("--notifica-briefing", action="store_true",
+                         help="Invia briefing mattutino completo su Telegram")
++    parser.add_argument("--chat-telegram", action="store_true",
++                        help="Elabora comandi e chat Telegram in arrivo")
++    parser.add_argument("--briefing-operativo", action="store_true",
++                        help="Briefing operativo multi-AI (Gemini + Claude + DeepSeek)")
+     parser.add_argument("--telegram-comandi", action="store_true",
+                         help="Legge ed esegue comandi Telegram in coda (/scan /status /agenti /push)")
+     parser.add_argument("--agenda", action="store_true",

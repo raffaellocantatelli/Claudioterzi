@@ -1,0 +1,117 @@
+diff --git a/sdq1/memory/vss.py b/sdq1/memory/vss.py
+index 59a3636..c95f675 100644
+--- a/sdq1/memory/vss.py
++++ b/sdq1/memory/vss.py
+@@ -12,17 +12,30 @@ recuperare contenuto rilevante da tutti i nodi precedenti dello stesso run.
+ 
+ from __future__ import annotations
+ 
++import json
++import os
++from pathlib import Path
+ from typing import Any
+ 
+ from .store import MemoriaVettoriale, RisultatoRicerca
+ 
++# Percorso di default della persistenza. Sovrascrivibile con SDQ1_VSS_PATH.
++PERCORSO_DEFAULT = Path(os.environ.get("SDQ1_VSS_PATH", "output/vss_state.json"))
++SCHEMA = 1
++
+ 
+ class VectorStateStore:
+     """Store condiviso in-process; un'istanza per tutta la vita dell'app."""
+ 
+-    def __init__(self, memoria: MemoriaVettoriale):
++    def __init__(self, memoria: MemoriaVettoriale,
++                 percorso: str | Path | None = None,
++                 autocarica: bool = False):
+         self._mem = memoria
+-        self._idx: dict[str, str] = {}  # pointer_id -> testo originale
++        self._idx: dict[str, str] = {}          # pointer_id -> testo originale
++        self._meta: dict[str, dict[str, str]] = {}   # pointer_id -> parti del ptr
++        self._percorso = Path(percorso) if percorso is not None else PERCORSO_DEFAULT
++        if autocarica:
++            self.carica()
+ 
+     # ------------------------------------------------------------------ #
+     # Scrittura                                                            #
+@@ -43,6 +56,7 @@ class VectorStateStore:
+             },
+         )
+         self._idx[ptr] = testo
++        self._meta[ptr] = {"run_id": run_id, "agente_id": agente_id, "chiave": chiave}
+         return ptr
+ 
+     # ------------------------------------------------------------------ #
+@@ -93,3 +107,71 @@ class VectorStateStore:
+ 
+     def esporta(self) -> list[dict]:
+         return [{"ptr": ptr, "testo": testo} for ptr, testo in self._idx.items()]
++
++    # ------------------------------------------------------------------ #
++    # Persistenza                                                          #
++    # ------------------------------------------------------------------ #
++
++    def salva(self, percorso: str | Path | None = None) -> Path:
++        """Scrive lo stato su disco e restituisce il percorso usato.
++
++        Salva SOLO testo e metadati, mai i vettori. L'indice si ricalcola
++        dalla definizione dell'algoritmo (n-grammi di 3 caratteri, TF +
++        coseno): un vettore salvato resterebbe legato all'implementazione
++        che l'ha prodotto, il testo no. Vale anche se un giorno il backend
++        diventasse un modello di embedding — in quel caso il vettore
++        sarebbe leggibile solo finche' esiste quel modello.
++
++        Il file e' deterministico a parita' di contenuto: due salvataggi
++        consecutivi senza scritture intermedie producono byte identici.
++        """
++        p = Path(percorso) if percorso is not None else self._percorso
++        p.parent.mkdir(parents=True, exist_ok=True)
++        dati = {
++            "schema": SCHEMA,
++            "voci": [
++                {"ptr": ptr,
++                 "run_id": self._meta.get(ptr, {}).get("run_id", ""),
++                 "agente_id": self._meta.get(ptr, {}).get("agente_id", ""),
++                 "chiave": self._meta.get(ptr, {}).get("chiave", ""),
++                 "testo": testo}
++                for ptr, testo in self._idx.items()
++            ],
++        }
++        tmp = p.with_suffix(p.suffix + ".tmp")
++        tmp.write_text(json.dumps(dati, ensure_ascii=False, indent=2) + "\n",
++                       encoding="utf-8")
++        tmp.replace(p)       # scrittura atomica: mai un file mezzo scritto
++        return p
++
++    def carica(self, percorso: str | Path | None = None) -> int:
++        """Ripopola lo store da disco. Restituisce il numero di voci lette.
++
++        Idempotente: i pointer gia' presenti non vengono duplicati, cosi'
++        caricare due volte non gonfia la memoria vettoriale.
++        """
++        p = Path(percorso) if percorso is not None else self._percorso
++        try:
++            dati = json.loads(p.read_text(encoding="utf-8"))
++        except (FileNotFoundError, json.JSONDecodeError):
++            return 0
++        if dati.get("schema") != SCHEMA:
++            return 0
++        letti = 0
++        for v in dati.get("voci", []):
++            ptr = v.get("ptr", "")
++            if not ptr or ptr in self._idx:
++                continue
++            self._mem.aggiungi(
++                v.get("testo", ""),
++                metadata={"run_id": v.get("run_id", ""),
++                          "agente_id": v.get("agente_id", ""),
++                          "chiave": v.get("chiave", ""),
++                          "ptr": ptr},
++            )
++            self._idx[ptr] = v.get("testo", "")
++            self._meta[ptr] = {"run_id": v.get("run_id", ""),
++                               "agente_id": v.get("agente_id", ""),
++                               "chiave": v.get("chiave", "")}
++            letti += 1
++        return letti

@@ -1,0 +1,111 @@
+diff --git a/registro_ipotesi.py b/registro_ipotesi.py
+index 1dd886c..0d43ea8 100644
+--- a/registro_ipotesi.py
++++ b/registro_ipotesi.py
+@@ -20,7 +20,7 @@ Principi incorporati:
+ import json
+ from datetime import date
+ from enum import Enum
+-from dataclasses import dataclass, field, asdict
++from dataclasses import dataclass, field, asdict, fields
+ 
+ 
+ class Stato(Enum):
+@@ -64,7 +64,18 @@ class Ipotesi:
+         ))
+ 
+     # ---- valutazione con P5 + P6 incorporati ----
+-    def valuta(self) -> str:
++    def valuta(self, applica: bool = False) -> str:
++        """Verdetto sullo stato dell'ipotesi.
++
++        PURA per default: descrivere un'ipotesi non deve promuoverla. Prima
++        assegnava self.stato come effetto collaterale, quindi bastava
++        stamparla per farla passare ad APERTA -> CONFERMATA e la transizione
++        veniva poi persistita da salva(). Con applica=True la transizione e'
++        richiesta esplicitamente.
++        """
++        def _set(nuovo):
++            if applica:
++                self.stato = nuovo
+         if self.stato in (Stato.RITIRATA,):
+             return f"[{self.id}] RITIRATA: nessuna valutazione."
+         if self.stato == Stato.NON_FALSIFICABILE:
+@@ -79,7 +90,7 @@ class Ipotesi:
+         # Falsificazione: una prova contraria decisiva basta a chiudere
+         # solo se nessuna prova a favore la supera in numero (regola semplice v1)
+         if contrarie and len(contrarie) > len(a_favore):
+-            self.stato = Stato.FALSIFICATA
++            _set(Stato.FALSIFICATA)
+             return f"[{self.id}] FALSIFICATA: le prove contrarie prevalgono."
+ 
+         # P5: niente auto-conferma — serve almeno una fonte diversa dall'autore
+@@ -88,7 +99,7 @@ class Ipotesi:
+         controforza = len(contrarie) >= 1
+ 
+         if len(a_favore) >= 2 and occhio_esterno and controforza:
+-            self.stato = Stato.CONFERMATA
++            _set(Stato.CONFERMATA)
+             return f"[{self.id}] CONFERMATA (P5 ok, P6 ok, prove sufficienti)."
+ 
+         manca = []
+@@ -102,8 +113,22 @@ class Registro:
+     def __init__(self, percorso: str = "registro_ipotesi.json"):
+         self.percorso = percorso
+         self.ipotesi: dict[str, Ipotesi] = {}
+-
+-    def apri(self, ip: Ipotesi):
++        # Campi presenti nel JSON ma non nel dataclass: conservati qui e
++        # riscritti da salva(), cosi' un file piu' recente del codice non
++        # viene ne' rifiutato ne' impoverito.
++        self._extra: dict[str, dict] = {}
++
++    def apri(self, ip: Ipotesi, sovrascrivi: bool = False):
++        """Registra un'ipotesi.
++
++        Se l'id esiste gia' nel registro caricato, l'ipotesi esistente viene
++        lasciata intatta: le definizioni nel blocco __main__ sono un seed per
++        la prima creazione, non uno stato da riapplicare a ogni esecuzione.
++        Senza questa guardia ogni run riporterebbe le ipotesi al loro stato
++        iniziale, perdendo le prove accumulate.
++        """
++        if ip.id in self.ipotesi and not sovrascrivi:
++            return
+         self.ipotesi[ip.id] = ip
+ 
+     def stato_generale(self) -> str:
+@@ -117,6 +142,7 @@ class Registro:
+         for k, ip in self.ipotesi.items():
+             d = asdict(ip)
+             d["stato"] = ip.stato.value
++            d.update(self._extra.get(k, {}))
+             dati[k] = d
+         with open(self.percorso, "w", encoding="utf-8") as f:
+             json.dump(dati, f, ensure_ascii=False, indent=2)
+@@ -127,10 +153,14 @@ class Registro:
+                 dati = json.load(f)
+         except FileNotFoundError:
+             return
++        noti = {f.name for f in fields(Ipotesi)}
+         for k, d in dati.items():
+             prove = [Prova(**p) for p in d.pop("prove", [])]
+             stato = Stato(d.pop("stato"))
+-            ip = Ipotesi(**d)
++            extra = {kk: vv for kk, vv in d.items() if kk not in noti}
++            if extra:
++                self._extra[k] = extra
++            ip = Ipotesi(**{kk: vv for kk, vv in d.items() if kk in noti})
+             ip.prove, ip.stato = prove, stato
+             self.ipotesi[k] = ip
+ 
+@@ -140,6 +170,10 @@ class Registro:
+ # ============================================================
+ if __name__ == "__main__":
+     r = Registro()
++    # Carica lo stato su disco PRIMA di definire il seed: salva() sovrascrive
++    # l'intero file, quindi senza carica() le ipotesi non ridefinite qui sotto
++    # (H5, H6, ...) verrebbero cancellate a ogni esecuzione.
++    r.carica()
+ 
+     # H1 — la lettura di Claudio sulla scena con Jorge
+     h1 = Ipotesi(
