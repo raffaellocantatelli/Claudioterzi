@@ -16,7 +16,7 @@ Chiunque può truccare una demo che funziona. Nessuno trucca i propri bug.
 
 ## Prima di uscire di casa
 
-**1. Applica le due patch. Non negoziabile.**
+**1. Applica le quattro patch. Non negoziabile.**
 Al commit pubblico `155cb5f` il sistema è rotto: *ogni* invocazione di
 `python -m sdq1` termina con `AttributeError`. Se uno dei tuoi ospiti clona il
 repo mentre parli, vede un crash.
@@ -25,7 +25,10 @@ repo mentre parli, vede un crash.
 git clone https://github.com/claudioterzi/Claudio.git && cd Claudio
 git apply /percorso/patches/0001-fix-cli-argomenti-mancanti.patch
 git apply /percorso/patches/0002-fix-registro-ipotesi-perdita-dati.patch
+git apply /percorso/patches/0003-allinea-documentazione-e-config.patch
+git apply /percorso/patches/0004-persistenza-vector-state-store.patch
 python3 -m sdq1 --health          # deve uscire 0
+python3 registro_ipotesi.py       # deve uscire 0, non 1
 ```
 
 **2. Prova tutto senza rete.** Stacca il wifi e verifica:
@@ -33,7 +36,7 @@ python3 -m sdq1 --health          # deve uscire 0
 ```bash
 python3 -m sdq1 --no-api "test"                              # RC=0
 python3 -m sdq1 --scacchiera --scacchiera-cicli 1            # RC=0
-python3 test_r3.py                                           # 32/32
+python3 test_r3.py                                           # 37/37
 ```
 
 Tutto quanto sotto funziona offline. Il wifi degli eventi non funziona mai.
@@ -44,7 +47,7 @@ cercare in una cartella — testo selezionabile in due secondi.
 **4. Uno screenshot del crash** (`AttributeError: chat_telegram`) nel rullino.
 Ti serve per l'Atto 4.
 
-**5. Tre numeri a memoria:** 160 file Python · 29.000 righe · 32 controlli.
+**5. Tre numeri a memoria:** 160 file Python · 29.000 righe · 37 controlli.
 
 ---
 
@@ -84,7 +87,7 @@ Poi digli cosa è appena successo:
 ### Atto 3 — Fai fallire il test davanti a loro (90 secondi)
 
 ```bash
-python3 test_r3.py        # 32 superati · 0 falliti
+python3 test_r3.py        # 37 superati · 0 falliti
 ```
 
 Poi la mossa che nessuno fa:
@@ -96,7 +99,7 @@ falsificazione — e rilancia:
 
 ```
 [FAIL] P6 su H2055-B (SOLUZIONE_2055.md)
-31 superati · 1 fallito
+36 superati · 1 fallito
 ```
 
 Ripristina, rilancia, torna verde.

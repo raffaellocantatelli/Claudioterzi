@@ -1,6 +1,6 @@
 {
   "baseline": {
-    "versione": "1.0",
+    "versione": "1.1",
     "generata": "2026-08-07",
     "scopo": "Stato verificato del sistema R3∞/SDQ-1 per ripartenza senza contesto di chat. Struttura minima per rigenerare, non copia del testo.",
     "protocollo": "ROSSO ROSSO ROSSO",
@@ -491,6 +491,28 @@
       },
       "applicazione": "in quest'ordine; test_r3.py le verifica in sequenza su albero pulito",
       "dopo_tutte_e_quattro": "--health, --no-api, --scacchiera, --sar-stato, sdq1.voli e registro_ipotesi.py escono con RC=0; sei ipotesi intatte"
-    }
+    },
+    "ricontrollo_github": {
+      "data": "2026-08-22",
+      "metodo": "git fetch --prune su claudioterzi/Claudio, confronto con il controllo precedente",
+      "HEAD_main": "155cb5f (2026-07-24) — invariato",
+      "branch_fix_bloccanti": "ancora assente",
+      "commit_di_SEME_v1.1": "e367726, b3ab1a1, 1c34c14, eab2948 — tutti e quattro ancora inesistenti",
+      "ultimo_commit_output": "0bff3ff, 2026-06-26 — invariato",
+      "silenzio": "dal 26/06/2026; 57 giorni al 22/08/2026",
+      "conclusione": "nulla e' cambiato dal controllo precedente. Le patch non sono state applicate e il battito non e' ripartito."
+    },
+    "scadenza_H2": {
+      "data": "2026-12-11",
+      "giorni_residui_al_2026-08-22": 110,
+      "criterio_a_battito": "a rischio",
+      "criterio_b_contatto": "soddisfatto, 7 voci valide"
+    },
+    "invarianti_test_r3": {
+      "totale": 38,
+      "aggiunto_il_2026-08-22": "conteggi in giorni ancorati a una data — un numero di giorni a due cifre senza data accanto invecchia in silenzio. Verificato per negazione.",
+      "nota": "il controllo guarda il paragrafo e non la riga: la prima versione produceva falsi positivi sul markdown che va a capo"
+    },
+    "aggiornata": "2026-08-22"
   }
 }

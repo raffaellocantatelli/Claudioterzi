@@ -340,7 +340,7 @@ Eseguita su storia completa (523 commit) dopo `git fetch --unshallow`:
 - `2026-06-26` · `54b173a` «porta tutte le skill bot su main» — la riga `add_argument` viene **rimossa**, la riga `if args.chat_telegram` **resta**. La CLI muore qui.
 - `2026-06-26` · `0bff3ff` — **ultimo commit su `output/`**, lo stesso giorno
 
-Non è rotta «da poco»: è rotta da **45 giorni**, e la seconda metà dell'ipotesi era esatta — nessuno se n'è accorto perché i workflow falliscono in silenzio.
+Non è rotta «da poco»: è rotta **dal 26 giugno 2026** — 57 giorni al 22/08, e il numero cresce. La seconda metà dell'ipotesi era esatta — nessuno se n'è accorto perché i workflow falliscono in silenzio.
 
 Il conteggio dei commit su `output/`: 79 in 13 giorni distinti a giugno, **zero a luglio, zero ad agosto**.
 

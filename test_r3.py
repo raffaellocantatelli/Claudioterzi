@@ -54,6 +54,14 @@ FINESTRA_FALSIFICAZIONE = 12
 _RE_IPOTESI = re.compile(r"^\*\*(H[A-Z]*\d+[\w-]*)\*\*", re.MULTILINE)
 _RE_FALSIF = re.compile(r"falsificat[ao]\s+se|criterio_falsificazione", re.I)
 
+# Un conteggio in giorni invecchia da solo. "45 giorni di silenzio" era vero
+# quando l'ho scritto e falso dodici giorni dopo, senza che nulla lo segnalasse.
+# Un numero di giorni a due cifre deve portare accanto una data che lo ancori.
+_RE_GIORNI = re.compile(r"\b(\d{2,})\s+giorni\b")
+_RE_DATA = re.compile(r"\d{1,2}/\d{1,2}(/\d{4})?|\d{4}-\d{2}-\d{2}|"
+                      r"\b(gennaio|febbraio|marzo|aprile|maggio|giugno|luglio|"
+                      r"agosto|settembre|ottobre|novembre|dicembre)\b", re.I)
+
 PATCHES = ("0001-fix-cli-argomenti-mancanti.patch",
            "0002-fix-registro-ipotesi-perdita-dati.patch",
            "0003-allinea-documentazione-e-config.patch",
@@ -185,6 +193,22 @@ def test_protocollo(r: Rapporto) -> None:
             r.controlla(g, f"P6 su {m.group(1)} ({percorso.name})",
                         bool(_RE_FALSIF.search("\n".join(righe[n_riga:fine]))),
                         "nessun criterio di falsificazione")
+
+    # Ogni conteggio in giorni deve essere ancorato a una data, altrimenti
+    # diventa falso col tempo senza che nessuno se ne accorga.
+    # Si guarda il PARAGRAFO, non la riga: il markdown va a capo, e una data
+    # legittima puo' finire sulla riga successiva. Controllare per riga
+    # produceva falsi positivi — verificato su SEME.md.
+    non_ancorati = []
+    for percorso in sorted(RADICE.glob("*.md")):
+        testo = percorso.read_text(encoding="utf-8")
+        offset = 1
+        for blocco in testo.split("\n\n"):
+            if _RE_GIORNI.search(blocco) and not _RE_DATA.search(blocco):
+                non_ancorati.append(f"{percorso.name}:~{offset}")
+            offset += blocco.count("\n") + 2
+    r.controlla(g, "conteggi in giorni ancorati a una data", not non_ancorati,
+                f"senza data: {', '.join(non_ancorati[:4])}")
 
     testo = leggi_locale("PROTOCOLLO_ROSSO.md") or ""
     r.controlla(g, "blocco portabile presente",

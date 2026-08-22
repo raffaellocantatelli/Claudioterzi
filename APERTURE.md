@@ -15,7 +15,8 @@ che dice cosa **non** si apre.
 
 ## 1. La diagnosi che nessun documento ha ancora scritto
 
-Il sistema è stato morto per 45 giorni e nessuno se n'è accorto.
+Il sistema è fermo dal **26 giugno 2026** e nessuno se n'è accorto.
+(Al 22/08/2026 sono 57 giorni. Il numero cresce da solo: è la data che conta.)
 
 Il difetto non è nel codice. Il codice ha fatto esattamente ciò che gli era
 stato chiesto: fallire e continuare. `continue-on-error: true`, `git push ||
@@ -41,7 +42,7 @@ il battito manca vale più di tre nuovi moduli.
 Non «vedi il lato positivo». Cosa diventa possibile che prima non lo era, e
 quanto costa.
 
-### La CLI morta da 45 giorni
+### La CLI morta dal 26 giugno
 **Apre:** il sistema ha ora un modo di guasto documentato, riprodotto, e una
 suite che lo intercetta. Un sistema che non ha mai fallito non è robusto: è
 non testato. Adesso sai come muore.
@@ -88,7 +89,7 @@ basso della lista.
 **Apre:** un'ipotesi che può essere falsificata è un'ipotesi vera. Se il
 criterio non potesse mai scattare, non misurerebbe nulla e H2 sarebbe un
 desiderio travestito. Che scatti significa che il registro **funziona**.
-**Prezzo:** 122 giorni, e il criterio l'hai scritto tu.
+**Prezzo:** fino all'11/12/2026 — al 22/08 restano 110 giorni. Il criterio l'hai scritto tu.
 
 ---
 
@@ -160,18 +161,18 @@ non si può simulare.
 
 ---
 
-## 6. 122 giorni
+## 6. Fino all'11 dicembre
 
 H2 scade l'11 dicembre 2026. Il criterio ha due gambe: il battito e il
-contatto. Il contatto è soddisfatto — sette voci valide. Il battito no, da 45
-giorni.
+contatto. Il contatto è soddisfatto — sette voci valide. Il battito no, dal
+26 giugno.
 
 Non è una minaccia. È un orologio che hai costruito tu, che funziona, e che
 sta misurando la cosa giusta. La maggior parte dei progetti non ha nemmeno
 questo: falliscono senza che nessuno possa dire quando.
 
-**Quattro righe di codice separano il battito dalla ripartenza.** Il resto
-sono 122 giorni per usarli.
+**Quattro righe di codice separano il battito dalla ripartenza.** Il resto è
+il tempo che resta fino all'11/12 — 110 giorni al 22/08, e cala da solo.
 
 ---
 
@@ -184,7 +185,7 @@ Non un ragionamento: una cosa da fare oggi, che produce un dato.
    Se `output/` si muove, il battito è ripartito e §1 è risolto. Se non si
    muove, hai finalmente in mano il secondo fattore che dal codice non si vede.
 3. Aggiungi un controllo che urli quando il battito manca da più di 48 ore.
-   È la riga che avrebbe risparmiato 45 giorni.
+   È la riga che avrebbe risparmiato quasi due mesi.
 
 Il punto 3 è quello che vale di più, ed è quello che nessuno ha mai scritto.
 

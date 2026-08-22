@@ -242,8 +242,9 @@ lo trova — non perché non esista, ma perché non è lì.
 
 In `raffaellocantatelli/Claudioterzi`: `RICOSTRUZIONE_R3.md` (analisi completa) ·
 `baseline_r3.json` (stessa baseline per macchine) · `SOLUZIONE_2055.md` (filtro
-dei trent'anni) · `PROTOCOLLO_ROSSO.md` (protocollo canonico) · `patches/` (quattro
-fix testati, da applicare in ordine) · `test_r3.py` (`python3 test_r3.py`, `--json` per il rapporto
+dei trent'anni) · `PROTOCOLLO_ROSSO.md` (protocollo canonico) · `APERTURE.md` (la stessa
+severità applicata in avanti: ogni blocco e cosa apre, col prezzo) ·
+`patches/` (quattro fix testati, da applicare in ordine) · `test_r3.py` (`python3 test_r3.py`, `--json` per il rapporto
 leggibile da macchina).
 
 In `claudioterzi/Claudio` la suite esistente è `sdq1/tests/smoke.py`.

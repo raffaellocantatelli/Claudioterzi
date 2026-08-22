@@ -36,8 +36,8 @@ Ricostruzione verificata del sistema R3∞ / SDQ-1, il cui codice vive in `claud
 | `SEME.md` | Da incollare in qualsiasi chat di qualsiasi modello: ricostituisce il contesto |
 | `PROTOCOLLO_ROSSO.md` | Definizione canonica del protocollo, trasportabile fuori di qui |
 | `DIMOSTRAZIONE.md` | Sequenza per dimostrare il progetto di persona |
-| `patches/` | Due fix testati per i difetti bloccanti, da applicare con `git apply` |
-| `test_r3.py` | Controllo eseguibile degli invarianti del protocollo |
+| `patches/` | Quattro fix testati: i due difetti bloccanti, l'allineamento documentale, la persistenza del VSS |
+| `test_r3.py` | 37 controlli: invarianti del protocollo, difetti, reperti, applicabilità delle patch in sequenza |
 
 ---
 
