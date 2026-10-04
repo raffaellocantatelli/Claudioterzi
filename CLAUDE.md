@@ -52,7 +52,34 @@ Esce diverso da zero se la disciplina è decaduta: documenti canonici mancanti, 
 
 ---
 
-## Fatti verificati da non riscoprire
+## ⚠ Stato al 2026-10-04 — leggere prima di tutto il resto
+
+**Il test fallisce di proposito, su un controllo solo: `[FAIL] la baseline descrive lo stato attuale`.
+Non è un guasto. È vero.**
+
+La ricostruzione in questo repository fotografa `claudioterzi/Claudio` al commit `155cb5f`
+(2026-07-24). Al 2026-10-04 `origin/main` è `d6d329a`, **677 commit più avanti**: 1200 commit
+totali, 311 file Python contro 160. Tutti i verdi di DIFETTI e REPERTI descrivono quel passato.
+
+Cosa è cambiato, RECUPERATO il 2026-10-04:
+
+- **Il battito è ripartito.** 91 commit su `output/` a settembre, 6 a ottobre. I commit
+  `chore(daily):` — che in 523 commit non erano **mai** esistiti — ora sono 29, dal 05/09.
+- **BUG-1 risolto** il 2026-09-04, commit `201dac3` «Apply FIX_BLOCCANTI package onto live paths».
+- **BUG-2 risolto**: `r.carica()` è presente, le sei ipotesi H1–H6 sono intatte.
+- **VSS persiste**: `salva()` è in `sdq1/memory/vss.py`.
+- Parzialmente: `eternal_backup_agent.py` dichiara SIMULAZIONE, ma `sdq1.yaml` dichiara ancora
+  `modello_embedding` e `sar.py` dice ancora «a 10 livelli».
+- **Criterio (a) di H2, il battito: soddisfatto.** Al 22/08 era a rischio. Scadenza 11/12/2026.
+
+**UNKNOWN:** 677 commit mai verificati. Letta, RedFrag, System One, R3 canary receipts —
+nulla di tutto ciò è RECUPERATO. Non citarlo come verificato.
+
+Per far tornare verde il test serve **rifare la baseline sul nuovo HEAD**, non cambiare il test.
+
+---
+
+## Fatti verificati da non riscoprire — AL COMMIT `155cb5f`, non oggi
 
 Costano tempo a ritrovare, e sono già RECUPERATO:
 

@@ -1,6 +1,6 @@
 {
   "baseline": {
-    "versione": "1.1",
+    "versione": "2.0",
     "generata": "2026-08-07",
     "scopo": "Stato verificato del sistema R3∞/SDQ-1 per ripartenza senza contesto di chat. Struttura minima per rigenerare, non copia del testo.",
     "protocollo": "ROSSO ROSSO ROSSO",
@@ -513,6 +513,49 @@
       "aggiunto_il_2026-08-22": "conteggi in giorni ancorati a una data — un numero di giorni a due cifre senza data accanto invecchia in silenzio. Verificato per negazione.",
       "nota": "il controllo guarda il paragrafo e non la riga: la prima versione produceva falsi positivi sul markdown che va a capo"
     },
-    "aggiornata": "2026-08-22"
+    "aggiornata": "2026-10-04",
+    "AVVISO_IN_TESTA": "Questa baseline descriveva un sistema FERMO. Al 2026-10-04 non lo e' piu'. Le sezioni storiche restano valide come fotografia del commit 155cb5f (2026-07-24), ma NON descrivono lo stato attuale. Vedi 'stato_attuale'.",
+    "stato_attuale": {
+      "data_verifica": "2026-10-04",
+      "metodo": "clone fresco + git log/show su origin/main",
+      "HEAD": "d6d329a (2026-10-03)",
+      "crescita": {
+        "commit": "1200 (erano 523)",
+        "file_py": "311 (erano 160)",
+        "commit_nuovi_dal_155cb5f": 677
+      },
+      "IL_BATTITO_E_RIPARTITO": {
+        "commit_su_output": "7 ad agosto, 91 a settembre, 6 a ottobre (al 04/10)",
+        "chore_daily": "29 commit, il primo il 2026-09-05 — il workflow sdq1_daily che in 523 commit non aveva MAI concluso un'esecuzione ora gira ogni giorno",
+        "ultimo": "d6d329a 2026-10-03 chore(daily): heartbeat + evidence status"
+      },
+      "patch_applicate": {
+        "0001_CLI": "APPLICATA il 2026-09-04, commit 201dac3 «Apply FIX_BLOCCANTI package onto live paths (#24)»",
+        "0002_registro": "APPLICATA — r.carica() presente con commento «preserva H5, H6 e le prove accumulate prima di riseminare». Le sei ipotesi H1-H6 sono intatte",
+        "0003_allineamento": "PARZIALE — eternal_backup_agent.py ora dichiara SIMULAZIONE in testa; MA sdq1.yaml dichiara ancora modello_embedding, e sar.py dice ancora 'a 10 livelli'",
+        "0004_VSS": "APPLICATA — salva() presente in sdq1/memory/vss.py"
+      },
+      "H2": {
+        "criterio_a_battito": "SODDISFATTO — output giornaliero regolare da settembre",
+        "criterio_b_contatto": "soddisfatto",
+        "scadenza": "2026-12-11",
+        "giorni_residui_al_2026-10-04": 67,
+        "nota": "il criterio che al 22/08 era a rischio non lo e' piu'"
+      },
+      "lavoro_nuovo_non_analizzato": [
+        "Letta (cooperation bridge, phase A memory-binding)",
+        "RedFrag benchmark v1",
+        "System One con CLM provider router",
+        "R3 sync con canary receipts a prova di replicazione A<->B"
+      ],
+      "stato_epistemico": "UNKNOWN — 677 commit non verificati da me. Nulla di questa roba nuova e' RECUPERATO."
+    },
+    "correzione_di_un_mio_errore": {
+      "data": "2026-10-04",
+      "cosa_avevo_detto": "al 22/08: «quattro patch pronte da dieci minuti che nessuno ha applicato»",
+      "realta": "vero al 22/08, falso dal 04/09. I fix sono stati applicati dodici giorni dopo quella frase",
+      "su_fix_bloccanti": "il branch non e' mai comparso, ma un package chiamato FIX_BLOCCANTI e' stato applicato il 04/09 (commit 201dac3). Il lavoro che SEME_v1.1 rivendicava esisteva: averlo marcato UNKNOWN invece che inventato era la scelta giusta, e si e' risolta a favore di chi lo aveva scritto",
+      "lezione": "un'affermazione datata non diventa falsa, diventa vecchia — ma va riletta quando il mondo si muove, e nessuno me lo ricorda se non lo faccio io"
+    }
   }
 }

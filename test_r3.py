@@ -243,6 +243,37 @@ def test_protocollo(r: Rapporto) -> None:
 # 2. DIFETTI                                                                   #
 # --------------------------------------------------------------------------- #
 
+def test_deriva(r: Rapporto, repo: Path | None) -> None:
+    """La baseline descrive ancora il presente, o un passato archeologico?
+
+    Un test puo' essere verde riguardo a un mondo che non esiste piu'. Tutti
+    i controlli su DIFETTI e REPERTI leggono il commit fissato in COMMIT: se
+    origin/main e' andato avanti, quei verdi parlano di archeologia e non di
+    realta'. E' la stessa trappola del rapporto troncato, in forma eseguibile.
+    Verificato davvero: al 2026-10-04 la baseline era 677 commit indietro e
+    la suite era tutta verde.
+    """
+    g = "DERIVA"
+    if repo is None:
+        r.add(g, "la baseline descrive lo stato attuale", SKIP,
+              "sorgente non disponibile")
+        return
+    try:
+        res = subprocess.run(
+            ["git", "-C", str(repo), "rev-list", "--count", f"{COMMIT}..origin/main"],
+            capture_output=True, text=True, timeout=60)
+        dietro = int(res.stdout.strip()) if res.returncode == 0 else -1
+    except (subprocess.SubprocessError, OSError, ValueError):
+        dietro = -1
+    if dietro < 0:
+        r.add(g, "la baseline descrive lo stato attuale", SKIP,
+              "impossibile misurare la distanza da origin/main")
+        return
+    r.controlla(g, "la baseline descrive lo stato attuale", dietro == 0,
+                f"la baseline e' ferma a {COMMIT}, origin/main e' {dietro} commit "
+                f"piu' avanti: i verdi di DIFETTI e REPERTI descrivono il passato")
+
+
 def test_difetti(r: Rapporto, repo: Path | None) -> None:
     g = "DIFETTI"
 
@@ -451,6 +482,7 @@ def main(argv: list[str]) -> int:
 
     r = Rapporto()
     test_protocollo(r)
+    test_deriva(r, repo)
     test_difetti(r, repo)
     test_reperti(r, repo)
 
