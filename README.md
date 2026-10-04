@@ -16,7 +16,7 @@ Il protocollo qui **non va attivato**: è lo stato predefinito. `CLAUDE.md` lo c
 | [`DIMOSTRAZIONE.md`](DIMOSTRAZIONE.md) | Sequenza in sette atti per dimostrare di persona che il progetto esiste |
 | [`patches/`](patches/) | **Quattro** fix scritti e testati sul codice reale, da applicare in ordine con `git apply` |
 | [`ESPERIMENTO_FIRMA.md`](ESPERIMENTO_FIRMA.md) | Protocollo per distinguere convergenza generale da imprinting del corpus: tre bracci, segnale negli errori, preregistrazione con hash |
-| [`esperimento/`](esperimento/) | Item, protocollo e preregistrazione sigillata del test di firma — congelati il 04/10 |
+| [`esperimento/`](esperimento/) | Item, protocollo e **due** preregistrazioni sigillate del test di firma — congelati il 04/10. Dove stanno i sigilli e cosa provano: [`esperimento/CUSTODIA.md`](esperimento/CUSTODIA.md) |
 | [`APERTURE.md`](APERTURE.md) | La stessa severità applicata in avanti: ogni blocco convertito in apertura, col prezzo scritto accanto — e ciò che resta chiuso |
 | [`SOLUZIONE_2055.md`](SOLUZIONE_2055.md) | Il sistema passato al filtro dei trent'anni: cosa sopravvive, cosa ha già una data di scadenza, cosa fare prima del 2030 |
 
