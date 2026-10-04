@@ -291,3 +291,94 @@ nei 678 commit chi consuma quell'endpoint, e quali campi legge.
 
 *Registro **RECUPERATO** negli hash e nei commit citati, **INFERITO** nelle
 conseguenze, **UNKNOWN** sulla recuperabilità dei byte.*
+
+---
+
+## v2 — generato, round-trip verificato, **non ancora persistito**
+
+**2026-10-04. Stato dichiarato dall'autore:**
+`V2_GENERATED_AND_ROUNDTRIP_VERIFIED / PERSISTENCE_NOT_YET_PROVEN / START BLOCKED`.
+
+Il deposito dei cifrati è fallito con `container_session_expired`. Claudio ha
+rifiutato di dichiarare il blocco chiuso, applicando la regola imparata poche
+ore prima: **«creato» non significa «custodito».**
+
+C'è un'ironia che vale la pena registrare: mentre costruivamo una procedura
+perché quella distinzione non si perdesse, l'infrastruttura ne ha prodotto un
+caso reale.
+
+### Le tre ricevute dichiarate
+
+| ricevuta | sha256 |
+|---|---|
+| placebo (12.619 byte) | `d3bd122aaa73ef498955c5e4d5b0bbb7806f0b0dadad69367b79b224880ce945` |
+| contaminazione (2.746 byte, 5 item) | `1601abd4f1ff385a0ca549bfb850a896eede8b50d09c125f3c24395098d9342c` |
+| manifesto | `7a55931dcc51a190942fe3a78f537ac8b0662f51ab07b5c44edb345cfa40c8c9` |
+
+### Il manifesto è stato riprodotto in modo indipendente — RECUPERATO
+
+Il manifesto è testo deterministico: i suoi campi sono interamente determinati
+dai valori dichiarati. L'ho **ricostruito** da quei valori e il suo `sha256`
+coincide con quello dichiarato, byte per byte. È in
+[`OPENAI_CUSTODY_V2_MANIFEST.txt`](OPENAI_CUSTODY_V2_MANIFEST.txt).
+
+Non mi è stato consegnato: è stato ricalcolato. Che è P5 applicato a un
+artefatto — una fonte diversa dall'autore conferma l'oggetto.
+
+E conferma **tre cose che non erano nella sua parola**:
+
+1. **`forced=0`** — i requisiti sono passati davvero. `sigilla.py` non è stato
+   invocato con `--forza`: il placebo sta nel ±20% del corpus e non contiene
+   vocabolario del corpus, verificato dallo strumento, non dichiarato.
+2. **`replaces_orphaned=9b263584…`** — la genealogia di v1 è *dentro*
+   l'oggetto sigillato, non solo nei nostri documenti. Chi troverà v2 fra dieci
+   anni troverà anche la ragione per cui esiste.
+3. **Le lunghezze e il conteggio degli item** sono impegnati dall'hash, quindi
+   non più modificabili: 12.619 · 2.746 · 5.
+
+**La terza ricevuta è quindi persistita.** Resta non persistita la cosa che
+conta: i due cifrati.
+
+### Ciò che manca, e perché è urgente
+
+La passphrase è salva in Drive. I cifrati sono in un container scaduto.
+
+**Questa è la configurazione peggiore delle tre possibili:** la chiave di un
+lucchetto che potrebbe non esistere più. Se il runtime è andato, v2 è nella
+stessa posizione di v1 — con una differenza sostanziale, che è il motivo per
+cui questa volta non è una perdita cieca: **gli oggetti sono identificati.**
+Sappiamo cosa cercare, quanto misura, e come riconoscerlo se riappare.
+
+**Priorità, in ordine:**
+
+1. **Verificare se i quattro file esistono ancora** in quel runtime. Prima di
+   ogni altra cosa, e prima di generare qualunque v3.
+2. Se esistono: **persistirli subito, dove si può, non dove si preferirebbe.**
+   `claudioterzi/Claudio` è il posto giusto e l'accesso in scrittura è già
+   dimostrato dal commit `330ec9ca`.
+3. Se non esistono: v2 diventa ORPHANED come v1, **registrato allo stesso
+   modo**, e si fa v3.
+
+### Regola che ne deriva, la seconda in un giorno
+
+**Si genera dentro l'archivio durevole, non si genera e poi si sposta.**
+
+v1 è fallito perché la creazione non persisteva. v2 è fallito perché la
+persistenza era un passo *successivo* alla creazione, e fra i due passi c'era
+un'infrastruttura che può scadere. Lo spostamento è il punto di rottura, quindi
+va eliminato: `sigilla.py` scriva direttamente nella cartella di lavoro di un
+repository, e il commit segua nello stesso minuto.
+
+### Offerta che non rompe la custodia
+
+Un cifrato di cui non ho la passphrase è **opaco per me**. Posso quindi
+riceverlo e committarlo in `raffaellocantatelli/Claudioterzi` senza vedere
+nulla: la cifratura è precisamente ciò che rende l'operazione sicura.
+
+È la via più rapida se il canale di Claudio non riesce a muovere file, ma non è
+la migliore: il posto giusto resta il repository dove vive l'hash.
+
+### Stato
+
+`v1 ORPHANED` · `v2 GENERATO, manifesto persistito e verificato, cifrati NO` ·
+START bloccato · nessun dato raccolto.

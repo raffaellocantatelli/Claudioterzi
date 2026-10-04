@@ -19,7 +19,15 @@ sotto. La tabella non si corregge: registra ciò che è avvenuto.
 |---|---|---|
 | previsioni `54f258a8…b5a90` | **VALIDO** | chiaro cifrato in `PREVISIONI.enc`, round-trip verificato |
 | `OPENAI-CUSTODY-v1` `9b263584…82d8` | **ORPHANED / INVALID FOR EXECUTION** | hash dichiarato senza che l'oggetto fosse stato preservato; dichiarato dal suo autore il 2026-10-04 |
-| `OPENAI_CUSTODY_V2` | **da costruire** | quattro ricevute in un atto unico, con `sigilla.py` |
+| `OPENAI_CUSTODY_V2` manifesto `7a55931d…c8c9` | **GENERATO, parzialmente persistito** | tre ricevute dichiarate e round-trip verificato dall'autore; manifesto **ricostruito e verificato** da questa sessione; **i due cifrati non sono ancora depositati** — `container_session_expired` |
+
+Le ricevute di v2: placebo `d3bd122a…e945` (12.619 byte) · contaminazione
+`1601abd4…342c` (2.746 byte, 5 item) · manifesto `7a55931d…c8c9`.
+
+Il manifesto impegna gli altri due ed è in chiaro in
+[`OPENAI_CUSTODY_V2_MANIFEST.txt`](OPENAI_CUSTODY_V2_MANIFEST.txt). Dentro c'è
+`replaces_orphaned=9b263584…`: la genealogia è nell'oggetto sigillato, non solo
+in questa tabella.
 
 Il sigillo v1 **resta visibile**. Non si cancella e non si riusa: un sigillo
 abbandonato e spiegato è provenienza, un sigillo scomparso è un buco. Ragione

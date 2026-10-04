@@ -584,18 +584,35 @@ def test_custodia(r: Rapporto, repo: Path | None = None) -> None:
                         "non quello sigillato: non sono quei byte")
     else:
         # 2) altrimenti si cerca un cifrato depositato accanto all'hash
+        # il manifesto e' testo deterministico: si ricalcola, non si crede
+        MANIFESTO_V2 = ("7a55931dcc51a190942fe3a78f537ac8b"
+                        "0662f51ab07b5c44edb345cfa40c8c9")
+        man = esp / "OPENAI_CUSTODY_V2_MANIFEST.txt"
+        if not man.is_file():
+            r.controlla(G, "manifesto v2 persistito e verificato", False,
+                        "OPENAI_CUSTODY_V2_MANIFEST.txt assente: la terza "
+                        "ricevuta non e' durevole")
+        else:
+            got = hashlib.sha256(man.read_bytes()).hexdigest()
+            r.controlla(G, "manifesto v2 persistito e verificato",
+                        got == MANIFESTO_V2,
+                        f"il manifesto ha sha256 {got[:16]}..., non quello "
+                        "dichiarato: non e' lo stesso oggetto")
+
+        # i cifrati sono l'unica cosa che chiude il blocco, e non li ho io
         depositato = []
         if repo is not None and repo.is_dir():
             for pattern in ("docs/experiments/*CUSTODY_V2*.enc",
-                            "docs/experiments/*custody_v2*.enc",
-                            "docs/experiments/*CUSTODY_V2*MANIFEST*"):
+                            "docs/experiments/*custody_v2*.enc"):
                 depositato += list(repo.glob(pattern))
+        depositato += list(esp.glob("OPENAI_CUSTODY_V2_*.enc"))
         r.controlla(
-            G, "BLOCKER-CUSTODY-02 chiuso: v2 sigillato con chiaro recuperabile",
-            bool(depositato),
-            "APERTO: v1 e' ORPHANED e v2 non esiste ancora. Nessun START. "
-            "Chiude depositando, in un atto unico, manifesto piu' cifrati "
-            "prodotti da esperimento/sigilla.py (vedi esperimento/BLOCCHI.md)",
+            G, "BLOCKER-CUSTODY-02 chiuso: cifrati v2 persistiti",
+            len(depositato) >= 2,
+            "APERTO: v2 e' generato e il round-trip verificato, ma il deposito "
+            "dei cifrati e' fallito (container_session_expired). Il manifesto "
+            "e' salvo, i due cifrati no. Nessun START "
+            "(vedi esperimento/BLOCCHI.md)",
         )
 
     # lo strumento di recupero deve ritrovare una ricetta nota: senza questa

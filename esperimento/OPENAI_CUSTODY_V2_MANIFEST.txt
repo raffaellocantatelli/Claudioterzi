@@ -1,0 +1,11 @@
+R3_CUSTODY_MANIFEST/1
+label=OPENAI_CUSTODY_V2
+created=2026-10-04
+placebo_sha256=d3bd122aaa73ef498955c5e4d5b0bbb7806f0b0dadad69367b79b224880ce945
+placebo_bytes=12619
+contamination_sha256=1601abd4f1ff385a0ca549bfb850a896eede8b50d09c125f3c24395098d9342c
+contamination_bytes=2746
+contamination_items=5
+bundle_definition=sha256 of this manifest, bytes exactly as written, trailing newline included
+replaces_orphaned=9b26358483158011f405b5cf0618ca884d9191c230b5eb59618f14480282b1d8
+status=SEALED_NOT_PUBLISHED
