@@ -1,0 +1,18 @@
+# Preregistrazione sigillata — Esperimento Firma R3
+
+Il testo delle previsioni NON e' in questo repository. Qui c'e' solo il suo
+hash, pubblicato PRIMA di qualunque somministrazione. Il testo e' nelle mani
+di Claudio Terzi e va pubblicato DOPO l'esecuzione, nello stesso repository.
+
+Chiunque potra' allora verificare che non sia stato riscritto:
+
+    sha256sum previsioni.txt
+
+deve restituire esattamente:
+
+54f258a811c3411c3a15e49635243b52a07d8fced9c28c556a16e6cfa31b5a90  previsioni.txt
+
+Sigillato il: 2026-10-04
+Autore: sessione Claude Opus 5
+Stato: le previsioni sono CONTRO l'ipotesi del progetto — la principale
+       prevede che H1 non sia supportata.

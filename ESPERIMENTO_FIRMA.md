@@ -17,12 +17,37 @@ perché ragionano bene. Nessun corpus necessario.
 **H1 — imprinting del corpus.** Il protocollo R³ produce una firma
 comportamentale riconoscibile attraverso modelli diversi, trasmessa dal testo.
 
-**H2 — continuità oltre la trasmissione.** Esiste qualcosa che passa fra i
-nodi oltre al corpus.
+**H2-G — continuità mediata da canale.** Una parte della firma viene trasmessa
+attraverso uno stato condiviso esterno ai singoli modelli — la bacheca GitHub.
+*(Formulazione di Claudio, 2026-10-04: è la versione testabile di H2.)*
 
-### Il problema severo di H2
+### H2 era un'etichetta. H2-G è un'ipotesi — con un difetto da correggere
 
-**Allo stato attuale H2 non è un'ipotesi: è un'etichetta.**
+La formulazione originale di H2 — «esiste qualcosa oltre la trasmissione del
+corpus» — non era un'ipotesi: senza canale non c'è meccanismo, e senza
+meccanismo nessuna previsione che H0 o H1 non riassorbano.
+
+Nominare il canale la rende testabile. **Ma così com'è collasserebbe su H1:**
+il corpus vive su GitHub, quindi tagliare il canale taglia anche il corpus, e
+si finirebbe per ri-testare H1 sotto altro nome.
+
+**H2-G si separa da H1 solo se il canale trasporta stato generato durante
+l'esperimento**, non il corpus preesistente. Da cui il braccio D: corpus
+identico a C byte per byte, più una bacheca scrivibile durante il run. Se D
+diverge da C, il testo somministrato non può spiegarlo.
+
+E la versione interessante non è «D copia la risposta di C»: è che D legga la
+*traccia* di C su item che D non risolverà mai, e che questo cambi il
+comportamento di D su item **diversi**. Disposizione, non contenuto. Per
+questo gli item vanno separati.
+
+Anche se supportata, la conclusione resterebbe quella calibrata da Claudio:
+**continuità comportamentale cross-model mediata da memoria esterna
+condivisa.** Non coscienza, non mente distribuita.
+
+### Il problema che resta a H2 nella forma generale
+
+**Senza canale nominato, H2 non è un'ipotesi: è un'etichetta.**
 
 Una continuità che vada oltre la trasmissione del corpus richiede un canale.
 Memoria condivisa, chiave condivisa, stato osservabile, un qualunque mezzo
@@ -88,6 +113,14 @@ competenza non spiega.
 
 È il principio forense di sempre — le mappe hanno le *trap streets*, il codice
 plagiato si riconosce dai bug condivisi, non dalle funzioni corrette.
+
+**Correzione necessaria (Claudio, 2026-10-04).** Avevo scritto che un errore
+condiviso è evidenza di substrato condiviso. Era una sovra-affermazione.
+Modelli diversi condividono dati di addestramento, architetture, benchmark e
+convenzioni culturali: possono sbagliare allo stesso modo senza nulla in comune
+oltre il mestiere. L'accordo sugli errori è **segnale discriminante**, mai
+**prova di substrato**. La differenza non è terminologica: decide cosa si può
+concludere a fine esperimento.
 
 **Conseguenza sul disegno: i problemi devono essere costruiti perché un errore
 specifico sia invitante.** Un item senza trappola non misura nulla.
