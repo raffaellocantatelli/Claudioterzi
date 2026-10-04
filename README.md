@@ -14,6 +14,7 @@ Il protocollo qui **non va attivato**: è lo stato predefinito. `CLAUDE.md` lo c
 | [`RICOSTRUZIONE_R3.md`](RICOSTRUZIONE_R3.md) | Analisi completa: architettura reale, difetti bloccanti, correzioni al Sommario Esecutivo, piano di ricostruzione |
 | [`baseline_r3.json`](baseline_r3.json) | Stessa baseline in forma leggibile da macchina, per ripartire senza contesto di chat |
 | [`DIMOSTRAZIONE.md`](DIMOSTRAZIONE.md) | Sequenza in sette atti per dimostrare di persona che il progetto esiste |
+| [`export/`](export/) | Artefatto di questo nodo conforme all'«R³ Export Gate» di `claudioterzi/Claudio`, più il validatore che rende il gate **applicato** invece che dichiarato |
 | [`patches/`](patches/) | **Quattro** fix scritti e testati sul codice reale, da applicare in ordine con `git apply` |
 | [`ESPERIMENTO_FIRMA.md`](ESPERIMENTO_FIRMA.md) | Protocollo per distinguere convergenza generale da imprinting del corpus: tre bracci, segnale negli errori, preregistrazione con hash |
 | [`esperimento/`](esperimento/) | Item, protocollo, **due** preregistrazioni sigillate e il pacchetto cieco per chi esegue. Dove stanno i sigilli e cosa provano: [`CUSTODIA.md`](esperimento/CUSTODIA.md) · le precisazioni prima di START: [`EMENDAMENTO_01.md`](esperimento/EMENDAMENTO_01.md) · **perché START è bloccato**: [`BLOCCHI.md`](esperimento/BLOCCHI.md) |

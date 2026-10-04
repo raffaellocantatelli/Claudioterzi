@@ -634,6 +634,68 @@ def test_custodia(r: Rapporto, repo: Path | None = None) -> None:
             r.add(G, "lo strumento di recupero ritrova una ricetta nota",
                   SKIP, str(exc))
 
+    # --- EXPORT GATE ------------------------------------------------------ #
+    # Il gate di Claudio e' un documento. Un cancello che nessuno controlla e'
+    # un continue-on-error: la regola resta vera sulla carta mentre il lavoro
+    # inconforme passa. Qui si controlla che il controllo esista e morda.
+    exp = base / "export"
+    val = exp / "verifica_export.py"
+    art = exp / "R3_EXPORT_claude-opus-5_2026-10-04.txt"
+    if not val.is_file():
+        r.add(G, "il gate di export e' applicato, non solo dichiarato", SKIP,
+              "export/verifica_export.py assente")
+    else:
+        try:
+            e = subprocess.run([sys.executable, str(val), "--self-test"],
+                               capture_output=True, timeout=120)
+            r.controlla(G, "il validatore del gate rifiuta cio' che deve",
+                        e.returncode == 0,
+                        "il self-test fallisce: un validatore che approva "
+                        "sempre non e' un cancello")
+        except (OSError, subprocess.SubprocessError) as exc:
+            r.add(G, "il validatore del gate rifiuta cio' che deve", SKIP, str(exc))
+
+        if not art.is_file():
+            r.controlla(G, "questo nodo ha un artefatto conforme al gate", False,
+                        "nessun artefatto esportato: per la regola di "
+                        "ammissione il nodo resta CANDIDATE")
+        else:
+            try:
+                e = subprocess.run([sys.executable, str(val), str(art)],
+                                   capture_output=True, timeout=120)
+                r.controlla(G, "questo nodo ha un artefatto conforme al gate",
+                            e.returncode == 0,
+                            "l'artefatto di questa sessione non passa il gate "
+                            "che questa sessione ha scritto")
+            except (OSError, subprocess.SubprocessError) as exc:
+                r.add(G, "questo nodo ha un artefatto conforme al gate",
+                      SKIP, str(exc))
+
+            # controprova: un artefatto manomesso DEVE essere respinto,
+            # altrimenti il verde sopra non significa niente
+            try:
+                testo = art.read_text(encoding="utf-8")
+                i = testo.index("PATCH:\n") + 7
+                j = testo.index("\nPATCH_SHA256:")
+                corpo = testo[i:j]
+                alterato = testo[:i] + corpo.replace("sdq1", "sdq2", 1) + testo[j:]
+                if alterato == testo:
+                    r.add(G, "il gate respinge un artefatto manomesso", SKIP,
+                          "la manomissione di prova non altera nulla: la "
+                          "controprova non proverebbe niente")
+                else:
+                    with tempfile.TemporaryDirectory() as td:
+                        f = Path(td) / "manomesso.txt"
+                        f.write_text(alterato, encoding="utf-8")
+                        e = subprocess.run([sys.executable, str(val), str(f)],
+                                           capture_output=True, timeout=120)
+                    r.controlla(G, "il gate respinge un artefatto manomesso",
+                                e.returncode != 0,
+                                "un artefatto con PATCH_SHA256 incoerente "
+                                "passa: la guardia non morde")
+            except (OSError, ValueError, subprocess.SubprocessError) as exc:
+                r.add(G, "il gate respinge un artefatto manomesso", SKIP, str(exc))
+
     # lo script deve rifiutarsi di consegnare un pacchetto che rivela il disegno
     script = pac / "assembla.py"
     if not script.is_file() or not (esp / "ITEMS.md").is_file():

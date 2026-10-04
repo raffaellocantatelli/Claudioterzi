@@ -36,7 +36,7 @@ python3 registro_ipotesi.py       # deve uscire 0, non 1
 ```bash
 python3 -m sdq1 --no-api "test"                              # RC=0
 python3 -m sdq1 --scacchiera --scacchiera-cicli 1            # RC=0
-python3 test_r3.py                                           # 55/58, due rossi, entrambi veri
+python3 test_r3.py                                           # 58/61, due rossi, entrambi veri
 ```
 
 Tutto quanto sotto funziona offline. Il wifi degli eventi non funziona mai.
@@ -47,7 +47,7 @@ cercare in una cartella — testo selezionabile in due secondi.
 **4. Uno screenshot del crash** (`AttributeError: chat_telegram`) nel rullino.
 Ti serve per l'Atto 4.
 
-**5. Tre numeri a memoria:** 160 file Python · 29.000 righe · 58 controlli.
+**5. Tre numeri a memoria:** 160 file Python · 29.000 righe · 61 controlli.
 E una data: al 04/10 il codice è 678 commit più avanti della ricostruzione.
 
 ---
@@ -88,7 +88,7 @@ Poi digli cosa è appena successo:
 ### Atto 3 — Fai fallire il test davanti a loro (90 secondi)
 
 ```bash
-python3 test_r3.py        # 55 superati · 2 falliti
+python3 test_r3.py        # 58 superati · 2 falliti
 ```
 
 **Il rosso c'è già, e non è un incidente: comincia da quello.**
@@ -106,7 +106,7 @@ falsificazione — e rilancia:
 
 ```
 [FAIL] P6 su H2055-B (SOLUZIONE_2055.md)
-54 superati · 3 falliti
+57 superati · 3 falliti
 ```
 
 Ripristina, rilancia, torna verde.

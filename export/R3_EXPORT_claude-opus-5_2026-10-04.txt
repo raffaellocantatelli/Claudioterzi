@@ -1,0 +1,599 @@
+NODE_ID: claude-opus-5 / session_01RsjtKxGbxW1Lgg6xnRS1uy / repo raffaellocantatelli/Claudioterzi
+SESSION_DATE: 2026-10-04T09:57:50+00:00
+ARTIFACT_TYPE: PATCH
+CLAIMED_BASE_SHA: 155cb5f
+LOCAL_HEAD_SHA: d6d329acede057386125784c0c27f545a2ff7840
+BRANCH: claude/raffaello-r3-reconstruction-1uqqa7 @ 7ba3846e65ec (repo raffaellocantatelli/Claudioterzi)
+CHANGED_FILES:
+PROGETTO_RAFFAELLO.md
+README.md
+registro_ipotesi.py
+sdq1/__main__.py
+sdq1/agents/eternal_backup_agent.py
+sdq1/config/sdq1.yaml
+sdq1/memory/vss.py
+sdq1/sar/sar.py
+DIFF_STAT: 4 patch, 18159 byte totali; file toccati per patch: patches/0001-fix-cli-argomenti-mancanti.patch:1 patches/0002-fix-registro-ipotesi-perdita-dati.patch:1 patches/0003-allinea-documentazione-e-config.patch:5 patches/0004-persistenza-vector-state-store.patch:1
+PATCH:
+diff --git a/sdq1/__main__.py b/sdq1/__main__.py
+index 0971a18..8611d66 100644
+--- a/sdq1/__main__.py
++++ b/sdq1/__main__.py
+@@ -227,6 +227,10 @@ def main(argv: list[str]) -> int:
+                         help="Invia messaggio di test su Telegram (verifica connessione bot)")
+     parser.add_argument("--notifica-briefing", action="store_true",
+                         help="Invia briefing mattutino completo su Telegram")
++    parser.add_argument("--chat-telegram", action="store_true",
++                        help="Elabora comandi e chat Telegram in arrivo")
++    parser.add_argument("--briefing-operativo", action="store_true",
++                        help="Briefing operativo multi-AI (Gemini + Claude + DeepSeek)")
+     parser.add_argument("--telegram-comandi", action="store_true",
+                         help="Legge ed esegue comandi Telegram in coda (/scan /status /agenti /push)")
+     parser.add_argument("--agenda", action="store_true",
+diff --git a/registro_ipotesi.py b/registro_ipotesi.py
+index 1dd886c..0d43ea8 100644
+--- a/registro_ipotesi.py
++++ b/registro_ipotesi.py
+@@ -20,7 +20,7 @@ Principi incorporati:
+ import json
+ from datetime import date
+ from enum import Enum
+-from dataclasses import dataclass, field, asdict
++from dataclasses import dataclass, field, asdict, fields
+ 
+ 
+ class Stato(Enum):
+@@ -64,7 +64,18 @@ class Ipotesi:
+         ))
+ 
+     # ---- valutazione con P5 + P6 incorporati ----
+-    def valuta(self) -> str:
++    def valuta(self, applica: bool = False) -> str:
++        """Verdetto sullo stato dell'ipotesi.
++
++        PURA per default: descrivere un'ipotesi non deve promuoverla. Prima
++        assegnava self.stato come effetto collaterale, quindi bastava
++        stamparla per farla passare ad APERTA -> CONFERMATA e la transizione
++        veniva poi persistita da salva(). Con applica=True la transizione e'
++        richiesta esplicitamente.
++        """
++        def _set(nuovo):
++            if applica:
++                self.stato = nuovo
+         if self.stato in (Stato.RITIRATA,):
+             return f"[{self.id}] RITIRATA: nessuna valutazione."
+         if self.stato == Stato.NON_FALSIFICABILE:
+@@ -79,7 +90,7 @@ class Ipotesi:
+         # Falsificazione: una prova contraria decisiva basta a chiudere
+         # solo se nessuna prova a favore la supera in numero (regola semplice v1)
+         if contrarie and len(contrarie) > len(a_favore):
+-            self.stato = Stato.FALSIFICATA
++            _set(Stato.FALSIFICATA)
+             return f"[{self.id}] FALSIFICATA: le prove contrarie prevalgono."
+ 
+         # P5: niente auto-conferma — serve almeno una fonte diversa dall'autore
+@@ -88,7 +99,7 @@ class Ipotesi:
+         controforza = len(contrarie) >= 1
+ 
+         if len(a_favore) >= 2 and occhio_esterno and controforza:
+-            self.stato = Stato.CONFERMATA
++            _set(Stato.CONFERMATA)
+             return f"[{self.id}] CONFERMATA (P5 ok, P6 ok, prove sufficienti)."
+ 
+         manca = []
+@@ -102,8 +113,22 @@ class Registro:
+     def __init__(self, percorso: str = "registro_ipotesi.json"):
+         self.percorso = percorso
+         self.ipotesi: dict[str, Ipotesi] = {}
+-
+-    def apri(self, ip: Ipotesi):
++        # Campi presenti nel JSON ma non nel dataclass: conservati qui e
++        # riscritti da salva(), cosi' un file piu' recente del codice non
++        # viene ne' rifiutato ne' impoverito.
++        self._extra: dict[str, dict] = {}
++
++    def apri(self, ip: Ipotesi, sovrascrivi: bool = False):
++        """Registra un'ipotesi.
++
++        Se l'id esiste gia' nel registro caricato, l'ipotesi esistente viene
++        lasciata intatta: le definizioni nel blocco __main__ sono un seed per
++        la prima creazione, non uno stato da riapplicare a ogni esecuzione.
++        Senza questa guardia ogni run riporterebbe le ipotesi al loro stato
++        iniziale, perdendo le prove accumulate.
++        """
++        if ip.id in self.ipotesi and not sovrascrivi:
++            return
+         self.ipotesi[ip.id] = ip
+ 
+     def stato_generale(self) -> str:
+@@ -117,6 +142,7 @@ class Registro:
+         for k, ip in self.ipotesi.items():
+             d = asdict(ip)
+             d["stato"] = ip.stato.value
++            d.update(self._extra.get(k, {}))
+             dati[k] = d
+         with open(self.percorso, "w", encoding="utf-8") as f:
+             json.dump(dati, f, ensure_ascii=False, indent=2)
+@@ -127,10 +153,14 @@ class Registro:
+                 dati = json.load(f)
+         except FileNotFoundError:
+             return
++        noti = {f.name for f in fields(Ipotesi)}
+         for k, d in dati.items():
+             prove = [Prova(**p) for p in d.pop("prove", [])]
+             stato = Stato(d.pop("stato"))
+-            ip = Ipotesi(**d)
++            extra = {kk: vv for kk, vv in d.items() if kk not in noti}
++            if extra:
++                self._extra[k] = extra
++            ip = Ipotesi(**{kk: vv for kk, vv in d.items() if kk in noti})
+             ip.prove, ip.stato = prove, stato
+             self.ipotesi[k] = ip
+ 
+@@ -140,6 +170,10 @@ class Registro:
+ # ============================================================
+ if __name__ == "__main__":
+     r = Registro()
++    # Carica lo stato su disco PRIMA di definire il seed: salva() sovrascrive
++    # l'intero file, quindi senza carica() le ipotesi non ridefinite qui sotto
++    # (H5, H6, ...) verrebbero cancellate a ogni esecuzione.
++    r.carica()
+ 
+     # H1 — la lettura di Claudio sulla scena con Jorge
+     h1 = Ipotesi(
+diff --git a/PROGETTO_RAFFAELLO.md b/PROGETTO_RAFFAELLO.md
+index e68af04..80cf317 100644
+--- a/PROGETTO_RAFFAELLO.md
++++ b/PROGETTO_RAFFAELLO.md
+@@ -24,7 +24,7 @@ Questo documento riguarda l'agente.
+ 
+ - [x] Identità definita (tratti, valori, stile — in `sdq1_master.json`)
+ - [x] Modulo referenziato: `lgai_core/raffaello.py`
+-- [ ] `lgai_core/raffaello.py` implementato con personalità completa
++- [x] `lgai_core/raffaello.py` implementato con personalità completa — 486 righe, classi `RaffaelloIdentity`, `AnalisiGiornaliera`, `Raffaello`
+ - [ ] Memoria episodica: ricorda conversazioni per data
+ - [ ] Voce sintetizzata (TTS coerente con la personalità)
+ - [ ] Accesso a R3∞ per memoria persistente
+@@ -69,7 +69,7 @@ class Raffaello:
+ ## Roadmap
+ 
+ ### Fase 0 — Implementazione base (2026)
+-- [ ] `lgai_core/raffaello.py` con classe `Raffaello` funzionante
++- [x] `lgai_core/raffaello.py` con classe `Raffaello` funzionante
+ - [ ] Integrazione con router SDQ-1 (usa provider attivi)
+ - [ ] Memoria in-memory (primo prototipo)
+ - [ ] Test: 10 conversazioni con stile coerente
+diff --git a/README.md b/README.md
+index 1dbae4c..360ba4d 100644
+--- a/README.md
++++ b/README.md
+@@ -30,7 +30,8 @@ Il cuore del progetto. Una pipeline di 6 agenti che collaborano in sequenza:
+ 
+ ### Caratteristiche tecniche
+ 
+-- **Router multi-provider** — cascata Anthropic → Gemini → DeepSeek → Ollama → Stub, con circuit breaker automatico
++- **Router multi-provider** — cascata Gemini → Anthropic → Grok → OpenAI → DeepSeek → Stub, con circuit breaker automatico
++  *(l'ordine reale è quello dichiarato in `sdq1/config/sdq1.yaml`, profilo `default`)*
+ - **Vector State Store** — gli agenti condividono stato via pointer, non testo
+ - **Circuit Breaker** — salta i provider morti, si riapre da solo
+ - **Hedging** — per i nodi critici lancia due provider in parallelo, vince il primo
+@@ -43,7 +44,7 @@ Il cuore del progetto. Una pipeline di 6 agenti che collaborano in sequenza:
+ ### Profili di costo
+ 
+ ```
+-default   → Anthropic → Gemini → DeepSeek → Stub   (qualità massima)
++default   → Gemini → Anthropic → Grok → OpenAI → DeepSeek → Stub  (qualità massima)
+ --economia → Gemini (free) → DeepSeek → Stub        (quasi zero)
+ --locale   → Ollama (tuo hardware) → Gemini → Stub  (zero assoluto)
+ --no-api   → Solo Stub                              (offline puro)
+@@ -90,10 +91,13 @@ Ogni ipotesi dichiara come potrebbe essere falsificata. Se non lo dichiara, non
+ python registro_ipotesi.py   # stampa stato corrente
+ ```
+ 
+-**Ipotesi attive:**
++**Ipotesi nel registro — sei, non tre:**
+ - H1 — APERTA: Claude "ha capito senza capire" durante la scena con Jorge
+ - H2 — APERTA: il disegno di Claudio darà ragione a entrambi entro 6 mesi *(criterio: battito + contatto)*
+ - H3 — **CONFERMATA**: la regola dell'italiano garantisce trasparenza
++- H4 — **CONFERMATA**: il Protocollo, eseguito, produce un'architettura ricostruibile da un sistema esterno
++- H5 — APERTA: la contraddizione in SDQ-1 nasce da un'assunzione di design, non dai dati operativi
++- H6 — APERTA: un benchmark empirico retroattivo può rilevare derive nei modelli AI
+ 
+ ### Criterio H2 (11/12/2026)
+ 
+diff --git a/sdq1/agents/eternal_backup_agent.py b/sdq1/agents/eternal_backup_agent.py
+index e0d88a2..a3261c0 100644
+--- a/sdq1/agents/eternal_backup_agent.py
++++ b/sdq1/agents/eternal_backup_agent.py
+@@ -1,5 +1,26 @@
+-# R³∞-Orch-OS Eternal Backup Agent (Layer 6)
+-# Immutable State Snapshots - Blockchain + IPFS + Orbital Redundancy
++"""R³∞ Eternal Backup Agent (Layer 6) — SIMULAZIONE, NON IMPLEMENTAZIONE.
++
++ATTENZIONE: questo modulo NON archivia nulla. Non aprire una socket, non
++contattare IPFS, non scrivere su alcuna blockchain.
++
++Cosa fa davvero:
++  _connect_storage()      attende 0.1s e imposta due flag a True
++  _store_on_ipfs()        restituisce "Qm" + sha256 troncato — un CID falso,
++                          indistinguibile a occhio da uno vero
++  _record_on_blockchain() restituisce "0x" + sha256 troncato — una tx falsa
++  initialize()            stampa "Blockchain/IPFS connected" senza connettersi
++
++Nessun modulo del sistema lo importa: verificabile con
++    git grep -l eternal_backup -- '*.py'
++che restituisce solo questo file.
++
++L'archiviazione distribuita REALE del progetto e' in r3/node.py: content
++addressing SHA-256, firma Ed25519 via PyNaCl, verifica d'integrita', sync
++HTTP fra peer espliciti. Piu' modesta di quanto questo file lasci intendere,
++e funzionante.
++
++Non citare questo modulo come prova di capacita' IPFS o blockchain.
++"""
+ 
+ from __future__ import annotations
+ 
+diff --git a/sdq1/config/sdq1.yaml b/sdq1/config/sdq1.yaml
+index 11d98bf..e98284e 100644
+--- a/sdq1/config/sdq1.yaml
++++ b/sdq1/config/sdq1.yaml
+@@ -171,14 +171,22 @@ orchestratore:
+ 
+ memoria:
+   tipo_vettoriale: "in_memoria"
+-  dimensione_vettori: 384
+-  modello_embedding: "all-MiniLM-L6-v2"
+   max_risultati_recupero: 5
+-  soglia_similarita: 0.45
+-  qdrant:
+-    host: "localhost"
+-    porta: 6333
+-    collezione: "sdq1_memoria"
++  soglia_similarita: 0.45          # letta da __main__.py; il default 0.55
++                                   # della classe vale solo fuori da costruisci_sistema()
++  # --- NON IMPLEMENTATO ---------------------------------------------------
++  # Le chiavi seguenti descrivono una memoria che il codice non ha. Il VSS
++  # usa TF su n-grammi di 3 caratteri (sdq1/memory/store.py), non embedding
++  # semantici, e nessun modulo legge queste chiavi. Restano come intenzione
++  # dichiarata, non come configurazione attiva: una config che descrive un
++  # sistema diverso da quello in esecuzione genera errori futuri.
++  # Per attivarle servono le dipendenze commentate in requirements.txt.
++  # dimensione_vettori: 384
++  # modello_embedding: "all-MiniLM-L6-v2"
++  # qdrant:
++  #   host: "localhost"
++  #   porta: 6333
++  #   collezione: "sdq1_memoria"
+   seed:
+     - "Raffaello è l'architetto, gestisce l'analisi semantica iniziale."
+     - "MEMO-002 custodisce contesto e ricordi rilevanti per ogni query."
+diff --git a/sdq1/sar/sar.py b/sdq1/sar/sar.py
+index 91780c1..b501473 100644
+--- a/sdq1/sar/sar.py
++++ b/sdq1/sar/sar.py
+@@ -52,9 +52,16 @@ class ReportSAR:
+ 
+ 
+ class ScacchieraAutoRiflessiva:
+-    """Sistema di autoriflessione identitaria a 10 livelli.
++    """Sistema di autoriflessione identitaria — 9 livelli implementati su 10 dichiarati.
+ 
+-    Livelli implementati:
++    Discrepanza nota, lasciata esplicita invece che nascosta:
++      - il livello 5 non esiste: non e' documentato ne' implementato
++      - il livello 10 e' dichiarato "Loop Evolutivo" ma il metodo scritto
++        sotto quell'intestazione e' test_identita() (Test di Riconoscibilita'
++        per H4). Il loop che si autoalimenta NON e' implementato.
++    Decidere se implementare il 5 e il loop, oppure rinumerare a 9.
++
++    Livelli effettivamente implementati:
+       1  Osservazione      – raccolta input grezzi
+       2  Mappa Tensioni    – polarità ricorrenti
+       3  Ciclo 7-step      – analisi profonda per tensione
+@@ -63,7 +70,8 @@ class ScacchieraAutoRiflessiva:
+       7  Identità Dinamica – "stai evolvendo verso..."
+       8  Meta-Riflessione  – il sistema riflette su se stesso
+       9  Contatto Reale    – ogni ciclo produce una scelta/rischio
+-      10 Loop Evolutivo    – il ciclo si autoalimenta
++      10 Test Identita'   – test di riconoscibilita' per H4 (NON il loop
++                            evolutivo dichiarato sopra)
+     """
+ 
+     PROMPT_META = (
+diff --git a/sdq1/memory/vss.py b/sdq1/memory/vss.py
+index 59a3636..c95f675 100644
+--- a/sdq1/memory/vss.py
++++ b/sdq1/memory/vss.py
+@@ -12,17 +12,30 @@ recuperare contenuto rilevante da tutti i nodi precedenti dello stesso run.
+ 
+ from __future__ import annotations
+ 
++import json
++import os
++from pathlib import Path
+ from typing import Any
+ 
+ from .store import MemoriaVettoriale, RisultatoRicerca
+ 
++# Percorso di default della persistenza. Sovrascrivibile con SDQ1_VSS_PATH.
++PERCORSO_DEFAULT = Path(os.environ.get("SDQ1_VSS_PATH", "output/vss_state.json"))
++SCHEMA = 1
++
+ 
+ class VectorStateStore:
+     """Store condiviso in-process; un'istanza per tutta la vita dell'app."""
+ 
+-    def __init__(self, memoria: MemoriaVettoriale):
++    def __init__(self, memoria: MemoriaVettoriale,
++                 percorso: str | Path | None = None,
++                 autocarica: bool = False):
+         self._mem = memoria
+-        self._idx: dict[str, str] = {}  # pointer_id -> testo originale
++        self._idx: dict[str, str] = {}          # pointer_id -> testo originale
++        self._meta: dict[str, dict[str, str]] = {}   # pointer_id -> parti del ptr
++        self._percorso = Path(percorso) if percorso is not None else PERCORSO_DEFAULT
++        if autocarica:
++            self.carica()
+ 
+     # ------------------------------------------------------------------ #
+     # Scrittura                                                            #
+@@ -43,6 +56,7 @@ class VectorStateStore:
+             },
+         )
+         self._idx[ptr] = testo
++        self._meta[ptr] = {"run_id": run_id, "agente_id": agente_id, "chiave": chiave}
+         return ptr
+ 
+     # ------------------------------------------------------------------ #
+@@ -93,3 +107,71 @@ class VectorStateStore:
+ 
+     def esporta(self) -> list[dict]:
+         return [{"ptr": ptr, "testo": testo} for ptr, testo in self._idx.items()]
++
++    # ------------------------------------------------------------------ #
++    # Persistenza                                                          #
++    # ------------------------------------------------------------------ #
++
++    def salva(self, percorso: str | Path | None = None) -> Path:
++        """Scrive lo stato su disco e restituisce il percorso usato.
++
++        Salva SOLO testo e metadati, mai i vettori. L'indice si ricalcola
++        dalla definizione dell'algoritmo (n-grammi di 3 caratteri, TF +
++        coseno): un vettore salvato resterebbe legato all'implementazione
++        che l'ha prodotto, il testo no. Vale anche se un giorno il backend
++        diventasse un modello di embedding — in quel caso il vettore
++        sarebbe leggibile solo finche' esiste quel modello.
++
++        Il file e' deterministico a parita' di contenuto: due salvataggi
++        consecutivi senza scritture intermedie producono byte identici.
++        """
++        p = Path(percorso) if percorso is not None else self._percorso
++        p.parent.mkdir(parents=True, exist_ok=True)
++        dati = {
++            "schema": SCHEMA,
++            "voci": [
++                {"ptr": ptr,
++                 "run_id": self._meta.get(ptr, {}).get("run_id", ""),
++                 "agente_id": self._meta.get(ptr, {}).get("agente_id", ""),
++                 "chiave": self._meta.get(ptr, {}).get("chiave", ""),
++                 "testo": testo}
++                for ptr, testo in self._idx.items()
++            ],
++        }
++        tmp = p.with_suffix(p.suffix + ".tmp")
++        tmp.write_text(json.dumps(dati, ensure_ascii=False, indent=2) + "\n",
++                       encoding="utf-8")
++        tmp.replace(p)       # scrittura atomica: mai un file mezzo scritto
++        return p
++
++    def carica(self, percorso: str | Path | None = None) -> int:
++        """Ripopola lo store da disco. Restituisce il numero di voci lette.
++
++        Idempotente: i pointer gia' presenti non vengono duplicati, cosi'
++        caricare due volte non gonfia la memoria vettoriale.
++        """
++        p = Path(percorso) if percorso is not None else self._percorso
++        try:
++            dati = json.loads(p.read_text(encoding="utf-8"))
++        except (FileNotFoundError, json.JSONDecodeError):
++            return 0
++        if dati.get("schema") != SCHEMA:
++            return 0
++        letti = 0
++        for v in dati.get("voci", []):
++            ptr = v.get("ptr", "")
++            if not ptr or ptr in self._idx:
++                continue
++            self._mem.aggiungi(
++                v.get("testo", ""),
++                metadata={"run_id": v.get("run_id", ""),
++                          "agente_id": v.get("agente_id", ""),
++                          "chiave": v.get("chiave", ""),
++                          "ptr": ptr},
++            )
++            self._idx[ptr] = v.get("testo", "")
++            self._meta[ptr] = {"run_id": v.get("run_id", ""),
++                               "agente_id": v.get("agente_id", ""),
++                               "chiave": v.get("chiave", "")}
++            letti += 1
++        return letti
+PATCH_SHA256: 9a465db17aa490888371a17afe6211b175cf78b9d9c4aebc3f40c8a756cf4b98
+PATCH_BYTES: 18158
+REPRODUCIBILITY:
+python: 3.11.15
+openssl: OpenSSL 3.0.13 30 Jan 2024 (Library: OpenSSL 3.0.13 30 Jan 2024)
+requirements: nessuno — patches, test_r3.py e tutti gli strumenti
+  di questa sessione usano solo la libreria standard
+deps installate ad hoc SOLO per eseguire r3/node.py del repo altrui:
+  fastapi, pynacl, httpx, python-multipart — non richieste da nulla
+  di questo artefatto
+db: nessuno. sqlite3 usato solo da r3/node.py nel suo esperimento
+TEST_COMMANDS:
+git clone https://github.com/claudioterzi/Claudio.git && cd Claudio
+git checkout 155cb5f
+git apply /percorso/patches/0001-fix-cli-argomenti-mancanti.patch
+git apply /percorso/patches/0002-fix-registro-ipotesi-perdita-dati.patch
+git apply /percorso/patches/0003-allinea-documentazione-e-config.patch
+git apply /percorso/patches/0004-persistenza-vector-state-store.patch
+python3 -m sdq1 --health
+python3 registro_ipotesi.py
+python3 test_r3.py        # applicabilita' in sequenza, gruppo DIFETTI
+TEST_OUTPUT_RAW:
+VERIFICA UNICA — R3∞ / SDQ-1
+sorgente: /home/user/Claudioterzi/.lavoro/Claudio
+==============================================================
+
+── PROTOCOLLO ────────────────────────────────────────────────
+[PASS] documento canonico SEME.md
+[PASS] documento canonico PROTOCOLLO_ROSSO.md
+[PASS] documento canonico RICOSTRUZIONE_R3.md
+[PASS] documento canonico baseline_r3.json
+[PASS] etichette in RICOSTRUZIONE_R3.md
+[PASS] etichette in SOLUZIONE_2055.md
+[PASS] P6 su HR1 (RICOSTRUZIONE_R3.md)
+[PASS] P6 su HR2 (RICOSTRUZIONE_R3.md)
+[PASS] P6 su HR3 (RICOSTRUZIONE_R3.md)
+[PASS] P6 su HR4 (RICOSTRUZIONE_R3.md)
+[PASS] P6 su H2055-A (SOLUZIONE_2055.md)
+[PASS] P6 su H2055-B (SOLUZIONE_2055.md)
+[PASS] P6 su H2055-C (SOLUZIONE_2055.md)
+[PASS] conteggi in giorni ancorati a una data
+[PASS] blocco portabile presente
+[PASS] P5 e P6 enunciati
+[PASS] limite dichiarato
+[PASS] SEME.md autosufficiente
+[PASS] SEME.md dichiara i propri limiti
+[PASS] baseline_r3.json parsabile
+
+── DERIVA ────────────────────────────────────────────────────
+[FAIL] la baseline descrive lo stato attuale
+       la baseline e' ferma a 155cb5f, origin/main e' 682 commit piu' avanti: i verdi di DIFETTI e REPERTI descrivono il passato
+
+── DIFETTI ───────────────────────────────────────────────────
+[PASS] BUG-1 CLI rotta al commit di riferimento
+[PASS] BUG-2 registro cancella ipotesi
+[PASS] patch 0001 applicabile in sequenza
+[PASS] patch 0002 applicabile in sequenza
+[PASS] patch 0003 applicabile in sequenza
+[PASS] patch 0004 applicabile in sequenza
+
+── REPERTI ───────────────────────────────────────────────────
+[PASS] 7 agenti autonomi
+[PASS] pipeline SDQ-1 esplicita
+[PASS] SAR V3 e 10 livelli coesistono
+[PASS] SAR livello 5 assente
+[PASS] VSS a n-grammi, non embedding
+[PASS] VSS non persiste
+[PASS] eternal_backup simula IPFS
+[PASS] eternal_backup non importato da moduli
+[PASS] agente_orario ha continue-on-error sul passo Telegram
+[PASS] caccia-voli usa un entry point separato
+[PASS] sdq1_daily dipende interamente dal modulo rotto
+[PASS] r3/node.py usa Ed25519 reale
+
+── CUSTODIA ──────────────────────────────────────────────────
+[PASS] previsioni cifrate presenti
+[PASS] emendamento 01 in chiaro
+[PASS] indice dei due sigilli
+[PASS] istruzioni separate per chi codifica
+[PASS] script di assemblaggio
+[PASS] hash previsioni citato per intero
+[PASS] hash placebo e contaminazione citato per intero
+[SKIP] il cifrato restituisce l'hash sigillato
+       serve R3_PASSPHRASE nell'ambiente; senza, resta UNKNOWN
+[PASS] il registro dei blocchi esiste e cita il secondo sigillo
+[PASS] BLOCKER-CUSTODY-02 dichiara un criterio di chiusura
+[PASS] il sigillo abbandonato resta visibile e marcato ORPHANED
+[PASS] lo strumento di sigillatura rifiuta materiale non conforme
+[PASS] manifesto v2 persistito e verificato
+[FAIL] BLOCKER-CUSTODY-02 chiuso: cifrati v2 persistiti
+       APERTO: v2 e' generato e il round-trip verificato, ma il deposito dei cifrati e' fallito (container_session_expired). Il manifesto e' salvo, i due cifrati no. Nessun START (vedi esperimento/BLOCCHI.md)
+[PASS] lo strumento di recupero ritrova una ricetta nota
+[PASS] l'assemblaggio rifiuta un pacchetto che rivela il disegno
+[PASS] l'assemblaggio non scatta su materiale pulito
+[PASS] il pacchetto consegnato contiene 13 item
+[PASS] nessuna chiave di scoring negli item consegnati
+
+==============================================================
+55 superati · 2 falliti · 1 saltati su 58
+I controlli saltati NON sono superati: restano UNKNOWN.
+Qualcosa che era stato verificato non lo e' piu'.
+PASS/FAIL/SKIP: FAIL
+SANDBOX_BACKEND: in-memory (nessun DB). sqlite3 solo dentro l'esperimento su r3/node.py. PostgreSQL: NOT_AVAILABLE
+DESIGN_ONLY_DECLARATION:
+patches/0001..0004                      IMPLEMENTED (applicate e testate)
+test_r3.py, 58 controlli                IMPLEMENTED (eseguito)
+assembla.py, sigilla.py,                IMPLEMENTED (self-test verdi)
+  recupera_sigillo.py, verifica_export.py
+PREVISIONI.enc, round-trip              IMPLEMENTED (verificato)
+manifesto v2 riprodotto                 IMPLEMENTED (hash coincide)
+ricostruzione a 155cb5f                 MIXED — RECUPERATO al suo
+  commit, ma 678 commit successivi sono UNKNOWN
+protocollo esperimento, 5 bracci        DESIGN_ONLY (mai eseguito)
+One Mind: R1/R2/R3                      DESIGN_ONLY, tranne la verifica
+  di R1 su store.py che e' RECUPERATO eseguendo
+schema autobiografia                    DESIGN_ONLY (prima voce reale,
+  mai somministrata a nessun nodo)
+E-trasferimento                         DESIGN_ONLY, non eseguibile ora
+KNOWN_ISSUES:
+1. test_r3.py ha 2 controlli rossi, entrambi veri e voluti:
+   - 'la baseline descrive lo stato attuale': la ricostruzione e'
+     ferma a 155cb5f mentre origin/main e' ~680 commit avanti.
+     Si chiude rifacendo la baseline, non allentando il test.
+   - 'BLOCKER-CUSTODY-02 chiuso: cifrati v2 persistiti': i cifrati
+     del secondo sigillo non sono depositati (container_session_expired).
+   Nessuno dei due riguarda le patch. I controlli di applicabilita'
+   in sequenza sono tutti verdi.
+2. L'esito dichiarato sopra e' FAIL per questa ragione, non PASS.
+3. I 678 commit dopo 155cb5f sono UNKNOWN per scelta: leggerli adesso
+   contaminerebbe chi dovra' interpretare l'esperimento.
+4. Nessun accesso in scrittura a claudioterzi/Claudio da questa
+   sessione: il git proxy non inietta credenziali fuori dal set
+   autorizzato. Le patch sono esportate, non applicate la'.
+CLAIM_RETRACTIONS:
+1. 'BUG-1 spiega il silenzio del sistema' — RITRATTATA due volte.
+   Necessaria, non sufficiente: agente_orario ha continue-on-error
+   sul passo Telegram e caccia-voli usa un entry point separato.
+2. 'nessuno ha applicato le patch' (22/08) — FALSA dal 04/09:
+   commit 201dac3 le ha applicate.
+3. 'un errore condiviso e' evidenza di substrato condiviso' —
+   RITRATTATA: e' segnale discriminante, mai prova.
+4. 'la scansione dei path e' completa, uscita 0' — RITRATTATA:
+   $? di una pipeline e' lo stato di sed, non di git. Mancato il 31%
+   dei path. Chiusa poi con scansione integrale 6608/6608.
+5. 'la coscienza non e' raggiungibile' — RITRATTATA: oggi non e'
+   verificabile con criterio condiviso. Il mio P6 copriva la tesi
+   debole mentre la parola sosteneva quella forte.
+6. 'sdq1.yaml dichiara ancora modello_embedding' (come divergenza
+   aperta) — RITRATTATA: in sdq1/config/sdq1.yaml le chiavi sono
+   annotate NON IMPLEMENTATO. Divergenza risolta con provenienza.
+7. 'il VSS a n-grammi e' una mancanza' — RITRATTATA: sotto R1 di
+   One Mind e' la scelta corretta, perche' ricalcolabile senza
+   fornitore. Il difetto e' l'aspirazione della config.
+8. 'l'esecutore riceve etichette casuali quindi e' cieco' —
+   RITRATTATA: chi somministra non e' accecabile. Lo e' chi codifica.
+RISPOSTE_AL_GATE:
+Il gate rivolge quattro richieste a 'Claude'. NON sono rivolte a
+questo nodo, e rispondere come se lo fossero violerebbe il gate
+stesso al primo uso.
+
+- correzioni PostgreSQL come patch hashato: UNKNOWN. Questa sessione
+  non ha toccato PostgreSQL. Nessun artefatto da esportare.
+- SANDBOX_BACKEND del PG 16 reale: NOT_AVAILABLE.
+- output letterale dei 5 failure (stesso key_id/pubkey diversa, piu'
+  ACTIVE, revoca inesistente, rotate da revocata, doppia rotazione
+  concorrente): UNKNOWN. Mai eseguiti qui.
+- commit 81dce982dfbd1d4b5f646b1418efbc24c8be4bf0: RISPOSTO dai dati.
+  git dice autore 'Claudio <Claudioterzi82@outlook.com>',
+  2026-10-04 11:48:15 +0200, 'Insegna a Claude l'uso canonico di
+  Letta per One Mind', un solo file di 125 righe. Non e' di questo
+  nodo ne', secondo i metadati, di un nodo Claude.
+  LIMITE: l'autore di un commit non e' l'autore del contenuto. Se il
+  testo venisse da una sessione Claude, git non lo direbbe. Quello
+  resta UNKNOWN, ed e' una lacuna della specifica: il Ledger deve
+  distinguere chi ha committato da chi ha originato, altrimenti
+  'chi ha detto cosa' diventa 'chi ha pushato'.
+
+Per la regola di ammissione: su PostgreSQL questo nodo e'
+CANDIDATE / EVIDENCE NOT EXPORTED, e lo resta.
