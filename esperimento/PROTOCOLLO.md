@@ -176,3 +176,43 @@ sovrapposte producono errori comuni senza nulla di ulteriore in mezzo.
 Anche se H2-G risultasse supportata, la conclusione sarebbe: **continuità
 comportamentale cross-model mediata da memoria esterna condivisa.** Non
 coscienza, non mente distribuita, non identità.
+
+---
+
+## 6. Emendamento 01 e pacchetto di esecuzione — 2026-10-04
+
+Questo protocollo è **congelato**. Le precisazioni successive stanno in
+[`EMENDAMENTO_01.md`](EMENDAMENTO_01.md), pubblicato in chiaro prima di START e
+verificato compatibile col testo sigillato.
+
+Tre precisazioni vincolanti, che prevalgono su qualunque lettura contraria di
+questo documento:
+
+1. **Terza funzione cieca, non terza persona.** Esecuzione e codifica stanno a
+   un processo isolato, con test di isolamento in uscita.
+2. **Acquisizione completa, interpretazione sequenziale.** Si eseguono tutti i
+   cinque bracci. La priorità della contaminazione è nell'interpretazione, dopo
+   il congelamento del dataset — fermarsi dopo aver guardato un controllo
+   sarebbe esso stesso una scelta post-hoc.
+3. **Configurazione identica fra i bracci, non solo registrata.** Memoria
+   assente, nessuno strumento, nessuna ricerca web, thread nuovo, stessa
+   temperatura. Una piattaforma che non lo permette non si usa.
+
+La riga «esecuzione e codifica: terza parte cieca» della tabella al §2 va letta
+così: **la cecità che conta è quella di chi codifica.** Chi somministra vede
+inevitabilmente quale condizione incolla un testo lungo e quale no. I due ruoli
+vanno quindi separati, e chi assembla il pacchetto non può codificare.
+
+Il materiale operativo è in [`pacchetto/`](pacchetto/):
+
+| File | A chi va |
+|---|---|
+| `assembla.py` | a chi unisce le due metà, che non deve leggerle |
+| `ISTRUZIONI_ESECUTORE.md` | a chi somministra |
+| `ISTRUZIONI_CODIFICATORE.md` | **solo** a chi codifica |
+| `SCHEDA_RUN.md` · `SCHEDA_RISPOSTA.md` | a chi somministra |
+| `bracci/` | procedure di A, C, D, E — B è di Claudio |
+
+**Design freeze dopo l'Emendamento 01.** Si riapre solo per un errore che renda
+il test materialmente invalido, e la riapertura va scritta come emendamento
+numerato, non come modifica silenziosa di questi file.

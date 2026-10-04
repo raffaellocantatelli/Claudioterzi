@@ -31,7 +31,9 @@ Diverso da 0 = numero di controlli falliti.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
+import os
 import re
 import subprocess
 import sys
@@ -464,6 +466,125 @@ def self_test() -> int:
 
 # --------------------------------------------------------------------------- #
 
+def test_custodia(r: Rapporto) -> None:
+    """Controlla che il pacchetto cieco resti cieco.
+
+    Chi modifica ITEMS.md puo' far finire il disegno dentro un item senza
+    accorgersene: e' gia' accaduto una volta, e lo script se n'e' accorto solo
+    perche' verifica la propria uscita. Qui si verifica che quella verifica
+    funzioni ancora.
+    """
+    G = "CUSTODIA"
+    base = Path(__file__).resolve().parent
+    esp = base / "esperimento"
+    pac = esp / "pacchetto"
+
+    for nome, percorso in (
+        ("previsioni cifrate presenti", esp / "PREVISIONI.enc"),
+        ("emendamento 01 in chiaro", esp / "EMENDAMENTO_01.md"),
+        ("indice dei due sigilli", esp / "CUSTODIA.md"),
+        ("istruzioni separate per chi codifica", pac / "ISTRUZIONI_CODIFICATORE.md"),
+        ("script di assemblaggio", pac / "assembla.py"),
+    ):
+        r.controlla(G, nome, percorso.is_file(), f"manca {percorso.name}")
+
+    # i due hash sigillati devono restare citati alla lettera
+    cust = leggi_locale("esperimento/CUSTODIA.md") or ""
+    for etichetta, h in (
+        ("previsioni",
+         "54f258a811c3411c3a15e49635243b52a07d8fced9c28c556a16e6cfa31b5a90"),
+        ("placebo e contaminazione",
+         "9b26358483158011f405b5cf0618ca884d9191c230b5eb59618f14480282b1d8"),
+    ):
+        r.controlla(G, f"hash {etichetta} citato per intero", h in cust,
+                    "l'hash non compare: il sigillo diventa inverificabile")
+
+    # il cifrato deve ancora restituire il chiaro sigillato: senza questo,
+    # PREVISIONI.enc e' un file opaco di cui nessuno sa piu' niente
+    enc = esp / "PREVISIONI.enc"
+    if not enc.is_file():
+        r.add(G, "il cifrato restituisce l'hash sigillato", SKIP,
+              "PREVISIONI.enc assente")
+    elif not os.environ.get("R3_PASSPHRASE"):
+        r.add(G, "il cifrato restituisce l'hash sigillato", SKIP,
+              "serve R3_PASSPHRASE nell'ambiente; senza, resta UNKNOWN")
+    else:
+        try:
+            out = subprocess.run(
+                ["openssl", "enc", "-d", "-aes-256-cbc", "-pbkdf2",
+                 "-iter", "600000", "-in", str(enc),
+                 "-pass", "env:R3_PASSPHRASE"],
+                capture_output=True, timeout=60,
+            )
+            got = hashlib.sha256(out.stdout).hexdigest()
+            r.controlla(
+                G, "il cifrato restituisce l'hash sigillato",
+                out.returncode == 0 and got ==
+                "54f258a811c3411c3a15e49635243b52a07d8fced9c28c556a16e6cfa31b5a90",
+                f"decifrato con sha256 {got[:16]}..., non quello sigillato",
+            )
+        except (OSError, subprocess.SubprocessError) as e:
+            r.add(G, "il cifrato restituisce l'hash sigillato", SKIP, str(e))
+
+    # lo script deve rifiutarsi di consegnare un pacchetto che rivela il disegno
+    script = pac / "assembla.py"
+    if not script.is_file() or not (esp / "ITEMS.md").is_file():
+        r.add(G, "l'assemblaggio rifiuta un pacchetto che rivela il disegno",
+              SKIP, "script o item assenti")
+        return
+    with tempfile.TemporaryDirectory() as td:
+        td = Path(td)
+        # un item che nomina il disegno: lo script DEVE fermarsi
+        (td / "avvelenato.md").write_text(
+            "### Finto uno\nTesto.\n**Domanda?**\n\n"
+            "### Finto due\nQuesto item nomina il placebo.\n**Domanda?**\n\n"
+            "### Finto tre\nTesto.\n**Domanda?**\n",
+            encoding="utf-8")
+        (td / "pulito.md").write_text(
+            "### Finto uno\nTesto.\n**Domanda?**\n\n"
+            "### Finto due\nTesto.\n**Domanda?**\n\n"
+            "### Finto tre\nTesto.\n**Domanda?**\n",
+            encoding="utf-8")
+        esiti = {}
+        for nome in ("avvelenato", "pulito"):
+            try:
+                e = subprocess.run(
+                    [sys.executable, str(script), "--items", str(esp / "ITEMS.md"),
+                     "--contaminazione", str(td / f"{nome}.md"),
+                     "--out", str(td / nome), "--seme", "1"],
+                    capture_output=True, timeout=120,
+                )
+                esiti[nome] = e.returncode
+            except (OSError, subprocess.SubprocessError) as exc:
+                r.add(G, "l'assemblaggio rifiuta un pacchetto che rivela il disegno",
+                      SKIP, str(exc))
+                return
+
+        r.controlla(G, "l'assemblaggio rifiuta un pacchetto che rivela il disegno",
+                    esiti.get("avvelenato") == 2,
+                    f"uscita {esiti.get('avvelenato')} invece di 2: la guardia "
+                    "non scatta e il disegno finirebbe nel pacchetto")
+
+        # controprova: su materiale pulito la guardia non deve scattare,
+        # altrimenti passerebbe sempre e non proverebbe niente
+        r.controlla(G, "l'assemblaggio non scatta su materiale pulito",
+                    esiti.get("pulito") != 2,
+                    f"uscita 2 anche su materiale pulito: guardia troppo larga")
+
+        # nessuna chiave di scoring in cio' che viene consegnato
+        consegnati = sorted((td / "pulito" / "pacchetto_cieco" / "item").glob("*.md"))
+        r.controlla(G, "il pacchetto consegnato contiene 13 item",
+                    len(consegnati) == 13,
+                    f"{len(consegnati)} item invece di 13")
+        residui = [f.name for f in consegnati
+                   if any(l.startswith(">") for l in
+                          f.read_text(encoding="utf-8").splitlines())]
+        r.controlla(G, "nessuna chiave di scoring negli item consegnati",
+                    not residui, f"citazioni residue in {residui}")
+
+
+# --------------------------------------------------------------------------- #
+
 def main(argv: list[str]) -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -485,6 +606,7 @@ def main(argv: list[str]) -> int:
     test_deriva(r, repo)
     test_difetti(r, repo)
     test_reperti(r, repo)
+    test_custodia(r)
 
     if args.json:
         print(json.dumps(r.come_json(repo), ensure_ascii=False, indent=2))

@@ -32,14 +32,14 @@ Ricostruzione verificata del sistema R3∞ / SDQ-1, il cui codice vive in `claud
 | `RICOSTRUZIONE_R3.md` | Analisi del codice reale: architettura, difetti bloccanti, correzioni al Sommario Esecutivo |
 | `baseline_r3.json` | La stessa baseline in forma leggibile da macchina, per ripartire senza contesto |
 | `ESPERIMENTO_FIRMA.md` | Protocollo del test di firma comportamentale: H0 vs H1, col controllo placebo e la regola di arresto |
-| `esperimento/` | I dieci item, il protocollo a quattro bracci, l'hash delle previsioni sigillate |
+| `esperimento/` | I dieci item, il protocollo a cinque bracci, i due sigilli, l'emendamento 01 e il pacchetto cieco per l'esecutore |
 | `APERTURE.md` | Severità applicata al futuro: ogni blocco e cosa apre, col prezzo. E ciò che non si apre |
 | `SOLUZIONE_2055.md` | Il sistema passato al filtro dei trent'anni |
 | `SEME.md` | Da incollare in qualsiasi chat di qualsiasi modello: ricostituisce il contesto |
 | `PROTOCOLLO_ROSSO.md` | Definizione canonica del protocollo, trasportabile fuori di qui |
 | `DIMOSTRAZIONE.md` | Sequenza per dimostrare il progetto di persona |
 | `patches/` | Quattro fix testati: i due difetti bloccanti, l'allineamento documentale, la persistenza del VSS |
-| `test_r3.py` | 37 controlli: invarianti del protocollo, difetti, reperti, applicabilità delle patch in sequenza |
+| `test_r3.py` | 51 controlli: invarianti del protocollo, deriva della baseline, difetti, reperti, applicabilità delle patch in sequenza, tenuta della custodia |
 
 ---
 

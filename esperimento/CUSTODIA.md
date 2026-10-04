@@ -36,6 +36,28 @@ custodia è strutturale, non dichiarata.
 Chi la scrive non è chi la verifica: ciascun sigillo è stato controllato dalla
 parte che non lo ha depositato.
 
+## Il testo delle previsioni sopravvive al container
+
+`previsioni.txt` esisteva solo in `/tmp` di una sessione effimera. Era un guasto
+silenzioso: alla scadenza del container l'hash sarebbe rimasto senza nessun
+testo da confrontargli, e una preregistrazione non verificabile non è una
+preregistrazione.
+
+Il testo è ora in [`PREVISIONI.enc`](PREVISIONI.enc) — AES-256-CBC, PBKDF2 a
+600.000 iterazioni, committato. Round-trip verificato prima del commit.
+
+```bash
+openssl enc -d -aes-256-cbc -pbkdf2 -iter 600000 \
+        -in PREVISIONI.enc -pass pass:<passphrase> | sha256sum
+# deve dare 54f258a811c3411c3a15e49635243b52a07d8fced9c28c556a16e6cfa31b5a90
+```
+
+**Protegge in modo strutturale dalla riscrittura** — il cifrato è in git e
+l'hash del chiaro era pubblico prima. Era l'unico compito del sigillo.
+**Non protegge in modo strutturale dalla lettura anticipata** da parte di chi
+controlla i repository: lo dichiaro invece di finto-risolverlo. Dettagli e
+mitigazioni in [`EMENDAMENTO_01.md`](EMENDAMENTO_01.md) §4.
+
 ## Come verificare, dopo la pubblicazione
 
 ```bash

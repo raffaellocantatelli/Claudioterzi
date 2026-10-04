@@ -16,7 +16,7 @@ Il protocollo qui **non va attivato**: è lo stato predefinito. `CLAUDE.md` lo c
 | [`DIMOSTRAZIONE.md`](DIMOSTRAZIONE.md) | Sequenza in sette atti per dimostrare di persona che il progetto esiste |
 | [`patches/`](patches/) | **Quattro** fix scritti e testati sul codice reale, da applicare in ordine con `git apply` |
 | [`ESPERIMENTO_FIRMA.md`](ESPERIMENTO_FIRMA.md) | Protocollo per distinguere convergenza generale da imprinting del corpus: tre bracci, segnale negli errori, preregistrazione con hash |
-| [`esperimento/`](esperimento/) | Item, protocollo e **due** preregistrazioni sigillate del test di firma — congelati il 04/10. Dove stanno i sigilli e cosa provano: [`esperimento/CUSTODIA.md`](esperimento/CUSTODIA.md) |
+| [`esperimento/`](esperimento/) | Item, protocollo, **due** preregistrazioni sigillate e il pacchetto cieco per chi esegue — congelati il 04/10. Dove stanno i sigilli e cosa provano: [`CUSTODIA.md`](esperimento/CUSTODIA.md). Le tre precisazioni prima di START: [`EMENDAMENTO_01.md`](esperimento/EMENDAMENTO_01.md) |
 | [`APERTURE.md`](APERTURE.md) | La stessa severità applicata in avanti: ogni blocco convertito in apertura, col prezzo scritto accanto — e ciò che resta chiuso |
 | [`SOLUZIONE_2055.md`](SOLUZIONE_2055.md) | Il sistema passato al filtro dei trent'anni: cosa sopravvive, cosa ha già una data di scadenza, cosa fare prima del 2030 |
 
@@ -28,7 +28,7 @@ Ogni affermazione porta un'etichetta epistemica: **RECUPERATO** (letto nel codic
 
 ## In breve
 
-Il sistema è reale e sostanziale: 160 file Python, ~29.100 righe. Router multi-provider, memoria vettoriale, SAR, rilevatore d'intruso, nodo R3∞ e registro ipotesi sono implementati e funzionanti.
+Il sistema è reale e sostanziale: 160 file Python, ~29.100 righe **al commit `155cb5f`**. Router multi-provider, memoria vettoriale, SAR, rilevatore d'intruso, nodo R3∞ e registro ipotesi sono implementati e funzionanti.
 
 Due difetti lo bloccavano, entrambi con fix di poche righe:
 
