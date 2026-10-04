@@ -29,17 +29,22 @@ from pathlib import Path
 
 CHIAVE = re.compile(r"^([A-Z][A-Z0-9_/]*):[ \t]*(.*)$")
 
+# Gate unificato, accettato il 2026-10-04: f848f19 piu' GIT_STATUS e
+# REAL_POSTGRES_BACKEND, zero rimozioni.
 SEMPRE = [
     "NODE_ID", "SESSION_DATE", "ARTIFACT_TYPE", "CLAIMED_BASE_SHA",
-    "LOCAL_HEAD_SHA", "BRANCH", "REPRODUCIBILITY", "TEST_COMMANDS",
-    "TEST_OUTPUT_RAW", "PASS/FAIL/SKIP", "SANDBOX_BACKEND",
-    "DESIGN_ONLY_DECLARATION", "KNOWN_ISSUES", "CLAIM_RETRACTIONS",
+    "LOCAL_HEAD_SHA", "BRANCH", "GIT_STATUS", "REPRODUCIBILITY",
+    "TEST_COMMANDS", "TEST_OUTPUT_RAW", "PASS/FAIL/SKIP", "SANDBOX_BACKEND",
+    "REAL_POSTGRES_BACKEND", "DESIGN_ONLY_DECLARATION", "KNOWN_ISSUES",
+    "CLAIM_RETRACTIONS",
 ]
 SOLO_PATCH = ["CHANGED_FILES", "DIFF_STAT", "PATCH", "PATCH_SHA256", "PATCH_BYTES"]
 
 TIPI = {"PATCH", "DESIGN", "REVIEW", "TEST"}
 ESITI = {"PASS", "FAIL", "SKIP"}
 DICHIARAZIONI = {"IMPLEMENTED", "DESIGN_ONLY", "MIXED"}
+GIT_STATI = {"CLEAN", "DIRTY"}
+PG_STATI = {"PENDING", "RUN", "FAILED", "PASSED", "NOT_APPLICABLE"}
 SHA_O_NA = re.compile(r"^(?:[0-9a-f]{7,64}|NOT_AVAILABLE)$")
 
 
@@ -80,6 +85,14 @@ def valida(testo: str) -> list[str]:
     if esito and esito not in ESITI:
         g.append(f"PASS/FAIL/SKIP '{esito}' non in {sorted(ESITI)}")
 
+    git_st = c.get("GIT_STATUS", "").strip().upper()
+    if git_st and not any(g in git_st for g in GIT_STATI):
+        g.append(f"GIT_STATUS '{git_st[:24]}' non contiene clean ne' dirty")
+
+    pg = c.get("REAL_POSTGRES_BACKEND", "").strip().upper()
+    if pg and pg not in PG_STATI:
+        g.append(f"REAL_POSTGRES_BACKEND '{pg}' non in {sorted(PG_STATI)}")
+
     for k in ("CLAIMED_BASE_SHA", "LOCAL_HEAD_SHA"):
         v = c.get(k, "").strip()
         if v and not SHA_O_NA.match(v):
@@ -117,7 +130,9 @@ def self_test() -> int:
             "LOCAL_HEAD_SHA: NOT_AVAILABLE\nBRANCH: NOT_AVAILABLE\n"
             "REPRODUCIBILITY: nessuna\nTEST_COMMANDS: nessuno\n"
             "TEST_OUTPUT_RAW: nessuno\nPASS/FAIL/SKIP: SKIP\n"
+            "GIT_STATUS: clean\n"
             "SANDBOX_BACKEND: in-memory\n"
+            "REAL_POSTGRES_BACKEND: NOT_APPLICABLE\n"
             "DESIGN_ONLY_DECLARATION: tutto DESIGN_ONLY\n"
             "KNOWN_ISSUES: nessuno\nCLAIM_RETRACTIONS: nessuna\n")
     casi = [
@@ -129,6 +144,11 @@ def self_test() -> int:
                                         "ARTIFACT_TYPE: POESIA"), 1),
         ("esito inventato", base.replace("PASS/FAIL/SKIP: SKIP",
                                          "PASS/FAIL/SKIP: QUASI"), 1),
+        ("git status inventato", base.replace("GIT_STATUS: clean",
+                                              "GIT_STATUS: forse"), 1),
+        ("postgres stato inventato",
+         base.replace("REAL_POSTGRES_BACKEND: NOT_APPLICABLE",
+                      "REAL_POSTGRES_BACKEND: BOH"), 1),
         ("claim non etichettato",
          base.replace("DESIGN_ONLY_DECLARATION: tutto DESIGN_ONLY",
                       "DESIGN_ONLY_DECLARATION: funziona"), 1),

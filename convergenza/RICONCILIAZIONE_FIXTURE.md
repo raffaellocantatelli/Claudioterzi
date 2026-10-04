@@ -13,12 +13,14 @@ UNDERSPECIFIED compreso. Il punto 2 e il punto 3 sono aggiunte che la
 preregistrazione non aveva, e il punto 3 ha una conseguenza che cambia la
 statistica.
 
-Restano **tre lacune**. Nessuna richiede di riaprire il disegno: si chiudono
-pinnando valori prima che GEN giri.
+Erano **quattro lacune** — tre trovate leggendo, la quarta scrivendo GEN.
+**Tutte chiuse il 2026-10-04** con «accetta tutto»: i pin sono in
+[`DECISIONI.md`](DECISIONI.md). Le sezioni restano qui con la ragione per cui
+esistevano, non si cancellano.
 
 ---
 
-## L1 — Il seed non è definito. Sei hash dalla stessa formula
+## L1 — Il seed non era definito · **CHIUSA il 2026-10-04**, vedi [`DECISIONI.md`](DECISIONI.md) D1
 
 ```
 SHA256(81dce982dfbd1d4b5f646b1418efbc24c8be4bf0 || "R3-FIXTURE-1000")
@@ -67,7 +69,7 @@ printf '%s%s' 81dce982dfbd1d4b5f646b1418efbc24c8be4bf0 R3-FIXTURE-1000 | sha256s
 
 ---
 
-## L2 — Il punto 4 si contraddice
+## L2 — Il punto 4 si contraddiceva · **CHIUSA**: rinvia alla distribuzione preregistrata
 
 > «Distribuzione: fissata **al momento della generazione**, non scelta da C.
 > Registrata nel manifest del fixture.»
@@ -96,7 +98,7 @@ ottenuta con quella impegnata**, e fallire se differiscono.
 
 ---
 
-## L3 — Il punto 3 rompe l'indipendenza che il 2% assume
+## L3 — Lo stato sequenziale rompe l'indipendenza · **CHIUSA**: due misure, tasso grezzo e disaccordi radice
 
 > «Sequenza ordinata. Ogni evento vede lo stato degli eventi precedenti.»
 
@@ -135,7 +137,7 @@ dati: se disaccordi radice ≈ tasso grezzo, L3 non si applica a questo fixture.
 
 ---
 
-## L4 — Il punto 2 impedisce di testare ciò che S13 deve testare
+## L4 — Il punto 2 contro S13 · **CHIUSA**, vedi D2: righe permutate, §7 testato
 
 > «JSONL, una riga per evento, **JCS RFC 8785 canonico**.»
 

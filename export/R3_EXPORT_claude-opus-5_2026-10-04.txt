@@ -1,9 +1,10 @@
 NODE_ID: claude-opus-5 / session_01RsjtKxGbxW1Lgg6xnRS1uy / repo raffaellocantatelli/Claudioterzi
-SESSION_DATE: 2026-10-04T09:57:50+00:00
+SESSION_DATE: 2026-10-04T10:41:19+00:00
 ARTIFACT_TYPE: PATCH
 CLAIMED_BASE_SHA: 155cb5f
 LOCAL_HEAD_SHA: d6d329acede057386125784c0c27f545a2ff7840
-BRANCH: claude/raffaello-r3-reconstruction-1uqqa7 @ 7ba3846e65ec (repo raffaellocantatelli/Claudioterzi)
+BRANCH: claude/raffaello-r3-reconstruction-1uqqa7 @ 97c03ad8a024 (repo raffaellocantatelli/Claudioterzi)
+GIT_STATUS: dirty —  M export/__pycache__/verifica_export.cpython-311.pyc;  M export/genera_export.py;  M export/verifica_export.py
 CHANGED_FILES:
 PROGETTO_RAFFAELLO.md
 README.md
@@ -468,7 +469,7 @@ sorgente: /home/user/Claudioterzi/.lavoro/Claudio
 
 ── DERIVA ────────────────────────────────────────────────────
 [FAIL] la baseline descrive lo stato attuale
-       la baseline e' ferma a 155cb5f, origin/main e' 682 commit piu' avanti: i verdi di DIFETTI e REPERTI descrivono il passato
+       la baseline e' ferma a 155cb5f, origin/main e' 683 commit piu' avanti: i verdi di DIFETTI e REPERTI descrivono il passato
 
 ── DIFETTI ───────────────────────────────────────────────────
 [PASS] BUG-1 CLI rotta al commit di riferimento
@@ -510,17 +511,31 @@ sorgente: /home/user/Claudioterzi/.lavoro/Claudio
 [FAIL] BLOCKER-CUSTODY-02 chiuso: cifrati v2 persistiti
        APERTO: v2 e' generato e il round-trip verificato, ma il deposito dei cifrati e' fallito (container_session_expired). Il manifesto e' salvo, i due cifrati no. Nessun START (vedi esperimento/BLOCCHI.md)
 [PASS] lo strumento di recupero ritrova una ricetta nota
+[PASS] il validatore del gate rifiuta cio' che deve
+[FAIL] questo nodo ha un artefatto conforme al gate
+       l'artefatto di questa sessione non passa il gate che questa sessione ha scritto
+[PASS] il gate respinge un artefatto manomesso
+[PASS] il validatore copre tutti i campi del gate committato
+[PASS] il seed pinnato del fixture e' riproducibile
+[PASS] il generatore non e' cambiato dopo la generazione
+[PASS] il fixture coincide con cio' che il manifest dichiara
+[PASS] il fixture ha 1000 eventi e denominatore 900
+[PASS] la distribuzione coincide con quella preregistrata
+[PASS] il seed del manifest e' quello della formula
+[PASS] GEN ha letto la preregistrazione presente
+[PASS] la provenienza degli strati non e' nel repository
 [PASS] l'assemblaggio rifiuta un pacchetto che rivela il disegno
 [PASS] l'assemblaggio non scatta su materiale pulito
 [PASS] il pacchetto consegnato contiene 13 item
 [PASS] nessuna chiave di scoring negli item consegnati
 
 ==============================================================
-55 superati · 2 falliti · 1 saltati su 58
+66 superati · 3 falliti · 1 saltati su 70
 I controlli saltati NON sono superati: restano UNKNOWN.
 Qualcosa che era stato verificato non lo e' piu'.
 PASS/FAIL/SKIP: FAIL
-SANDBOX_BACKEND: in-memory (nessun DB). sqlite3 solo dentro l'esperimento su r3/node.py. PostgreSQL: NOT_AVAILABLE
+SANDBOX_BACKEND: in-memory (nessun DB). sqlite3 solo dentro l'esperimento su r3/node.py
+REAL_POSTGRES_BACKEND: NOT_APPLICABLE
 DESIGN_ONLY_DECLARATION:
 patches/0001..0004                      IMPLEMENTED (applicate e testate)
 test_r3.py, 58 controlli                IMPLEMENTED (eseguito)

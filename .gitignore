@@ -2,3 +2,5 @@
 .lavoro/
 .tmpprobe/
 convergenza/fixture/RISERVATO_non_consegnare/
+__pycache__/
+*.pyc

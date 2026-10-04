@@ -63,6 +63,13 @@ def main() -> int:
         ("CLAIMED_BASE_SHA", "155cb5f"),
         ("LOCAL_HEAD_SHA", head_lavoro),
         ("BRANCH", f"{branch} @ {head_mio[:12]} (repo raffaellocantatelli/Claudioterzi)"),
+        # L'artefatto stesso e' escluso: scriverlo sporca l'albero, quindi
+        # includerlo renderebbe GIT_STATUS perpetuamente dirty per
+        # auto-riferimento invece che per uno stato reale.
+        ("GIT_STATUS", (lambda righe: "clean" if not righe else
+                        "dirty — " + "; ".join(righe))(
+            [l for l in sh(["git", "status", "--porcelain"]).splitlines()
+             if l.strip() and "R3_EXPORT_claude-opus-5" not in l])),
         ("CHANGED_FILES", changed),
         ("DIFF_STAT", f"{len(patch_files)} patch, {len(patch_testo.encode())} byte "
                       f"totali; file toccati per patch: {diff_stat}"),
@@ -93,7 +100,8 @@ def main() -> int:
         ("TEST_OUTPUT_RAW", test_out),
         ("PASS/FAIL/SKIP", esito),
         ("SANDBOX_BACKEND", "in-memory (nessun DB). sqlite3 solo dentro "
-                            "l'esperimento su r3/node.py. PostgreSQL: NOT_AVAILABLE"),
+                            "l'esperimento su r3/node.py"),
+        ("REAL_POSTGRES_BACKEND", "NOT_APPLICABLE"),
         ("DESIGN_ONLY_DECLARATION", "\n".join([
             "patches/0001..0004                      IMPLEMENTED (applicate e testate)",
             "test_r3.py, 58 controlli                IMPLEMENTED (eseguito)",
