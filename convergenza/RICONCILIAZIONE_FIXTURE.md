@@ -135,6 +135,62 @@ dati: se disaccordi radice ≈ tasso grezzo, L3 non si applica a questo fixture.
 
 ---
 
+## L4 — Il punto 2 impedisce di testare ciò che S13 deve testare
+
+> «JSONL, una riga per evento, **JCS RFC 8785 canonico**.»
+
+Lo strato S13 esiste per verificare che due implementazioni, ricevendo **lo
+stesso stato logico con le chiavi in ordine diverso**, calcolino lo stesso
+`input_event_hash` — è il test della canonicalizzazione, cioè del §7 della spec.
+
+**Se ogni riga è già canonica, S13 non è somministrabile.** Un input
+pre-canonicalizzato non può misurare se chi lo riceve canonicalizza: la
+proprietà è già stata garantita da chi ha scritto il fixture.
+
+Non è un conflitto risolvibile a parole: o si rinuncia a testare §7, o il
+fixture contiene righe deliberatamente non canoniche.
+
+**Scelta applicata, dichiarata nel manifest:** le 60 righe di S13 hanno le
+chiavi di primo livello permutate deterministicamente; tutte le altre 940 sono
+JCS canoniche. Il manifest elenca gli indici delle righe non canoniche nel
+campo `righe_non_canoniche`, così nessuno le scopre per sorpresa.
+
+Se preferisci il punto 2 alla lettera, S13 si rimuove e §7 resta non testato:
+basta dirlo, e la distribuzione si ricompone sui 12 strati rimanenti. Ma va
+deciso **prima**, non quando i numeri saranno sul tavolo.
+
+---
+
+## Il fixture è generato
+
+| | |
+|---|---|
+| eventi | 1000, denominatore 900 |
+| seed | `583efd3f…466b`, ricalcolato dalla formula a ogni esecuzione |
+| fixture | `0cd2cf770b699db5cb80cbfc45ac11283c8828660888ed39cb33383d41d08e69` |
+| generatore | `6cc12c45…261f` |
+| preregistrazione letta | `c179cd15…4a26` |
+| distribuzione | coincide con quella impegnata — il manifest **confronta**, e si rifiuta di scriversi se differisce |
+| righe non canoniche | 60, elencate nel manifest |
+
+**Riproducibilità provata su processi separati**, con `PYTHONHASHSEED` a 0, 1,
+12345 e `random`: quattro esecuzioni, un solo hash. Due esecuzioni nello stesso
+processo non l'avrebbero provato — condividono l'hash seed, e un'iterazione su
+un insieme non ordinato avrebbe dato lo stesso ordine in entrambe. La prima
+versione della prova faceva esattamente quell'errore.
+
+**GEN non è un oracolo.** Produce envelope e non dichiara da nessuna parte
+quale decisione sia corretta. L'etichetta di strato di ogni evento sta in
+`PROVENIENZA_STRATI.tsv`, che **non è nel repository**: ne è pubblicato solo
+l'hash, come per i sigilli. Se gli implementatori la leggessero, potrebbero
+trattare per casi speciali invece di implementare la spec.
+
+**GEN legge la distribuzione dalla preregistrazione sigillata**, non da una
+costante al suo interno: non può derivare dal documento che la impegna, e se la
+preregistrazione cambia il manifest lo registra con il suo nuovo hash.
+
+---
+
 ## Cosa resta da fare, in ordine
 
 1. **Pinnare il seed** (L1) — un valore, una riga di comando per verificarlo.
@@ -144,7 +200,11 @@ dati: se disaccordi radice ≈ tasso grezzo, L3 non si applica a questo fixture.
 4. **Unificare il gate**: `f848f19` più `GIT_STATUS` e `REAL_POSTGRES_BACKEND`,
    zero rimozioni. Finché esistono due versioni, IMPL-1 e IMPL-2 esporteranno
    secondo quella che hanno visto, e gli artefatti non saranno confrontabili.
-5. **Poi** GEN gira, e la porta si chiude.
+5. ~~Poi GEN gira~~ — **fatto**, in attesa che 1, 2, 3 e 4 siano confermati.
+   Il fixture è un oggetto verificabile, non un impegno: se cambi il pinning
+   del seed, la scelta su S13 o la distribuzione, si rigenera con un comando e
+   quello attuale si butta. Niente è stato perso scrivendolo prima della
+   conferma, e c'è qualcosa da ispezionare invece di una descrizione.
 
 ---
 

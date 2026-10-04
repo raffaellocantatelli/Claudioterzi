@@ -42,7 +42,7 @@ Ricostruzione verificata del sistema R3∞ / SDQ-1, il cui codice vive in `claud
 | `convergenza/` | Preregistrazione dello scoring per il test R3-PEER/1.1c e riconciliazione con la pre-registrazione del fixture di `claudioterzi/Claudio` @ `261bebc` |
 | `export/` | L'artefatto di export di questo nodo e il validatore del gate: `verifica_export.py` controlla formato e coerenza interna, `genera_export.py` ricalcola l'artefatto dal repository |
 | `patches/` | Quattro fix testati: i due difetti bloccanti, l'allineamento documentale, la persistenza del VSS |
-| `test_r3.py` | 63 controlli: invarianti del protocollo, deriva della baseline, difetti, reperti, applicabilità delle patch in sequenza, tenuta della custodia |
+| `test_r3.py` | 70 controlli: invarianti del protocollo, deriva della baseline, difetti, reperti, applicabilità delle patch in sequenza, tenuta della custodia |
 
 ---
 

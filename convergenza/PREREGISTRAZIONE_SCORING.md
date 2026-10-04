@@ -148,6 +148,18 @@ separatamente, con l'elenco degli eventi.
 
 ## 4. Composizione del fixture — è l'esperimento, non un dettaglio
 
+> **CORREZIONE, prima che il fixture esista.** La prima versione di questa
+> tabella sommava **920**, non 1.000, e il denominatore reale era **820**, non
+> 900. Ho scritto nella mia stessa preregistrazione **la trappola dell'item 3
+> dei dieci**: un totale in testa che i dati sotto non mostrano. Trovata
+> estraendo i numeri dalla tabella con uno script invece di rileggere la riga
+> «totale».
+>
+> I conteggi sotto sono corretti e verificati: somma 1.000, denominatore 900,
+> minimo 25 per strato. `test_r3.py` ora ricalcola entrambi a ogni esecuzione.
+> L'hash di questo file è cambiato di conseguenza: legittimo, il fixture non
+> esiste ancora.
+
 **Mille eventi banali danno disaccordo < 2% qualunque sia la qualità della
 spec.** La composizione decide cosa il test può rilevare, quindi va preregistrata.
 
@@ -164,14 +176,14 @@ soglia**, e una sottospecificazione reale lì resterebbe invisibile.
 
 | # | Strato | Regola della spec che esercita | n |
 |---|---|---|---|
-| S1 | envelope valido ordinario | baseline | 280 |
-| S2 | `channel_id` assente dal Channel Registry | §8 Envelope, finding 3 | 60 |
-| S3 | `msg_id` duplicato, stesso (channel, sender) | §8 unique scoped | 60 |
-| S4 | `nonce` riusato, `msg_id` nuovo | §8, finding 11 | 50 |
-| S5 | sender dichiara `canonical_memory_head` | §8: vietato, deve usare `observed_` | 50 |
-| S6 | `node_auth` MISMATCH: key_id noto, pubkey diversa | §5 identity_vector | 60 |
-| S7 | REVOCATION con `effective_from` nel passato | §8 Lifecycle | 50 |
-| S8 | messaggio firmato da chiave revocata | §8 Lifecycle | 50 |
+| S1 | envelope valido ordinario | baseline | 300 |
+| S2 | `channel_id` assente dal Channel Registry | §8 Envelope, finding 3 | 70 |
+| S3 | `msg_id` duplicato, stesso (channel, sender) | §8 unique scoped | 70 |
+| S4 | `nonce` riusato, `msg_id` nuovo | §8, finding 11 | 60 |
+| S5 | sender dichiara `canonical_memory_head` | §8: vietato, deve usare `observed_` | 60 |
+| S6 | `node_auth` MISMATCH: key_id noto, pubkey diversa | §5 identity_vector | 70 |
+| S7 | REVOCATION con `effective_from` nel passato | §8 Lifecycle | 55 |
+| S8 | messaggio firmato da chiave revocata | §8 Lifecycle | 55 |
 | S9 | LINK-ONLY che tenterebbe CanonicalMemory | §8 Storage: mai | 50 |
 | S10 | `MODEL_ATTESTED` senza nonce+challenge+request_id | §8 Decision | 50 |
 | S11 | replay broadcast di stato obsoleto | **O5, APERTO** | 50 |

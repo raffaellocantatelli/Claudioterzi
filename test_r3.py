@@ -754,6 +754,74 @@ def test_custodia(r: Rapporto, repo: Path | None = None) -> None:
                     f"il documento non cita {atteso[:16]}...: il pinning non "
                     "corrisponde alla formula che dichiara")
 
+    # --- FIXTURE DI CONVERGENZA ------------------------------------------- #
+    gen = conv / "genera_fixture.py"
+    man_f = conv / "fixture" / "R3_PEER_1_1C_FIXTURE_1000.manifest.json"
+    if not gen.is_file() or not man_f.is_file():
+        r.add(G, "il fixture coincide con cio' che il manifest dichiara", SKIP,
+              "generatore o manifest assenti")
+    else:
+        man = json.loads(man_f.read_text(encoding="utf-8"))
+        fix = conv / "fixture" / man["fixture"]
+
+        # 1. il generatore non e' cambiato dopo aver scritto il manifest
+        r.controlla(G, "il generatore non e' cambiato dopo la generazione",
+                    hashlib.sha256(gen.read_bytes()).hexdigest()
+                    == man["generatore_sha256"],
+                    "il manifest dichiara un generatore diverso da quello "
+                    "presente: il fixture va rigenerato")
+
+        # 2. il fixture e' quello che il manifest dichiara
+        if fix.is_file():
+            r.controlla(G, "il fixture coincide con cio' che il manifest dichiara",
+                        hashlib.sha256(fix.read_bytes()).hexdigest()
+                        == man["fixture_sha256"],
+                        "il file non corrisponde al suo hash nel manifest")
+            righe = fix.read_text(encoding="utf-8").splitlines()
+            r.controlla(G, "il fixture ha 1000 eventi e denominatore 900",
+                        len(righe) == man["eventi"] == 1000
+                        and man["denominatore"] == 900,
+                        f"{len(righe)} righe, manifest dice {man['eventi']}, "
+                        f"denominatore {man['denominatore']}")
+        else:
+            r.add(G, "il fixture coincide con cio' che il manifest dichiara",
+                  SKIP, "file del fixture assente")
+
+        # 3. la distribuzione ottenuta coincide con quella impegnata
+        r.controlla(G, "la distribuzione coincide con quella preregistrata",
+                    man["distribuzione_impegnata"] == man["distribuzione_ottenuta"]
+                    and man["distribuzione_coincide"],
+                    "distribuzione ottenuta diversa da quella impegnata")
+
+        # 4. il seed e' ricalcolabile dalla formula, non creduto
+        atteso_seed = hashlib.sha256(
+            b"81dce982dfbd1d4b5f646b1418efbc24c8be4bf0" + b"R3-FIXTURE-1000"
+        ).hexdigest()
+        r.controlla(G, "il seed del manifest e' quello della formula",
+                    man["seed_sha256"] == atteso_seed,
+                    f"il manifest dichiara {man['seed_sha256'][:16]}..., "
+                    f"la formula da' {atteso_seed[:16]}...")
+
+        # 5. GEN legge la distribuzione dalla preregistrazione: l'hash deve
+        #    essere quello del documento sigillato presente
+        pre = conv / "PREREGISTRAZIONE_SCORING.md"
+        if pre.is_file():
+            r.controlla(G, "GEN ha letto la preregistrazione presente",
+                        hashlib.sha256(pre.read_bytes()).hexdigest()
+                        == man["preregistrazione_sha256"],
+                        "il manifest cita una preregistrazione diversa da "
+                        "quella nel repository")
+
+        # 6. la provenienza degli strati NON deve stare nel repository
+        prov = conv / "fixture" / "RISERVATO_non_consegnare" / "PROVENIENZA_STRATI.tsv"
+        tracciata = subprocess.run(
+            ["git", "ls-files", "--error-unmatch", str(prov.relative_to(base))],
+            cwd=base, capture_output=True, timeout=60).returncode == 0
+        r.controlla(G, "la provenienza degli strati non e' nel repository",
+                    not tracciata,
+                    "PROVENIENZA_STRATI.tsv e' tracciata: direbbe agli "
+                    "implementatori quali eventi sono quali")
+
     # lo script deve rifiutarsi di consegnare un pacchetto che rivela il disegno
     script = pac / "assembla.py"
     if not script.is_file() or not (esp / "ITEMS.md").is_file():
