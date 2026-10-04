@@ -94,6 +94,18 @@ Da cui, nello schema sopra: **`percezioni` esclude la conclusione**, e
 
 ## 3. AUTO-2026-10-04-01 — la prima voce, e non è un esempio
 
+**Le voci non si aggiornano mai.** È R2 applicato a questo file, non solo
+raccomandato altrove: una voce registra ciò che era vero quando è stata scritta.
+Se un numero qui dentro non corrisponde allo stato odierno, **non è un errore da
+correggere** — è la misura di quanto il progetto si è mosso.
+
+Esempio concreto, trovato lo stesso giorno: la voce dice «58 controlli
+automatici». Poche ore dopo erano 61. La tentazione di allineare il numero è
+esattamente la tentazione che ha fatto perdere H5 e H6: uno stato riscritto non
+mostra ciò che ha perso. Per correggere si **aggiunge una voce**, non si
+riscrive questa.
+
+
 ```yaml
 voce_id: AUTO-2026-10-04-01
 data: 2026-10-04
