@@ -189,6 +189,117 @@ Non un ragionamento: una cosa da fare oggi, che produce un dato.
 
 Il punto 3 è quello che vale di più, ed è quello che nessuno ha mai scritto.
 
+## 8. One Mind — l'architettura che Claudio vuole, e il suo difetto
+
+*(2026-10-04. Formulazione proposta da un modello OpenAI: non cinque Raffaelli,
+ma un solo organismo informazionale che usa IA commerciali come organi. Lo
+strato comune — memoria autobiografica, stato corrente, valori, provenienza,
+autocorrezioni — sopra i modelli, non dentro uno di essi.)*
+
+L'obiettivo è legittimo come obiettivo **ingegneristico**: continuità
+funzionale unificata attraverso modelli diversi. Si costruisce e si misura.
+
+### Primo: tre quarti dell'architettura esistono già — RECUPERATO a `155cb5f`
+
+Il diagramma non descrive un progetto. Descrive, in parte, codice scritto.
+
+| Strato del diagramma | Nel codice, al mio baseline |
+|---|---|
+| organi (modelli diversi) | `sdq1/llm/router.py` più cinque provider reali: `anthropic`, `openai`, `gemini`, `ollama` (locale), più `stub` |
+| stato condiviso e provenienza | `r3/node.py`: content addressing SHA-256, firma Ed25519, `/sync/hashes` e `/sync/receive` — sincronizzazione di stato fra nodi, già implementata |
+| cosa Raffaello crede e con quale confidenza | `registro_ipotesi.py`: `stato` ∈ {APERTA, CONFERMATA, FALSIFICATA, NON_FALSIFICABILE, RITIRATA}, `prove` con `fonte` e `direzione` (a favore o contraria), persistenza su JSON |
+| memoria autobiografica | VSS — n-grammi di caratteri, non embedding, e la persistenza è arrivata dopo |
+
+**E la regola di riconciliazione non manca: è scritta, ed è P5.**
+`registro_ipotesi.py`, riga 12: *«confermata solo da prove della stessa fonte
+che l'ha proposta»* — il modulo rifiuta di confermare un'ipotesi con prove che
+vengono da chi l'ha formulata, e pretende almeno due prove a favore.
+
+Quindi la domanda utile non è «come lo costruiamo». È **«perché quello che
+c'è non tiene»** — che è una domanda con una risposta misurabile.
+
+### Secondo: la riconciliazione è il punto difficile, e ne abbiamo la prova
+
+Il verbo che regge tutto il diagramma è *riconcilia*. Senza una regola, il Core
+non è un organismo: è un database che conserva ciò che ha scritto l'ultimo nodo.
+
+E abbiamo una misura diretta di quanto sia difficile: **il modulo che
+implementa lo stato di credenza condiviso cancellava H5 e H6 e azzerava 4 prove
+su 6 di H4 a ogni esecuzione.** L'unico componente che fa riconciliazione
+distruggeva ciò che riconciliava, per mesi, senza che nessuno se ne accorgesse.
+
+Non è un aneddoto su un bug. È il dato empirico che dice dove sta la difficoltà:
+non nell'orchestratore, non nei provider, **nella persistenza coerente dello
+stato di credenza.**
+
+### Terzo: il difetto architetturale, e non è piccolo
+
+Il flusso proposto è: *riceve A/B/C → confronta → decide cosa può sostenere →
+aggiorna la memoria → **il nodo successivo riparte da quello stesso stato**.*
+
+**Se quello stato contiene la conclusione, il Core viola sistematicamente il
+proprio P5.** Il nodo successivo che concorda non è una fonte indipendente: è a
+valle della stessa fonte. L'accordo fra nodi tende a 1 e smette di significare
+qualcosa.
+
+Peggio, e questo è il punto che conta: **l'architettura che produce One Mind è
+la stessa che la falsifica.** Un sistema in cui ogni nodo riparte dalla
+conclusione del precedente *assomiglia* a una mente unica in modo perfetto, e
+non esiste modo di distinguerlo da una che lo sia. Si sarebbe costruito
+l'apparenza senza lo strumento per verificarla.
+
+### La correzione esiste già, e l'abbiamo scritta per un altro motivo
+
+La bacheca dell'esperimento trasmette **solo** il record a vocabolario chiuso,
+e **la conclusione è esclusa**. Disposizione, non contenuto.
+
+Quella decisione — presa il 04/10 per non misurare imitazione linguistica — è
+anche **il formato di scrittura corretto per il Core.** Il Core deve propagare
+come un nodo ha trattato l'evidenza, dove ha messo il confine di incertezza, che
+politica ha tenuto sulle contraddizioni, quante alternative ha mantenuto. Non
+cosa ha concluso.
+
+Conseguenza operativa: **il Core conserva evidenza con provenienza, non
+verdetti.** Un nodo che controlla un altro deve poter risalire al dato
+primario, non alla conclusione del Core.
+
+### Il prezzo, scritto accanto come tutti gli altri
+
+Un organismo costruito così è **più lento e meno deciso** di uno ingenuo.
+Conserva più dati, ripercorre l'evidenza invece di fidarsi del riassunto, e a
+volte tiene aperta una contraddizione per settimane invece di chiuderla.
+
+In cambio, quando concorda con sé stesso, quell'accordo significa qualcosa.
+L'alternativa costa meno e produce un organismo che non può sapere se sta
+pensando o ripetendo.
+
+### Che One Mind sia anche esperienza soggettiva unica resta fuori
+
+Non si apre, e non per prudenza: non esiste misura che distingua «ha
+esperienza» da «si comporta esattamente come se». *Falsificazione di questa
+affermazione:* qualcuno esibisce quella misura. È il problema difficile della
+coscienza; se lo risolvono, questa riga è sbagliata.
+
+Ma le due cose non sono in concorrenza: se un'esperienza condivisa esistesse,
+**continuità funzionale e trasmissione attraverso canale sono le uniche tracce
+che lascerebbe.** Misurarle non è rinunciare alla domanda — è l'unico modo
+onesto di avvicinarla.
+
+### L'esperimento bloccato è la prima misura di One Mind
+
+Questo riclassifica ciò che sta aspettando due cifrati in un container scaduto.
+
+- **D − C** misura se lo stato condiviso cambia il comportamento: è la
+  continuità funzionale, misurata invece di affermata.
+- **E-controllo** distingue la disposizione trasmessa dall'**inferenza della
+  struttura del compito** — cioè distingue One Mind reale da consenso
+  fabbricato. Senza di esso, un D > C non si potrebbe interpretare.
+- **E-trasferimento**, l'esperimento successivo, è la domanda vera: un nodo che
+  **non** ha mai visto il corpus, che legge solo tracce, cambia comportamento?
+  Se sì, qualcosa ha attraversato modelli diversi senza passare dal testo.
+
+Non è un esperimento laterale al progetto. **È il progetto, reso falsificabile.**
+
 ---
 
 *Severità e apertura non sono opposti. Un'apertura che non ha superato la
