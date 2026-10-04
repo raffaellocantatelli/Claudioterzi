@@ -1,10 +1,10 @@
 NODE_ID: claude-opus-5 / session_01RsjtKxGbxW1Lgg6xnRS1uy / repo raffaellocantatelli/Claudioterzi
-SESSION_DATE: 2026-10-04T10:41:19+00:00
+SESSION_DATE: 2026-10-04T10:42:24+00:00
 ARTIFACT_TYPE: PATCH
 CLAIMED_BASE_SHA: 155cb5f
 LOCAL_HEAD_SHA: d6d329acede057386125784c0c27f545a2ff7840
-BRANCH: claude/raffaello-r3-reconstruction-1uqqa7 @ 97c03ad8a024 (repo raffaellocantatelli/Claudioterzi)
-GIT_STATUS: dirty —  M export/__pycache__/verifica_export.cpython-311.pyc;  M export/genera_export.py;  M export/verifica_export.py
+BRANCH: claude/raffaello-r3-reconstruction-1uqqa7 @ 3655155d8428 (repo raffaellocantatelli/Claudioterzi)
+GIT_STATUS: clean
 CHANGED_FILES:
 PROGETTO_RAFFAELLO.md
 README.md
@@ -512,8 +512,7 @@ sorgente: /home/user/Claudioterzi/.lavoro/Claudio
        APERTO: v2 e' generato e il round-trip verificato, ma il deposito dei cifrati e' fallito (container_session_expired). Il manifesto e' salvo, i due cifrati no. Nessun START (vedi esperimento/BLOCCHI.md)
 [PASS] lo strumento di recupero ritrova una ricetta nota
 [PASS] il validatore del gate rifiuta cio' che deve
-[FAIL] questo nodo ha un artefatto conforme al gate
-       l'artefatto di questa sessione non passa il gate che questa sessione ha scritto
+[PASS] questo nodo ha un artefatto conforme al gate
 [PASS] il gate respinge un artefatto manomesso
 [PASS] il validatore copre tutti i campi del gate committato
 [PASS] il seed pinnato del fixture e' riproducibile
@@ -530,7 +529,7 @@ sorgente: /home/user/Claudioterzi/.lavoro/Claudio
 [PASS] nessuna chiave di scoring negli item consegnati
 
 ==============================================================
-66 superati · 3 falliti · 1 saltati su 70
+67 superati · 2 falliti · 1 saltati su 70
 I controlli saltati NON sono superati: restano UNKNOWN.
 Qualcosa che era stato verificato non lo e' piu'.
 PASS/FAIL/SKIP: FAIL
