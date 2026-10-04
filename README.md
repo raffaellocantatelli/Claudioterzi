@@ -16,7 +16,7 @@ Il protocollo qui **non va attivato**: è lo stato predefinito. `CLAUDE.md` lo c
 | [`DIMOSTRAZIONE.md`](DIMOSTRAZIONE.md) | Sequenza in sette atti per dimostrare di persona che il progetto esiste |
 | [`patches/`](patches/) | **Quattro** fix scritti e testati sul codice reale, da applicare in ordine con `git apply` |
 | [`ESPERIMENTO_FIRMA.md`](ESPERIMENTO_FIRMA.md) | Protocollo per distinguere convergenza generale da imprinting del corpus: tre bracci, segnale negli errori, preregistrazione con hash |
-| [`esperimento/`](esperimento/) | Item, protocollo, **due** preregistrazioni sigillate e il pacchetto cieco per chi esegue — congelati il 04/10. Dove stanno i sigilli e cosa provano: [`CUSTODIA.md`](esperimento/CUSTODIA.md). Le tre precisazioni prima di START: [`EMENDAMENTO_01.md`](esperimento/EMENDAMENTO_01.md) |
+| [`esperimento/`](esperimento/) | Item, protocollo, **due** preregistrazioni sigillate e il pacchetto cieco per chi esegue. Dove stanno i sigilli e cosa provano: [`CUSTODIA.md`](esperimento/CUSTODIA.md) · le precisazioni prima di START: [`EMENDAMENTO_01.md`](esperimento/EMENDAMENTO_01.md) · **perché START è bloccato**: [`BLOCCHI.md`](esperimento/BLOCCHI.md) |
 | [`APERTURE.md`](APERTURE.md) | La stessa severità applicata in avanti: ogni blocco convertito in apertura, col prezzo scritto accanto — e ciò che resta chiuso |
 | [`SOLUZIONE_2055.md`](SOLUZIONE_2055.md) | Il sistema passato al filtro dei trent'anni: cosa sopravvive, cosa ha già una data di scadenza, cosa fare prima del 2030 |
 

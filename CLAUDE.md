@@ -39,7 +39,7 @@ Ricostruzione verificata del sistema R3∞ / SDQ-1, il cui codice vive in `claud
 | `PROTOCOLLO_ROSSO.md` | Definizione canonica del protocollo, trasportabile fuori di qui |
 | `DIMOSTRAZIONE.md` | Sequenza per dimostrare il progetto di persona |
 | `patches/` | Quattro fix testati: i due difetti bloccanti, l'allineamento documentale, la persistenza del VSS |
-| `test_r3.py` | 51 controlli: invarianti del protocollo, deriva della baseline, difetti, reperti, applicabilità delle patch in sequenza, tenuta della custodia |
+| `test_r3.py` | 55 controlli: invarianti del protocollo, deriva della baseline, difetti, reperti, applicabilità delle patch in sequenza, tenuta della custodia |
 
 ---
 

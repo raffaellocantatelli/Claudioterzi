@@ -466,7 +466,7 @@ def self_test() -> int:
 
 # --------------------------------------------------------------------------- #
 
-def test_custodia(r: Rapporto) -> None:
+def test_custodia(r: Rapporto, repo: Path | None = None) -> None:
     """Controlla che il pacchetto cieco resti cieco.
 
     Chi modifica ITEMS.md puo' far finire il disegno dentro un item senza
@@ -525,6 +525,71 @@ def test_custodia(r: Rapporto) -> None:
             )
         except (OSError, subprocess.SubprocessError) as e:
             r.add(G, "il cifrato restituisce l'hash sigillato", SKIP, str(e))
+
+    # --- BLOCKER-CUSTODY-02 ---------------------------------------------- #
+    # Un hash senza chiaro recuperabile non e' una preregistrazione. Il
+    # sigillo delle previsioni ha il suo chiaro cifrato e committato; il
+    # secondo sigillo, al 2026-10-04, no. Questo controllo resta rosso
+    # finche' non si chiude, cosi' START non si puo' dare per distrazione.
+    SIGILLO_2 = "9b26358483158011f405b5cf0618ca884d9191c230b5eb59618f14480282b1d8"
+
+    blocchi = leggi_locale("esperimento/BLOCCHI.md") or ""
+    r.controlla(G, "il registro dei blocchi esiste e cita il secondo sigillo",
+                SIGILLO_2 in blocchi,
+                "esperimento/BLOCCHI.md manca o non cita 9b263584...")
+    r.controlla(G, "BLOCKER-CUSTODY-02 dichiara un criterio di chiusura",
+                "BLOCKER-CUSTODY-02" in blocchi
+                and "Criterio di chiusura" in blocchi,
+                "un blocco senza criterio di chiusura non si puo' chiudere")
+
+    # 1) il chiaro recuperato, se qualcuno lo indica, deve produrre quell'hash
+    recuperato = os.environ.get("R3_CUSTODIA2")
+    if recuperato:
+        f = Path(recuperato)
+        if not f.is_file():
+            r.controlla(G, "BLOCKER-CUSTODY-02 chiuso: round-trip verificato",
+                        False, f"R3_CUSTODIA2 punta a un file assente: {f}")
+        else:
+            got = hashlib.sha256(f.read_bytes()).hexdigest()
+            r.controlla(G, "BLOCKER-CUSTODY-02 chiuso: round-trip verificato",
+                        got == SIGILLO_2,
+                        f"il materiale indicato ha sha256 {got[:16]}..., "
+                        "non quello sigillato: non sono quei byte")
+    else:
+        # 2) altrimenti si cerca un cifrato depositato accanto all'hash
+        depositato = []
+        if repo is not None and repo.is_dir():
+            for pattern in ("docs/experiments/*CUSTODY*.enc",
+                            "docs/experiments/*custody*.enc",
+                            "docs/experiments/*PLACEBO*.enc"):
+                depositato += list(repo.glob(pattern))
+        r.controlla(
+            G, "BLOCKER-CUSTODY-02 chiuso: chiaro del secondo sigillo recuperabile",
+            bool(depositato),
+            "APERTO: l'hash 9b263584... e' depositato, il suo chiaro no. "
+            "Nessun START. Chiude con sha256 del materiale recuperato uguale "
+            "al sigillo, poi cifratura, commit e round-trip "
+            "(vedi esperimento/BLOCCHI.md)",
+        )
+
+    # lo strumento di recupero deve ritrovare una ricetta nota: senza questa
+    # controprova, uno strumento che non trova mai niente sarebbe
+    # indistinguibile da uno rotto
+    rec = esp / "recupera_sigillo.py"
+    if not rec.is_file():
+        r.add(G, "lo strumento di recupero ritrova una ricetta nota", SKIP,
+              "recupera_sigillo.py assente")
+    else:
+        try:
+            e = subprocess.run([sys.executable, str(rec), "--self-test"],
+                               capture_output=True, timeout=120)
+            r.controlla(G, "lo strumento di recupero ritrova una ricetta nota",
+                        e.returncode == 0,
+                        "il self-test fallisce: non ci si puo' fidare di un "
+                        "esito negativo del recupero")
+        except (OSError, subprocess.SubprocessError) as exc:
+            r.add(G, "lo strumento di recupero ritrova una ricetta nota",
+                  SKIP, str(exc))
 
     # lo script deve rifiutarsi di consegnare un pacchetto che rivela il disegno
     script = pac / "assembla.py"
@@ -606,7 +671,7 @@ def main(argv: list[str]) -> int:
     test_deriva(r, repo)
     test_difetti(r, repo)
     test_reperti(r, repo)
-    test_custodia(r)
+    test_custodia(r, repo)
 
     if args.json:
         print(json.dumps(r.come_json(repo), ensure_ascii=False, indent=2))
