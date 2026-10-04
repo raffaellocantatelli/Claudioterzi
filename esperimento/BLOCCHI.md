@@ -54,26 +54,81 @@ Anche ritrovando entrambi i testi, **il round-trip può fallire per la struttura
 e non per il contenuto.** Chi tenta il recupero provi le varianti di
 concatenazione prima di dichiarare i byte persi.
 
-### Dove i byte NON sono — RECUPERATO, 2026-10-04
+### Dove i byte NON sono — e tre tentativi, due dei quali sbagliati
 
-Ho enumerato **ogni path mai esistito** in `claudioterzi/Claudio`, su tutti i
-rami, remoti compresi: **1896 path distinti**.
+Questa sezione registra anche i tentativi falliti, perché il modo in cui sono
+falliti è l'informazione più utile che contengono.
 
-L'unico file sotto `docs/experiments/` è
-`OPENAI_CUSTODY_SHA256_2026-10-04.txt` — i 180 byte del solo hash. **Nessun
-placebo, nessun item di contaminazione, su nessun ramo, in nessun commit, mai.**
+**Tentativo 1 — invalido.** Confronto degli hash dei blob presenti nel clone
+locale: zero corrispondenze. Privo di valore: il clone è un *partial clone*
+`blob:none` e ospitava **1887 blob su 6608 versioni esistenti — il 29%**.
+Riconosciuto prima di riportarlo. Stesso errore del `--depth 1` di agosto.
 
-Il metodo e il suo limite, perché il risultato vale solo se il metodo è sano:
-l'enumerazione dei path richiede commit e tree, non i blob. Il clone locale è
-un *partial clone* con filtro `blob:none` — i blob arrivano su richiesta, i
-tree no — ed è stato interrogato con `GIT_NO_LAZY_FETCH=1`, che avrebbe dato
-errore se un tree fosse mancato. Uscita 0, nessun errore: **per i path la
-scansione è completa.**
+**Tentativo 2 — invalido, e peggio del primo.** Enumerazione dei path con
+`git log --all --name-only`, 1896 path, dichiarata completa perché
+«uscita 0, nessun errore».
 
-*(Un primo tentativo aveva confrontato gli hash dei soli 1887 blob presenti in
-locale e non trovato nulla. Quel risultato era privo di valore — un clone
-parziale ne ospita una frazione — e non va citato. È lo stesso errore del
-`--depth 1` di agosto, riconosciuto prima di riportarlo.)*
+**Quella dichiarazione era falsa, e l'errore è istruttivo.** Il comando era
+
+```bash
+timeout 110 env GIT_NO_LAZY_FETCH=1 git log --all --name-only … \
+  | sort -u | sed '/^$/d' > paths.txt; echo "RC=$?"
+```
+
+`$?` di una pipeline è lo stato dell'**ultimo** comando — `sed` — non di
+`timeout` né di `git`. Dimostrato:
+
+```bash
+$ timeout 1 git log --all --name-only | sort -u | sed '/^$/d' >/dev/null; echo $?
+0
+```
+
+**Un timeout che uccide git produce uscita 0.** Lo stato che ho citato come
+prova di completezza non poteva, per costruzione, segnalare l'incompletezza.
+È la stessa forma del guasto che ha ucciso il sistema per settimane:
+`continue-on-error` su un passo che fallisce in silenzio.
+
+**Tentativo 3 — valido.** Lista autorevole da `git rev-list --objects --all`,
+completata e verificata nel suo esito reale: **2693 path distinti**, 6608
+versioni di blob. Il tentativo 2 ne aveva mancati **828, il 31%**.
+
+Su quella lista, i path candidati per nome (`placebo`, `contamin`, `custod`,
+`openai`, `prereg`, `sigill`, `seal`, `firma`, `experiment`, `item`) sono stati
+estratti e **ogni loro versione è stata hashata** contro i due sigilli, senza
+leggerne il contenuto:
+
+| path | versioni | byte | corrispondenze |
+|---|---|---|---|
+| `docs/experiments/OPENAI_CUSTODY_SHA256_2026-10-04.txt` | 1 | 180 | nessuna |
+| `allineamento/OPENAI.md` | 1 | 2985 | nessuna |
+
+**Nessun placebo, nessun item di contaminazione, sotto nessun nome
+riconoscibile.** Coerente con la dichiarazione dell'autore, che resta la fonte
+primaria: il materiale non è mai esistito come oggetto persistito.
+
+**Tentativo 4 — completo, e chiude il residuo.** Hash di **ogni** versione di
+blob mai esistita, non solo dei path candidati per nome:
+
+```
+blob da esaminare: 6608
+esaminati: 6608   non recuperabili: 0
+corrispondenze con un sigillo: 0
+SCANSIONE COMPLETA
+```
+
+Lo script esce **1** se un solo blob non è recuperabile, perché
+un'esecuzione incompleta non deve poter passare per completa — e il suo stato
+d'uscita è stato letto direttamente, non attraverso una pipeline. È la
+correzione dell'errore del tentativo 2, applicata allo strumento invece che
+alla prosa.
+
+**RECUPERATO:** il materiale del sigillo v1 non è in nessuna versione di nessun
+file, su nessun ramo, in tutta la storia di `claudioterzi/Claudio`. Nemmeno le
+previsioni di questa sessione, che non ci devono essere. Coerente con la
+dichiarazione dell'autore, che resta la fonte primaria.
+
+**Corollario P5.** La dichiarazione di Claudio di non aver aggirato il 403 resta
+corroborata da una fonte diversa da chi l'ha fatta, nei limiti sopra.
 
 **Corollario che vale la pena notare.** Claudio aveva dichiarato di non aver
 aggirato il permesso negato dal 403. Non c'è traccia del materiale in nessun
