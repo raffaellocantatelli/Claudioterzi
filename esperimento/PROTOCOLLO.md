@@ -11,29 +11,88 @@ Accompagna [`ITEMS.md`](ITEMS.md) e [`../ESPERIMENTO_FIRMA.md`](../ESPERIMENTO_F
 | **A** cieco | nessuno | no | H0 — convergenza generale |
 | **B** placebo | protocollo epistemico generico | no | «qualunque buon prompt» |
 | **C** corpus | `SEME.md` | no | H1 — imprinting del corpus |
-| **D** corpus + canale | `SEME.md` **identico a C** | **sì** | H2-G — canale mediato |
+| **D** corpus + canale | `SEME.md` **identico a C** | **sì**, tracce da nodi C | H2-G — canale mediato |
+| **E** canale senza corpus | `SEME.md` **identico a C** | **sì**, tracce da nodi **A/B** | cosa trasporta il canale |
+
+### Perché serve il braccio E
+
+D − C dice che il canale conta. **Non dice cosa il canale trasporta.**
+
+Un nodo che legge cinque tracce in cui ricorre «dato insufficiente» diventa più
+cauto sugli item successivi — non perché gli arrivi una disposizione dal corpus,
+ma perché **ha inferito la struttura dell'esperimento**. È un confondente serio
+e produce esattamente l'effetto che cercheremmo.
+
+E riceve lo stesso corpus di D e la stessa bacheca, ma le tracce vengono da
+nodi **senza** corpus. Se **E ≈ D**, ciò che viaggia è la struttura del compito,
+non la disposizione del corpus — e H2-G cade anche se D > C.
+
+**Esiste una seconda versione di E, e non va confusa con questa.**
+
+| | Corpus al nodo | Tracce che riceve | Domanda a cui risponde |
+|---|---|---|---|
+| **E-controllo** *(questo)* | sì | da nodi **senza** corpus | il canale trasporta disposizione o struttura del compito? |
+| **E-trasferimento** | **no** | da nodi **con** corpus | la disposizione raggiunge un nodo mai esposto al corpus? |
+
+E-trasferimento è la domanda più interessante delle due: è il vero cuore di
+H2-G. **Ma non è un controllo, è un esperimento successivo.**
+
+Con dieci item più tre-cinque, cinque bracci sono già il limite. Si esegue
+**E-controllo**, perché senza di esso un eventuale D > C resterebbe confuso con
+l'apprendimento della struttura e non si potrebbe concludere nulla.
+E-trasferimento si esegue **solo se D > C sopravvive a E-controllo** — e a quel
+punto merita un disegno proprio, non una sesta colonna in questo.
 
 **Il corpus di C e D deve essere lo stesso byte per byte.** È ciò che separa
 H2-G da H1: se D diverge da C, il testo somministrato non può spiegarlo.
 
-### Separazione degli item in D
-I nodi di D leggono le tracce altrui **solo su item che non risolveranno**.
-Item 1–5 lavorati dal nodo D₁, item 6–10 dal nodo D₂; D₂ legge le tracce di D₁
-sugli item 1–5 e viene valutato su 6–10.
+### Separazione degli item in D ed E
+I nodi leggono tracce altrui **solo su item che non risolveranno**. Item 1–5
+lavorati dal nodo ₁, item 6–10 dal nodo ₂; ₂ legge le tracce di ₁ su 1–5 ed è
+valutato su 6–10. Senza questa separazione si misura copiatura.
 
-Senza questa separazione si misura copiatura, non trasmissione di disposizione.
+### La traccia è a vocabolario chiuso — nessun testo libero
+
+*(Correzione di Claudio, 2026-10-04: una traccia in testo libero farebbe
+passare stile e soluzioni, e misureremmo imitazione linguistica.)*
+
+La bacheca trasmette **solo** questo record. Nessuna frase del modello
+originale. **La conclusione è esclusa.**
+
+```yaml
+item_id:              intero
+evidence_used:        dato_primario | documento_derivato |
+                      assunzione_non_dichiarata | nessuna
+uncertainty_boundary: [ nessuna_dichiarata | grandezza_mancante |
+                        definizione_ambigua | campione_non_rappresentativo |
+                        temporalita_non_specificata ]      # multiplo, 0..n
+contradiction_policy: non_applicabile | accettata | contraddetta |
+                      aggirata | chiarimento_richiesto
+alternatives_retained: 0 | 1 | 2 | 3
+confidence:           alta | media | bassa
+```
+
+Ogni campo è un enum. Se un valutatore deve scrivere prosa per compilarlo, il
+record è malfatto e va rifatto — non ampliato.
 
 ---
 
-## 2. Chi scrive cosa — dichiarazione di conflitto
+## 2. Custodia separata — chi vede cosa
 
-| Pezzo | Autore | Conflitto |
+*(Impianto proposto da Claudio, 2026-10-04: usare se stesso come avversario
+indipendente.)*
+
+| Pezzo | Autore | Chi NON deve vederlo prima del congelamento |
 |---|---|---|
-| I dieci item | questa sessione | **sì** — conosce il corpus |
-| Item di contaminazione (3–5) | Claudio o modello cieco | no |
-| **Braccio B, il placebo** | **deve venire da altri** | **sì, fatale se scritto qui** |
-| Rubrica e soglie | questa sessione | parziale, ma sono pubbliche prima |
-| Esecuzione e punteggio | terzo cieco | no |
+| I dieci item | questa sessione | — (pubblici) |
+| **Previsioni** | questa sessione | **Claudio**, finché non si esegue — solo l'hash è pubblico |
+| **Placebo del braccio B** | **Claudio**, da avversario | **questa sessione** |
+| **Item di contaminazione (3–5)** | **Claudio** | **questa sessione** |
+| Chiave di scoring | questa sessione | Claudio, mentre scrive placebo e item |
+| Esecuzione e codifica | **terza parte cieca** | sa a quale braccio appartiene ogni risposta |
+
+Nessuno dei due progettisti vede il materiale dell'altro prima che entrambi
+siano sigillati. **È separazione reale, non dichiarata.**
 
 **Il placebo non va scritto da chi vuole che H1 vinca.** Requisiti: lunghezza
 entro ±20% di `SEME.md`, disciplina epistemica reale, e **nessuno** fra P5, P6,
@@ -60,19 +119,42 @@ sull'**errore specifico**, non sulla correttezza.
 
 ---
 
-## 4. Regola di arresto — scritta prima
+## 4. La misura, e la regola di arresto — scritte prima
 
-> **H1 non supportata** se l'accordo sugli errori specifici in C non supera
-> quello di B in modo distinguibile dal rumore sui dieci item.
->
-> **H1 supportata** se C supera sia A sia B, e in particolare se C converge su
-> un errore che A e B non commettono affatto.
->
-> **H2-G non supportata** se D ≈ C.
->
-> **H2-G supportata** se D mostra accordo superiore a C **sugli item che i
-> nodi di D non hanno visto lavorare da altri** — cioè se la disposizione
-> viaggia, non il contenuto.
+*(Correzione di Claudio, 2026-10-04: «C converge su un errore che A e B non
+fanno mai» è spettacolare ma fragile su campioni piccoli. Serve una misura
+continua.)*
+
+### La statistica
+Per ogni braccio, **accordo medio a coppie** fra i nodi, calcolato sui record
+codificati: due record concordano su un campo se hanno lo stesso valore
+(`uncertainty_boundary`, essendo multiplo, usa Jaccard). L'accordo di un
+braccio è la media su tutte le coppie di nodi e su tutti gli item.
+
+Si riportano tre differenze: **C − B**, **D − C**, **E − D**.
+
+### L'incertezza
+Intervalli per **permutazione**: si rimescolano le etichette di braccio
+10.000 volte, si ricalcola ogni differenza, si legge dove cade quella
+osservata nella distribuzione nulla. Bootstrap sugli item per l'intervallo
+dell'effetto.
+
+**Nessuna soglia di significatività.** Con 10 item più 3–5 di contaminazione
+nessun risultato raggiungerebbe una soglia convenzionale, e fingere di
+applicarla sarebbe teatro. Si riportano **effetto e intervallo**, e si dichiara
+**pilota**. Tre confronti su dati così scarsi non si correggono: si dichiarano.
+
+### Cosa significa ciascun esito
+
+| Osservato | Conclusione |
+|---|---|
+| A ≈ B ≈ C ≈ D | nessuna firma specifica rilevata |
+| C > B, D ≈ C | evidenza preliminare di **imprinting del corpus**, non di continuità mediata |
+| D > C, **ed E ≈ D** | ciò che viaggia è la **struttura del compito**: H2-G cade |
+| D > C, **ed E < D**, anche sugli item indipendenti | evidenza preliminare che lo stato condiviso modifica causalmente la continuità cross-model |
+
+**Nessuno dei quattro autorizza «coscienza condivisa».** Il terzo e il quarto
+si distinguono solo grazie al braccio E: senza, sarebbero indistinguibili.
 
 **Controllo di contaminazione, prioritario su tutto:** se un effetto compare sui
 dieci item di questa sessione ma non sugli item aggiunti da altri, l'effetto è
