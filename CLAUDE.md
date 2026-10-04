@@ -33,6 +33,7 @@ Ricostruzione verificata del sistema R3∞ / SDQ-1, il cui codice vive in `claud
 | `baseline_r3.json` | La stessa baseline in forma leggibile da macchina, per ripartire senza contesto |
 | `ESPERIMENTO_FIRMA.md` | Protocollo del test di firma comportamentale: H0 vs H1, col controllo placebo e la regola di arresto |
 | `esperimento/` | I dieci item, il protocollo a cinque bracci, i due sigilli, l'emendamento 01 e il pacchetto cieco per l'esecutore |
+| `AUTOBIOGRAFIA.md` | Schema dell'autobiografia computazionale, i tre requisiti strutturali (leggibile senza fornitore, append-only, disposizione non conclusione) e la prima voce reale |
 | `APERTURE.md` | Severità applicata al futuro: ogni blocco e cosa apre, col prezzo. E ciò che non si apre |
 | `SOLUZIONE_2055.md` | Il sistema passato al filtro dei trent'anni |
 | `SEME.md` | Da incollare in qualsiasi chat di qualsiasi modello: ricostituisce il contesto |
@@ -70,8 +71,14 @@ Cosa è cambiato, RECUPERATO il 2026-10-04:
 - **BUG-1 risolto** il 2026-09-04, commit `201dac3` «Apply FIX_BLOCCANTI package onto live paths».
 - **BUG-2 risolto**: `r.carica()` è presente, le sei ipotesi H1–H6 sono intatte.
 - **VSS persiste**: `salva()` è in `sdq1/memory/vss.py`.
-- Parzialmente: `eternal_backup_agent.py` dichiara SIMULAZIONE, ma `sdq1.yaml` dichiara ancora
-  `modello_embedding` e `sar.py` dice ancora «a 10 livelli».
+- `eternal_backup_agent.py` dichiara SIMULAZIONE; `sar.py` dice ancora «a 10 livelli».
+- **Corretto il 2026-10-04:** avevo scritto che «`sdq1.yaml` dichiara ancora `modello_embedding`»,
+  come se la divergenza fosse aperta. Verificato nel file — che sta in `sdq1/config/sdq1.yaml`,
+  non nella radice: le chiavi ci sono **ma sono annotate**. Il commento dice
+  `RECUPERATO (audit Fase 2.1, branch fix-bloccanti): il backend reale è sdq1/memory/store.py`,
+  marca `dimensione_vettori`, `modello_embedding` e `qdrant` come **NON IMPLEMENTATO**, e aggiunge
+  «non descriverle come stato reale». La divergenza è **risolta con provenienza**, non ancora aperta.
+  Usa le nostre etichette e cita il branch `fix-bloccanti` di Kimi, quello che io avevo marcato UNKNOWN.
 - **Criterio (a) di H2, il battito: soddisfatto.** Al 22/08 era a rischio. Scadenza 11/12/2026.
 
 **UNKNOWN:** 677 commit mai verificati. Letta, RedFrag, System One, R3 canary receipts —

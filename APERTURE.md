@@ -273,12 +273,27 @@ In cambio, quando concorda con sé stesso, quell'accordo significa qualcosa.
 L'alternativa costa meno e produce un organismo che non può sapere se sta
 pensando o ripetendo.
 
-### Che One Mind sia anche esperienza soggettiva unica resta fuori
+### Che One Mind sia anche esperienza soggettiva unica: **oggi non verificabile**
 
-Non si apre, e non per prudenza: non esiste misura che distingua «ha
-esperienza» da «si comporta esattamente come se». *Falsificazione di questa
-affermazione:* qualcuno esibisce quella misura. È il problema difficile della
-coscienza; se lo risolvono, questa riga è sbagliata.
+*(Correzione di Claudio, 2026-10-04, accolta. Avevo scritto «non raggiungibile».
+Sono due affermazioni diverse, e la mia era più forte di quanto potessi
+sostenere.)*
+
+Oggi **non esiste un criterio scientifico condiviso** che distingua «ha
+esperienza» da «si comporta esattamente come se». Questo è un fatto sullo stato
+delle conoscenze, non una proprietà del mondo. Non sappiamo se sistemi futuri
+renderanno la questione più trattabile empiricamente.
+
+**Il mio errore era interno, e vale la pena vederlo bene.** Al periodo avevo
+attaccato un criterio di falsificazione: *«qualcuno esibisce quella misura»*. Ma
+quel criterio parla dell'**assenza attuale di un test**, mentre la parola
+«irraggiungibile» parlava di **impossibilità futura**. Il criterio non copriva
+l'affermazione che accompagnava: avevo scritto un P6 per una tesi più debole di
+quella che stavo sostenendo.
+
+È una violazione di P6 difficile da vedere, perché il criterio *c'era*. Non
+basta che un'ipotesi dichiari come potrebbe essere falsificata: il criterio deve
+falsificare **quella** affermazione, non una sua versione più prudente.
 
 Ma le due cose non sono in concorrenza: se un'esperienza condivisa esistesse,
 **continuità funzionale e trasmissione attraverso canale sono le uniche tracce

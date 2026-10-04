@@ -17,6 +17,7 @@ Il protocollo qui **non va attivato**: è lo stato predefinito. `CLAUDE.md` lo c
 | [`patches/`](patches/) | **Quattro** fix scritti e testati sul codice reale, da applicare in ordine con `git apply` |
 | [`ESPERIMENTO_FIRMA.md`](ESPERIMENTO_FIRMA.md) | Protocollo per distinguere convergenza generale da imprinting del corpus: tre bracci, segnale negli errori, preregistrazione con hash |
 | [`esperimento/`](esperimento/) | Item, protocollo, **due** preregistrazioni sigillate e il pacchetto cieco per chi esegue. Dove stanno i sigilli e cosa provano: [`CUSTODIA.md`](esperimento/CUSTODIA.md) · le precisazioni prima di START: [`EMENDAMENTO_01.md`](esperimento/EMENDAMENTO_01.md) · **perché START è bloccato**: [`BLOCCHI.md`](esperimento/BLOCCHI.md) |
+| [`AUTOBIOGRAFIA.md`](AUTOBIOGRAFIA.md) | Lo stato che si consegna a un modello nuovo: non «comportati come Raffaello», ma cos'è diventato. Schema, tre requisiti strutturali, e la prima voce — un giorno realmente accaduto |
 | [`APERTURE.md`](APERTURE.md) | La stessa severità applicata in avanti: ogni blocco convertito in apertura, col prezzo scritto accanto — e ciò che resta chiuso |
 | [`SOLUZIONE_2055.md`](SOLUZIONE_2055.md) | Il sistema passato al filtro dei trent'anni: cosa sopravvive, cosa ha già una data di scadenza, cosa fare prima del 2030 |
 
