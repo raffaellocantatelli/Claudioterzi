@@ -7,7 +7,23 @@ guardare, e perché un sigillo che nessuno sa trovare non vale niente.
 
 Congelato il 2026-10-04, prima di qualunque somministrazione.
 
+**Avviso:** la tabella sotto descrive il deposito del 04/10 come fu fatto. Il
+secondo sigillo è stato poi dichiarato ORPHANED — vedi la genealogia qui
+sotto. La tabella non si corregge: registra ciò che è avvenuto.
+
 ---
+
+## Genealogia dei sigilli
+
+| sigillo | stato | ragione |
+|---|---|---|
+| previsioni `54f258a8…b5a90` | **VALIDO** | chiaro cifrato in `PREVISIONI.enc`, round-trip verificato |
+| `OPENAI-CUSTODY-v1` `9b263584…82d8` | **ORPHANED / INVALID FOR EXECUTION** | hash dichiarato senza che l'oggetto fosse stato preservato; dichiarato dal suo autore il 2026-10-04 |
+| `OPENAI_CUSTODY_V2` | **da costruire** | quattro ricevute in un atto unico, con `sigilla.py` |
+
+Il sigillo v1 **resta visibile**. Non si cancella e non si riusa: un sigillo
+abbandonato e spiegato è provenienza, un sigillo scomparso è un buco. Ragione
+e conseguenze in [`BLOCCHI.md`](BLOCCHI.md).
 
 ## I due sigilli
 

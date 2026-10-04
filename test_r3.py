@@ -542,6 +542,33 @@ def test_custodia(r: Rapporto, repo: Path | None = None) -> None:
                 and "Criterio di chiusura" in blocchi,
                 "un blocco senza criterio di chiusura non si puo' chiudere")
 
+    # v1 deve restare visibile e marcato: cancellarlo farebbe sparire la
+    # genealogia, che e' l'unica cosa che distingue un abbandono dichiarato
+    # da un insabbiamento
+    gen = (leggi_locale("esperimento/CUSTODIA.md") or "") + blocchi
+    r.controlla(G, "il sigillo abbandonato resta visibile e marcato ORPHANED",
+                SIGILLO_2 in gen and "ORPHANED" in gen,
+                "v1 non e' piu' citato o non e' marcato: un sigillo scomparso "
+                "e' un buco nella genealogia")
+
+    # lo strumento che sigilla deve rifiutare cio' che deve rifiutare
+    sig = esp / "sigilla.py"
+    if not sig.is_file():
+        r.add(G, "lo strumento di sigillatura rifiuta materiale non conforme",
+              SKIP, "sigilla.py assente")
+    else:
+        try:
+            e = subprocess.run([sys.executable, str(sig), "--self-test"],
+                               capture_output=True, timeout=180)
+            r.controlla(G,
+                        "lo strumento di sigillatura rifiuta materiale non conforme",
+                        e.returncode == 0,
+                        "il self-test fallisce: uno strumento che sigilla "
+                        "sempre non controlla niente")
+        except (OSError, subprocess.SubprocessError) as exc:
+            r.add(G, "lo strumento di sigillatura rifiuta materiale non conforme",
+                  SKIP, str(exc))
+
     # 1) il chiaro recuperato, se qualcuno lo indica, deve produrre quell'hash
     recuperato = os.environ.get("R3_CUSTODIA2")
     if recuperato:
@@ -559,17 +586,16 @@ def test_custodia(r: Rapporto, repo: Path | None = None) -> None:
         # 2) altrimenti si cerca un cifrato depositato accanto all'hash
         depositato = []
         if repo is not None and repo.is_dir():
-            for pattern in ("docs/experiments/*CUSTODY*.enc",
-                            "docs/experiments/*custody*.enc",
-                            "docs/experiments/*PLACEBO*.enc"):
+            for pattern in ("docs/experiments/*CUSTODY_V2*.enc",
+                            "docs/experiments/*custody_v2*.enc",
+                            "docs/experiments/*CUSTODY_V2*MANIFEST*"):
                 depositato += list(repo.glob(pattern))
         r.controlla(
-            G, "BLOCKER-CUSTODY-02 chiuso: chiaro del secondo sigillo recuperabile",
+            G, "BLOCKER-CUSTODY-02 chiuso: v2 sigillato con chiaro recuperabile",
             bool(depositato),
-            "APERTO: l'hash 9b263584... e' depositato, il suo chiaro no. "
-            "Nessun START. Chiude con sha256 del materiale recuperato uguale "
-            "al sigillo, poi cifratura, commit e round-trip "
-            "(vedi esperimento/BLOCCHI.md)",
+            "APERTO: v1 e' ORPHANED e v2 non esiste ancora. Nessun START. "
+            "Chiude depositando, in un atto unico, manifesto piu' cifrati "
+            "prodotti da esperimento/sigilla.py (vedi esperimento/BLOCCHI.md)",
         )
 
     # lo strumento di recupero deve ritrovare una ricetta nota: senza questa

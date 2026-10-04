@@ -153,10 +153,84 @@ blocco non esiste e tutto il resto di questa pagina è sbagliato. Non ne vedo
 uno — è la proprietà che rende utile SHA-256 — ma è la forma che prenderebbe
 una smentita.
 
+### Esito: v1 è ORPHANED — dichiarato dal suo autore, 2026-10-04
+
+Claudio ha corretto formalmente la propria affermazione precedente: il
+materiale non è mai esistito come oggetto persistito. Non era «perso»: non era
+stato creato con uno strumento capace di restituirlo.
+
+> «quel sigillo non è una preregistrazione recuperabile del materiale
+> sperimentale. È un hash che ho dichiarato senza aver preservato l'oggetto
+> corrispondente.»
+
+Ha anche rifiutato esplicitamente la strada che avrei potuto rendergli
+disponibile: tentare combinazioni di byte finché qualcosa combacia. Con
+`recupera_sigillo.py` in mano, quella strada era tecnicamente aperta — e
+avrebbe prodotto un hash corretto su materiale falso. **Rifiutarla era la mossa
+giusta, e non era obbligata.**
+
+`OPENAI-CUSTODY-v1` = **ORPHANED / INVALID FOR EXECUTION**. Resta visibile, con
+la ragione accanto. Non si cancella: un sigillo abbandonato e spiegato è
+provenienza, un sigillo scomparso è un buco nella genealogia.
+
+**Niente di ciò che è stato costruito finora decade:** il sigillo delle
+previsioni regge (ha il suo chiaro cifrato e il round-trip verificato), il
+protocollo regge, il pacchetto cieco regge. E soprattutto nessun dato
+sperimentale decade, perché non esiste: START non è mai avvenuto.
+
+### La lezione, che vale oltre l'esperimento
+
+**Un hash senza oggetto recuperabile non è evidenza dell'esistenza
+dell'oggetto che pretende di impegnare.** *(Formulazione di Claudio.)*
+
+È una proprietà di tutta l'architettura R3, non di questo esperimento: il
+content addressing di `r3/` poggia sull'assunzione che l'oggetto ci sia.
+Verificata — vedi sotto.
+
 ### Stato
 
-`APERTO` · START bloccato · nessun dato raccolto · il blocco è controllato da
-`test_r3.py`, gruppo `CUSTODIA`, e resta rosso finché non si chiude.
+`v1 ORPHANED` · `v2 da costruire` · START bloccato finché v2 non è sigillato ·
+nessun dato raccolto · il blocco è controllato da `test_r3.py`, gruppo
+`CUSTODIA`, e resta rosso finché non si chiude.
+
+---
+
+## Lo stesso difetto nel sistema? — RECUPERATO ESEGUENDO, 2026-10-04
+
+La domanda che la correzione di Claudio impone: `r3/node.py` registra digest i
+cui oggetti potrebbero non esserci più?
+
+Non l'ho letto e concluso. L'ho **eseguito** su `d6d329a`, con
+`R3_DATA_DIR` in una cartella temporanea.
+
+| esperimento | esito |
+|---|---|
+| oggetto presente accanto al digest | `documents_missing_or_corrupt=[]` |
+| **oggetto cancellato, digest conservato** — il caso di v1 | **RILEVATO** |
+| **oggetto sostituito con byte diversi sotto lo stesso digest** — la falsa ricostruzione | **RILEVATO** |
+
+`upload()` scrive l'oggetto nella stessa chiamata in cui ne calcola il digest;
+`download()` ri-verifica prima di restituire; `_state_fingerprint()` rilegge
+ogni file e confronta, trattando anche `OSError` come guasto.
+
+**Il codice ha la disciplina che noi due non abbiamo avuto in chat.** Dove il
+codice e noi divergevamo, ha vinto il codice — che è la regola di questo
+repository, applicata per una volta a chi la scrive.
+
+### Però c'è un dettaglio, e conta
+
+`document_count` resta **1** anche quando l'oggetto è scomparso. Il digest
+orfano continua a essere contato come documento; il guasto compare solo in
+`documents_missing_or_corrupt`, che è un campo separato.
+
+**Chi legge `document_count` senza leggere `documents_missing_or_corrupt`
+riproduce esattamente il difetto di v1**, questa volta dentro il sistema. Non è
+un bug — il dato c'è — è una trappola di lettura, dello stesso genere di quelle
+che abbiamo messo negli item.
+
+*Falsificazione:* un consumatore di `/state-fingerprint` che legga entrambi i
+campi smentisce la preoccupazione. Prossimo esperimento verificabile: cercare
+nei 678 commit chi consuma quell'endpoint, e quali campi legge.
 
 ---
 
