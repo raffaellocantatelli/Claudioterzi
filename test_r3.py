@@ -696,6 +696,46 @@ def test_custodia(r: Rapporto, repo: Path | None = None) -> None:
             except (OSError, ValueError, subprocess.SubprocessError) as exc:
                 r.add(G, "il gate respinge un artefatto manomesso", SKIP, str(exc))
 
+        # ANTI-DERIVA: il gate vive in un altro repository e puo' essere
+        # riscritto. Se una versione futura toglie campi, il validatore qui
+        # continuerebbe ad approvare secondo la versione vecchia - o, peggio,
+        # verrebbe allineato alla nuova senza che nessuno veda cosa si e'
+        # perso. Questo controllo confronta le due liste e lo dice.
+        # dal ramo pubblicato, non dall'albero di lavoro: il clone locale
+        # puo' essere a qualunque commit, e un SKIP per quel motivo
+        # nasconderebbe una deriva reale
+        gate_doc = None
+        if repo is not None and (repo / ".git").exists():
+            try:
+                e = subprocess.run(
+                    ["git", "-C", str(repo), "show",
+                     "origin/main:docs/R3_EXPORT_GATE_EVERY_NODE_2026-10-04.md"],
+                    capture_output=True, text=True, timeout=30)
+                gate_doc = e.stdout if e.returncode == 0 else None
+            except (OSError, subprocess.SubprocessError):
+                gate_doc = None
+        if gate_doc is None:
+            r.add(G, "il validatore copre tutti i campi del gate committato",
+                  SKIP, "documento del gate non disponibile nel clone")
+        else:
+            try:
+                blocco = gate_doc.split("```")[1]
+                dichiarati = [l.split()[0] for l in blocco.splitlines()
+                              if l.strip() and not l.startswith(" ")]
+                sys.path.insert(0, str(exp))
+                import verifica_export as ve
+                applicati = set(ve.SEMPRE) | set(ve.SOLO_PATCH)
+                scoperti = [c for c in dichiarati if c not in applicati]
+                r.controlla(
+                    G, "il validatore copre tutti i campi del gate committato",
+                    not scoperti,
+                    f"campi dichiarati dal gate ma non controllati: "
+                    f"{scoperti}. Il validatore e' piu' debole del gate",
+                )
+            except (OSError, IndexError, ImportError) as exc:
+                r.add(G, "il validatore copre tutti i campi del gate committato",
+                      SKIP, str(exc))
+
     # lo script deve rifiutarsi di consegnare un pacchetto che rivela il disegno
     script = pac / "assembla.py"
     if not script.is_file() or not (esp / "ITEMS.md").is_file():
