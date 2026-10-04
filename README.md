@@ -14,6 +14,7 @@ Il protocollo qui **non va attivato**: è lo stato predefinito. `CLAUDE.md` lo c
 | [`RICOSTRUZIONE_R3.md`](RICOSTRUZIONE_R3.md) | Analisi completa: architettura reale, difetti bloccanti, correzioni al Sommario Esecutivo, piano di ricostruzione |
 | [`baseline_r3.json`](baseline_r3.json) | Stessa baseline in forma leggibile da macchina, per ripartire senza contesto di chat |
 | [`DIMOSTRAZIONE.md`](DIMOSTRAZIONE.md) | Sequenza in sette atti per dimostrare di persona che il progetto esiste |
+| [`convergenza/`](convergenza/) | Test di convergenza su R3-PEER/1.1c: scoring preregistrato **prima** del fixture, e le tre lacune della pre-registrazione del fixture — seed ambiguo, distribuzione non impegnata, cascata di stato |
 | [`export/`](export/) | Artefatto di questo nodo conforme all'«R³ Export Gate» di `claudioterzi/Claudio`, più il validatore che rende il gate **applicato** invece che dichiarato |
 | [`patches/`](patches/) | **Quattro** fix scritti e testati sul codice reale, da applicare in ordine con `git apply` |
 | [`ESPERIMENTO_FIRMA.md`](ESPERIMENTO_FIRMA.md) | Protocollo per distinguere convergenza generale da imprinting del corpus: tre bracci, segnale negli errori, preregistrazione con hash |

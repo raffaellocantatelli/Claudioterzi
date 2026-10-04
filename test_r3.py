@@ -736,6 +736,24 @@ def test_custodia(r: Rapporto, repo: Path | None = None) -> None:
                 r.add(G, "il validatore copre tutti i campi del gate committato",
                       SKIP, str(exc))
 
+    # il seed del fixture e' definito da una formula ambigua: il valore
+    # pinnato va ricalcolato, non creduto. Se qualcuno cambia il pinning
+    # senza ricalcolare, questo controllo lo dice.
+    conv = base / "convergenza"
+    ric = conv / "RICONCILIAZIONE_FIXTURE.md"
+    if not ric.is_file():
+        r.add(G, "il seed pinnato del fixture e' riproducibile", SKIP,
+              "convergenza/RICONCILIAZIONE_FIXTURE.md assente")
+    else:
+        atteso = hashlib.sha256(
+            b"81dce982dfbd1d4b5f646b1418efbc24c8be4bf0" + b"R3-FIXTURE-1000"
+        ).hexdigest()
+        testo_ric = ric.read_text(encoding="utf-8")
+        r.controlla(G, "il seed pinnato del fixture e' riproducibile",
+                    atteso in testo_ric,
+                    f"il documento non cita {atteso[:16]}...: il pinning non "
+                    "corrisponde alla formula che dichiara")
+
     # lo script deve rifiutarsi di consegnare un pacchetto che rivela il disegno
     script = pac / "assembla.py"
     if not script.is_file() or not (esp / "ITEMS.md").is_file():
