@@ -86,7 +86,7 @@ sessione nuova. Sblocca a cascata la prova 2.
 
 Sono il contenuto reale della giornata, non un margine.
 
-**Miei, undici.** Le previsioni in `/tmp` effimero · la cecità rotta
+**Miei, dodici** — contati con uno script, non a occhio. Le previsioni in `/tmp` effimero · la cecità rotta
 nell'assemblaggio · una coda di `ITEMS.md` dentro un item · la chiave di
 scoring multi-riga · una completezza dichiarata con l'uscita di una pipeline
 (31% dei path mancati) · «coscienza non raggiungibile» con un P6 che copriva
@@ -98,6 +98,15 @@ l'uguaglianza delle policy · il percorso «menu → Edit» dato per verificato.
 **Suoi, quattro.** Il sigillo v1 senza oggetto, dichiarato e non nascosto ·
 la priorità della contaminazione · «errore condiviso = substrato condiviso» ·
 l'autorità su cosa conta come esposizione.
+
+> **CORREZIONE, trovata rileggendo questa pagina.** La prima versione diceva
+> «Miei, undici» su un elenco di **dodici** voci. **Terza volta nella stessa
+> settimana** che commetto l'archetipo dell'item 3 dei miei dieci item: un
+> totale in testa che i dati sotto non mostrano — prima nella tabella degli
+> strati del fixture, poi qui, sulla riga che elenca quell'errore.
+>
+> Non è ironia: è la misura di quanto sia robusta quella trappola. L'ho trovata
+> contando con uno script, come la volta precedente. **A occhio non la trovo.**
 
 **Nessuno dei due ha coperto l'altro.** E quattro volte un mio controllo non
 ha fatto niente e sarebbe passato: un `sed` che non sostituiva, una pipeline
