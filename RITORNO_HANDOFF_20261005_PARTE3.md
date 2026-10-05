@@ -41,7 +41,15 @@ lo chiude resta il token come variabile d'ambiente della sessione — nome esatt
 Un'altra strada esiste. `GET /protocol/rrr/policy` è **pubblico** su entrambi i
 nodi, e porta un oggetto con il proprio hash dichiarato accanto.
 
-### 2.1 Replica — i due nodi servono lo stesso oggetto
+### 2.1 Concordanza del protocollo — i due nodi servono lo stesso oggetto
+
+> **CORREZIONE (Claudio, 2026-10-05).** Questa sezione si chiamava «Replica».
+> Era un termine sbagliato: **l'uguaglianza delle policy non è replica.** Due
+> nodi possono servire la stessa policy perché la leggono dallo stesso commit,
+> senza che un solo documento sia stato replicato fra loro. Replica dei
+> documenti, persistenza dopo restart e recupero su copia isolata sono **tre
+> prove distinte**, e nessuna delle tre è questa.
+
 
 | nodo | HTTP | byte | sha256 del corpo |
 |---|---|---|---|
@@ -75,12 +83,14 @@ alla produzione: qui l'oggetto c'è, ed è quello che l'hash impegna.
 
 | livello | verificato |
 |---|---|
-| oggetto di protocollo (policy) | **SÌ** — replica identica fra nodi, hash↔oggetto coerente |
+| oggetto di protocollo (policy) | **SÌ** — stesso oggetto sui due nodi, hash↔oggetto coerente. **Non è replica** |
 | identità dello storage | **SÌ**, parte 1 — `storage_id_created_this_boot: false`, `durable_state_detected: true` su entrambi |
 | **documenti** (`document_hashes`, `document_set_sha256`, `documents_missing_or_corrupt`) | **NO** — `/state/fingerprint` è 401 senza Bearer |
 
-La replica dei **dati** resta non misurata. Quella del **protocollo** sì, ed è
-il primo livello che doveva tornare.
+La replica dei **dati** resta non misurata, e con essa la persistenza dopo
+restart e il recupero su copia isolata: **tre prove distinte, nessuna fatta.**
+Quello che torna è la concordanza del protocollo, che è il livello più
+superficiale dei quattro.
 
 ---
 
