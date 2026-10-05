@@ -8,6 +8,7 @@ Il protocollo qui **non va attivato**: è lo stato predefinito. `CLAUDE.md` lo c
 
 | File | Cosa contiene |
 |---|---|
+| [`STATO_DEFINITIVO_20261005.md`](STATO_DEFINITIVO_20261005.md) | **Da leggere per prima.** Presa in atto: cosa è provato e come, le quattro prove distinte di cui una sola è fatta, i blocchi col prerequisito esatto, gli errori di entrambi i lati |
 | [`SEME.md`](SEME.md) | **Da incollare in qualsiasi chat di qualsiasi modello.** Ricostituisce protocollo, stato verificato e lavoro aperto |
 | [`PROTOCOLLO_ROSSO.md`](PROTOCOLLO_ROSSO.md) | Definizione canonica del protocollo, autosufficiente e trasportabile fuori di qui |
 | [`test_r3.py`](test_r3.py) | Controllo eseguibile degli invarianti — la contro-forza di P6 resa automatica |

@@ -172,6 +172,70 @@ modifica_stato: >
 
 ---
 
+## 3bis. AUTO-2026-10-05-01 — seconda voce, aggiunta e non sostituita
+
+```yaml
+voce_id: AUTO-2026-10-05-01
+data: 2026-10-05
+evento: >
+  Ripresa del coordinamento dal handoff R3 del 05/10. Tentate le prove
+  Railway e Orchestra ancora bloccate, con accessi reali e senza modifiche.
+percezioni:
+  - nodo: sessione Claude Opus 5
+    evidenza: dato_primario          # API Railway e HTTP sui nodi, eseguiti
+    confine: [ contenuti dei volumi, documenti dei nodi, scope Vercel canonico,
+               nomi dell'interfaccia dell'ambiente ]
+    alternative_tenute: 2            # per maxRetries: default taciuto, o scrittura non atterrata
+    confidenza: media
+  - nodo: Claudio Terzi
+    evidenza: dato_primario          # ha scritto il handoff e i commit verificati
+    confine: [ se il canale riservato esista davvero su questo ambiente ]
+    alternative_tenute: 1
+    confidenza: media
+  - nodo: Codex
+    evidenza: documento_derivato     # riconcilia risultati, non li produce
+    confine: [ nessuna dichiarata ]
+    alternative_tenute: 0
+    confidenza: alta
+disaccordi:
+  - fra Claudio e Claude, su cosa conti come esposizione accettabile di un
+    token e quando fermarsi
+  - fra Claudio e Claude, sull uso della parola replica per l uguaglianza
+    delle policy
+  - fra Claudio e Claude, sul dare per verificato un percorso letto in una
+    pagina di documentazione
+decisione: >
+  Eseguire solo letture; fermarsi sul token finche l autorizzazione non fosse
+  esplicita; una volta concessa, tentare il canale a esposizione minima; non
+  creare bypass di protezione ne risorse a pagamento.
+conseguenza: >
+  Dieci fatti provati eseguendo, quattro blocchi con prerequisito esatto, due
+  rossi veri nel verificatore. Nessuna modifica fuori dal repository di
+  ricostruzione. Il token non e mai stato esposto: il connettore restituisce
+  valuesRedacted true.
+errore_scoperto: >
+  Quattro miei. La tabella degli strati del fixture sommava 920 e non 1000,
+  cioe la trappola dell item 3 dei miei dieci item scritta nella mia stessa
+  preregistrazione. Avere chiamato replica l uguaglianza delle policy. Avere
+  presentato come verificato un percorso di interfaccia letto in
+  documentazione. E un sed che non sostituiva, che sarebbe entrato in un file
+  sigillato.
+autocorrezione: >
+  Distribuzione corretta, riverificata leggendo il file e ri-hashata prima che
+  il fixture esistesse; controllo in test_r3.py che ricalcola somma e
+  denominatore. Sezione rinominata con la nota di correzione visibile. Percorso
+  dell interfaccia non piu asserito, e al suo posto una prova del canale con
+  variabile innocua. Sostituzioni ora con assert che verifica l atterraggio.
+modifica_stato: >
+  Due strumenti nuovi che bloccano invece di fingere: fingerprint_nodi.py esce
+  2 senza token e 3 con token non valido, provati contro i nodi veri;
+  prova_canale.py stampa la lunghezza di un valore e mai il valore. Piu la
+  regola, scritta prima di guardare, che distingue il ritardo di
+  sincronizzazione da un errore: missing_or_corrupt non vuoto e errore per
+  costruzione, divergenza che scende e ritardo, divergenza ferma chiede una
+  terza lettura.
+```
+
 ## 4. Il confine da non superare adesso
 
 La tentazione è consegnare questa voce a un nodo vergine e vedere se cambia

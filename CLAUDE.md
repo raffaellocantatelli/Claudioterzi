@@ -36,6 +36,7 @@ Ricostruzione verificata del sistema R3∞ / SDQ-1, il cui codice vive in `claud
 | `AUTOBIOGRAFIA.md` | Schema dell'autobiografia computazionale, i tre requisiti strutturali (leggibile senza fornitore, append-only, disposizione non conclusione) e la prima voce reale |
 | `APERTURE.md` | Severità applicata al futuro: ogni blocco e cosa apre, col prezzo. E ciò che non si apre |
 | `SOLUZIONE_2055.md` | Il sistema passato al filtro dei trent'anni |
+| `STATO_DEFINITIVO_20261005.md` | Presa in atto del 05/10: dieci fatti provati eseguendo, le quattro prove distinte, i blocchi col prerequisito esatto, le sei regole derivate |
 | `SEME.md` | Da incollare in qualsiasi chat di qualsiasi modello: ricostituisce il contesto |
 | `PROTOCOLLO_ROSSO.md` | Definizione canonica del protocollo, trasportabile fuori di qui |
 | `DIMOSTRAZIONE.md` | Sequenza per dimostrare il progetto di persona |
