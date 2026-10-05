@@ -87,38 +87,151 @@ def confronta(a: dict, b: dict) -> dict:
     }
 
 
-def giudizio(c1: dict, c2: dict, attesa: int) -> tuple[str, str]:
-    """Ritardo di sincronizzazione o errore? Regola scritta prima di guardare."""
-    corrotti = (c1["corrotti_a"] or c1["corrotti_b"]
-                or c2["corrotti_a"] or c2["corrotti_b"])
-    if corrotti:
-        return "ERRORE", ("documents_missing_or_corrupt non vuoto: un digest "
-                          "esiste senza il suo oggetto, o l'oggetto non "
-                          "corrisponde. Non e' ritardo.")
-    if c1["insieme_identico"] and c2["insieme_identico"]:
-        return "COERENTE", "insiemi identici in entrambe le letture."
-    d1 = len(c1["solo_in_a"]) + len(c1["solo_in_b"])
-    d2 = len(c2["solo_in_a"]) + len(c2["solo_in_b"])
-    if d2 < d1:
-        return "RITARDO_DI_SINCRONIZZAZIONE", (
-            f"divergenza scesa da {d1} a {d2} documenti in {attesa}s: "
-            "converge, quindi e' propagazione in corso.")
-    if d2 == d1:
-        return "DIVERGENZA_PERSISTENTE", (
-            f"divergenza ferma a {d1} documenti dopo {attesa}s: non converge. "
-            "Serve una terza lettura piu' distante prima di chiamarlo errore.")
-    return "DIVERGENZA_IN_AUMENTO", (
-        f"divergenza salita da {d1} a {d2}: uno dei due nodi sta ricevendo "
-        "scritture che l'altro non vede.")
+def serie(letture: list[dict]) -> list[int]:
+    """Divergenza osservata a ogni lettura: |A \\ B| + |B \\ A|."""
+    return [len(l["confronto"]["solo_in_a"]) + len(l["confronto"]["solo_in_b"])
+            for l in letture]
+
+
+def giudizio(letture: list[dict], attese: list[int]) -> tuple[str, str]:
+    """Registra osservazioni. Non nomina cause, nemmeno per negarle.
+
+    Correzione di Claudio, 2026-10-05: non si deduce la causa di una
+    divergenza dal fatto che cresca o diminuisca, e con due letture si
+    descrive la variazione senza dichiarare convergenza.
+
+    La convergenza si verifica **raggiungendo l'uguaglianza** su almeno tre
+    letture, non inferendola da una pendenza. Il perche' sta qui, nella
+    docstring: il motivo restituito resta descrittivo, perche' finisce in una
+    ricevuta leggibile da macchina e li' una spiegazione causale verrebbe
+    riusata come se fosse un reperto.
+    """
+    segnalati = [
+        {"lettura": i + 1,
+         "node-a": l["confronto"]["corrotti_a"],
+         "node-v2": l["confronto"]["corrotti_b"]}
+        for i, l in enumerate(letture)
+        if l["confronto"]["corrotti_a"] or l["confronto"]["corrotti_b"]
+    ]
+    if segnalati:
+        return "INTEGRITA_SEGNALATA_DAL_NODO", (
+            "il campo documents_missing_or_corrupt non e' vuoto alle letture "
+            f"{[x['lettura'] for x in segnalati]}: {segnalati}. "
+            "Valore riportato dal nodo, non interpretato.")
+
+    d = serie(letture)
+    n = len(d)
+    if all(x == 0 for x in d):
+        return "INSIEMI_UGUALI", (
+            f"divergenza 0 in tutte le {n} letture.")
+    if n < 3:
+        return "VARIAZIONE_OSSERVATA", (
+            f"serie {d} su {n} letture, attese {attese}s. "
+            f"variazione fra prima e ultima: {d[-1] - d[0]:+d}. "
+            "Con meno di tre letture non dichiaro convergenza.")
+    if d[-1] == 0:
+        return "UGUAGLIANZA_RAGGIUNTA", (
+            f"serie {d}: la divergenza e' 0 alla lettura {n} dopo essere "
+            f"stata {d[0]} alla prima. Uguaglianza osservata, non dedotta.")
+    passi = [b - a for a, b in zip(d, d[1:])]
+    return "DIVERGENZA_NON_RISOLTA", (
+        f"serie {d}, variazioni per passo {passi}, attese {attese}s. "
+        f"la divergenza non e' 0 all'ultima lettura: {d[-1]} documenti. "
+        "nessuna convergenza osservata.")
+
+
+def _parole_causali(testo: str) -> list[str]:
+    """Parole che spiegherebbero il perche'. Non devono stare in un verdetto."""
+    return [w for w in ("ritardo", "sincronizzazione", "propagazione",
+                        "guasto", "perche", "causa", "compatibile")
+            if w in testo.lower()]
+
+
+def self_test(giudice=None) -> int:
+    """Casi controllati sulla funzione di giudizio.
+
+    `giudice` serve al controllo negativo: passando l'implementazione
+    precedente, questi stessi casi DEVONO fallire. Un test che passa su
+    entrambe le versioni non distingue niente.
+    """
+    g = giudice or giudizio
+
+    def finta(div: int, corrotti_a=(), corrotti_b=()) -> dict:
+        return {"confronto": {
+            "solo_in_a": [f"h{i}" for i in range(div)],
+            "solo_in_b": [],
+            "corrotti_a": list(corrotti_a),
+            "corrotti_b": list(corrotti_b),
+        }}
+
+    casi = [
+        ("insiemi uguali",            [finta(0), finta(0), finta(0)], "INSIEMI_UGUALI"),
+        ("mancanti o corrotti",       [finta(0, corrotti_b=["y"]), finta(0), finta(0)],
+                                      "INTEGRITA_SEGNALATA_DAL_NODO"),
+        ("corrotti pur arrivando a 0", [finta(3), finta(1), finta(0, corrotti_a=["x"])],
+                                      "INTEGRITA_SEGNALATA_DAL_NODO"),
+        ("divergenza decrescente a 0", [finta(5), finta(2), finta(0)], "UGUAGLIANZA_RAGGIUNTA"),
+        ("decrescente, non a 0",      [finta(9), finta(5), finta(3)], "DIVERGENZA_NON_RISOLTA"),
+        ("divergenza crescente",      [finta(1), finta(3), finta(7)], "DIVERGENZA_NON_RISOLTA"),
+        ("ferma sopra zero",          [finta(4), finta(4), finta(4)], "DIVERGENZA_NON_RISOLTA"),
+        ("due letture, in discesa",   [finta(6), finta(2)],           "VARIAZIONE_OSSERVATA"),
+        ("due letture, in salita",    [finta(2), finta(6)],           "VARIAZIONE_OSSERVATA"),
+        ("due letture, arriva a 0",   [finta(4), finta(0)],           "VARIAZIONE_OSSERVATA"),
+    ]
+    ok = True
+    for nome, letture, atteso in casi:
+        try:
+            v, motivo = g(letture, [45] * (len(letture) - 1))
+        except Exception as e:                      # noqa: BLE001
+            v, motivo = f"ECCEZIONE:{type(e).__name__}", ""
+        buono = v == atteso
+        if not buono:
+            ok = False
+        print(f"  {nome:28s} -> {v:30s} {'OK' if buono else f'NO (atteso {atteso})'}")
+
+    # proprieta' 1: nessun verdetto sulla divergenza nomina una causa
+    for nome, letture in (("discesa", [finta(9), finta(5), finta(3)]),
+                          ("salita",  [finta(1), finta(3), finta(7)]),
+                          ("due letture", [finta(6), finta(2)])):
+        try:
+            _, motivo = g(letture, [45] * (len(letture) - 1))
+        except Exception:                           # noqa: BLE001
+            motivo = ""
+        trovate = _parole_causali(motivo)
+        if trovate:
+            ok = False
+        print(f"  {'nessuna causa: ' + nome:28s} -> "
+              f"{'OK' if not trovate else 'NO: ' + str(trovate)}")
+
+    # proprieta' 2: con due letture non si dichiara convergenza
+    try:
+        v, motivo = g([finta(4), finta(0)], [45])
+    except Exception:                               # noqa: BLE001
+        v, motivo = "ECCEZIONE", ""
+    senza = "converg" not in (v + motivo).lower() or "non dichiaro" in motivo.lower()
+    if not senza:
+        ok = False
+    print(f"  {'due letture: nessuna converg.':28s} -> {'OK' if senza else 'NO'}")
+
+    print("  esito:", "OK" if ok else "GIUDIZIO INAFFIDABILE")
+    return 0 if ok else 1
 
 
 def main(argv: list[str]) -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--out", default="ricevuta_fingerprint.json")
+    ap.add_argument("--self-test", action="store_true",
+                    help="esegue la funzione di giudizio su serie sintetiche")
+    ap.add_argument("--letture", type=int, default=3,
+                    help="quante letture (default 3: due non bastano a "
+                         "osservare una convergenza)")
     ap.add_argument("--attesa", type=int, default=45,
-                    help="secondi fra le due letture (default 45)")
+                    help="secondi fra una lettura e la successiva (default 45)")
     a = ap.parse_args(argv)
+
+    if a.self_test:
+        return self_test()
 
     token = os.environ.get("R3_API_TOKEN", "")
     if not token:
@@ -127,10 +240,15 @@ def main(argv: list[str]) -> int:
               "incollato in chat.", file=sys.stderr)
         return 2
 
-    letture = []
-    for giro in (1, 2):
-        if giro == 2:
+    if a.letture < 2:
+        print("Servono almeno 2 letture.", file=sys.stderr)
+        return 4
+
+    letture, attese = [], []
+    for giro in range(1, a.letture + 1):
+        if giro > 1:
             time.sleep(a.attesa)
+            attese.append(a.attesa)
         snap = {"giro": giro, "ora": ora(), "nodi": {}}
         for nome, base in NODI.items():
             codice, corpo = leggi(base, token)
@@ -143,12 +261,13 @@ def main(argv: list[str]) -> int:
                                       snap["nodi"]["node-v2"])
         letture.append(snap)
 
-    verdetto, motivo = giudizio(letture[0]["confronto"],
-                               letture[1]["confronto"], a.attesa)
+    verdetto, motivo = giudizio(letture, attese)
     ricevuta = {
         "schema": "R3-FINGERPRINT-COMPARE/1",
         "generato": ora(),
+        "letture_richieste": a.letture,
         "attesa_fra_letture_s": a.attesa,
+        "serie_divergenza": serie(letture),
         "percorso": PERCORSO,
         "nodi": {k: v for k, v in NODI.items()},
         "letture": letture,
