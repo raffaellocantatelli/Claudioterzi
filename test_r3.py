@@ -316,10 +316,24 @@ def test_difetti(r: Rapporto, repo: Path | None) -> None:
                   "sorgente non disponibile")
     else:
         with tempfile.TemporaryDirectory() as td:
-            ok_ck = subprocess.run(
-                ["git", "-C", str(repo), "--work-tree", td, "checkout", COMMIT, "--", "."],
-                capture_output=True, text=True,
-            ).returncode == 0
+            # `git checkout COMMIT -- .` scrive nell'INDICE del repository
+            # sorgente anche con --work-tree altrove: lasciava 52 file in
+            # stato MM in un clone su cui non abbiamo scrittura, e faceva
+            # scattare il controllo di modifiche non committate.
+            # `git archive` esporta un albero senza toccare indice ne'
+            # working tree.
+            try:
+                arch = subprocess.run(
+                    ["git", "-C", str(repo), "archive", COMMIT],
+                    capture_output=True, timeout=180)
+                ok_ck = arch.returncode == 0 and bool(arch.stdout)
+                if ok_ck:
+                    ok_ck = subprocess.run(
+                        ["tar", "-x", "-C", td],
+                        input=arch.stdout, capture_output=True, timeout=180,
+                    ).returncode == 0
+            except (OSError, subprocess.SubprocessError):
+                ok_ck = False
             for nome in PATCHES:
                 p = RADICE / "patches" / nome
                 if not ok_ck or not p.is_file():
