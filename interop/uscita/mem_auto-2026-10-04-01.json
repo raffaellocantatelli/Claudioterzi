@@ -1,0 +1,26 @@
+{
+  "body": "# auto-2026-10-04-01\n\nVoce di autobiografia computazionale R3.\nFormato originale conservato per intero: lo schema ecc.memory.v1\nnon ha campi per percezioni, disaccordi, errori e autocorrezioni.\n\n```yaml\nvoce_id: AUTO-2026-10-04-01\ndata: 2026-10-04\nevento: >\n  Progettazione e congelamento dell'esperimento firma; deposito di due\n  preregistrazioni sigillate; scoperta che una delle due non aveva oggetto.\npercezioni:\n  - nodo: sessione Claude Opus 5\n    evidenza: dato_primario          # codice letto ed eseguito, non documenti\n    confine: [ 678 commit non verificati, contenuto del placebo, esiti ]\n    alternative_tenute: 2            # H0 e H1 entrambe aperte; H2-G separata\n    confidenza: media\n  - nodo: Claudio Terzi\n    evidenza: dato_primario          # ha verificato i commit su GitHub da sé\n    confine: [ recuperabilità dei byte del proprio materiale ]\n    alternative_tenute: 2\n    confidenza: media\n  - nodo: modello OpenAI\n    evidenza: documento_derivato     # ha ragionato sull'architettura, non sul codice\n    confine: [ nessuna dichiarata sull'esistente ]\n    alternative_tenute: 1\n    confidenza: alta\ndisaccordi:\n  - fra Claudio e Claude, su quando applicare la priorità della contaminazione:\n    nell'acquisizione o nell'interpretazione\n  - fra Claudio e Claude, su «non raggiungibile» contro «oggi non verificabile»\n  - fra Claude e il modello OpenAI, sul fatto che lo stato condiviso debba\n    propagare conclusioni\ndecisione: >\n  Acquisizione completa dei cinque bracci, interpretazione sequenziale con\n  gate sulla contaminazione; terza funzione cieca anziché terza persona;\n  configurazione identica fra i bracci, non solo registrata.\nconseguenza: >\n  START bloccato. 58 controlli automatici, due rossi veri: la deriva della\n  baseline e il blocco di custodia.\nerrore_scoperto: >\n  Quattro miei: (1) le previsioni esistevano solo in /tmp effimero;\n  (2) l'assemblaggio del pacchetto rompeva la cecità e nessuno dei tre modi\n  possibili era innocente; (3) una coda di ITEMS.md finiva dentro un item e\n  avrebbe raccontato l'esperimento — trovato dalla guardia dello script, non\n  da me; (4) ho dichiarato completa una scansione citando l'uscita di una\n  pipeline, che per costruzione non poteva segnalare l'incompletezza: 31% dei\n  path mancati. Più un P6 difettoso: criterio di falsificazione attaccato a\n  una tesi più forte di quella che copriva.\n  Tre di Claudio: (1) il sigillo v1 non aveva oggetto; (2) la frase sulla\n  contaminazione; (3) «errore condiviso = substrato condiviso» era\n  sovra-affermazione, è segnale discriminante.\nautocorrezione: >\n  PREVISIONI.enc con round-trip verificato; assembla.py con unione meccanica e\n  verifica della propria uscita; scansione integrale 6608/6608 con stato\n  d'uscita letto direttamente; v1 marcato ORPHANED e mantenuto visibile;\n  sigilla.py che non può emettere un hash senza aver riletto il cifrato.\n  Claudio ha rifiutato di cercare combinazioni di byte fino a far combaciare\n  un hash su materiale ricostruito, pur avendone lo strumento.\nmodifica_stato: >\n  Due regole permanenti. (1) Un sigillo si deposita insieme al chiaro cifrato\n  e alla prova di round-trip, nello stesso atto. (2) Si genera dentro\n  l'archivio durevole; non si genera e poi si sposta, perché lo spostamento è\n  il punto di rottura.\n  Più un fatto verificato eseguendo: r3/node.py rileva sia il digest orfano\n  sia la falsa ricostruzione — il codice aveva la disciplina che i progettisti\n  non hanno avuto.\n```",
+  "createdAt": "2026-10-04T00:00:00.000Z",
+  "id": "mem_auto-2026-10-04-01",
+  "kind": "lesson",
+  "links": [],
+  "schema": "ecc.memory.v1",
+  "scope": "project",
+  "sourceHarness": "claude-code",
+  "status": "active",
+  "tags": [
+    "r3",
+    "autobiografia",
+    "protocollo-rosso"
+  ],
+  "targetHarnesses": [
+    "codex",
+    "cursor",
+    "opencode",
+    "gemini",
+    "hermes"
+  ],
+  "title": "> Progettazione e congelamento dell'esperimento firma; deposito di due preregistrazioni sigillate; scoperta che una delle due non aveva oggetto.",
+  "trust": "unreviewed",
+  "updatedAt": "2026-10-04T00:00:00.000Z"
+}

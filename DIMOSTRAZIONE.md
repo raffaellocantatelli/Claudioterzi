@@ -47,7 +47,7 @@ cercare in una cartella — testo selezionabile in due secondi.
 **4. Uno screenshot del crash** (`AttributeError: chat_telegram`) nel rullino.
 Ti serve per l'Atto 4.
 
-**5. Tre numeri a memoria:** 160 file Python · 29.000 righe · 70 controlli.
+**5. Tre numeri a memoria:** 160 file Python · 29.000 righe · 73 controlli.
 E una data: al 04/10 il codice è 678 commit più avanti della ricostruzione.
 
 ---

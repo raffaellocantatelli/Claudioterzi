@@ -836,6 +836,43 @@ def test_custodia(r: Rapporto, repo: Path | None = None) -> None:
                     "PROVENIENZA_STRATI.tsv e' tracciata: direbbe agli "
                     "implementatori quali eventi sono quali")
 
+    # --- INTEROPERABILITA' ecc.memory.v1 --------------------------------- #
+    # Lo schema e' copiato da un repository terzo: se cambia sotto i piedi,
+    # o se il convertitore smette di produrre documenti conformi, va detto.
+    inter = base / "interop"
+    sch = inter / "ecc.memory.v1.schema.json"
+    if not sch.is_file():
+        r.add(G, "lo schema ecc.memory.v1 e' quello registrato", SKIP,
+              "interop/ecc.memory.v1.schema.json assente")
+    else:
+        atteso = (inter / "ecc.memory.v1.schema.sha256")
+        got = hashlib.sha256(sch.read_bytes()).hexdigest()
+        r.controlla(G, "lo schema ecc.memory.v1 e' quello registrato",
+                    atteso.is_file() and got in atteso.read_text(encoding="utf-8"),
+                    f"sha256 {got[:16]}... non corrisponde a quello registrato: "
+                    "lo schema di terzi e' cambiato, la traduzione va rifatta")
+        try:
+            e = subprocess.run([sys.executable, str(inter / "valida_ecc.py"),
+                                "--self-test"], capture_output=True, timeout=120)
+            r.controlla(G, "il validatore ecc.memory.v1 rifiuta cio' che deve",
+                        e.returncode == 0,
+                        "il self-test fallisce: un validatore che approva "
+                        "sempre non misura niente")
+            docs = sorted((inter / "uscita").glob("*.json"))
+            if not docs:
+                r.add(G, "le voci tradotte restano conformi", SKIP,
+                      "nessun documento in interop/uscita")
+            else:
+                e = subprocess.run(
+                    [sys.executable, str(inter / "valida_ecc.py"), *map(str, docs)],
+                    capture_output=True, timeout=120)
+                r.controlla(G, "le voci tradotte restano conformi",
+                            e.returncode == 0,
+                            f"{len(docs)} documenti, almeno uno non conforme")
+        except (OSError, subprocess.SubprocessError) as exc:
+            r.add(G, "il validatore ecc.memory.v1 rifiuta cio' che deve",
+                  SKIP, str(exc))
+
     # lo script deve rifiutarsi di consegnare un pacchetto che rivela il disegno
     script = pac / "assembla.py"
     if not script.is_file() or not (esp / "ITEMS.md").is_file():
