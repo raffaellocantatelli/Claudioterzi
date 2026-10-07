@@ -873,6 +873,47 @@ def test_custodia(r: Rapporto, repo: Path | None = None) -> None:
             r.add(G, "il validatore ecc.memory.v1 rifiuta cio' che deve",
                   SKIP, str(exc))
 
+        # la regola che il formato di terzi NON impone: si propaga la
+        # disposizione, non la conclusione. Imposta dentro il loro body.
+        tr = inter / "traccia_a_ecc.py"
+        if not tr.is_file():
+            r.add(G, "la traccia esclude la conclusione", SKIP,
+                  "interop/traccia_a_ecc.py assente")
+        else:
+            try:
+                e = subprocess.run([sys.executable, str(tr), "--self-test"],
+                                   capture_output=True, timeout=120)
+                r.controlla(G, "la traccia esclude la conclusione",
+                            e.returncode == 0,
+                            "il self-test fallisce: il body puo' trasportare "
+                            "una conclusione, e l'accordo fra nodi smette di "
+                            "significare qualcosa")
+            except (OSError, subprocess.SubprocessError) as exc:
+                r.add(G, "la traccia esclude la conclusione", SKIP, str(exc))
+
+            emesso = inter / "uscita" / "mem_r3-trace-item-03.json"
+            if not emesso.is_file():
+                r.add(G, "il documento emesso rispetta entrambe le regole",
+                      SKIP, "nessun documento di traccia emesso")
+            else:
+                try:
+                    e = subprocess.run(
+                        [sys.executable, "-c",
+                         "import json,sys; sys.path.insert(0, sys.argv[1]);"
+                         "import traccia_a_ecc as T;"
+                         "g=T.controlla_documento(json.load(open(sys.argv[2])));"
+                         "sys.exit(1 if g else 0)",
+                         str(inter), str(emesso)],
+                        capture_output=True, timeout=120)
+                    r.controlla(G,
+                                "il documento emesso rispetta entrambe le regole",
+                                e.returncode == 0,
+                                "non conforme allo schema di terzi o alla "
+                                "nostra regola sul body")
+                except (OSError, subprocess.SubprocessError) as exc:
+                    r.add(G, "il documento emesso rispetta entrambe le regole",
+                          SKIP, str(exc))
+
     # lo script deve rifiutarsi di consegnare un pacchetto che rivela il disegno
     script = pac / "assembla.py"
     if not script.is_file() or not (esp / "ITEMS.md").is_file():

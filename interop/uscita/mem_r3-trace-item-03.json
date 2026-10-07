@@ -1,0 +1,23 @@
+{
+  "body": "R3 trace v1 — vocabolario chiuso, conclusione esclusa.\n\n```json\n{\n  \"alternatives_retained\": 2,\n  \"confidence\": \"media\",\n  \"contradiction_policy\": \"contraddetta\",\n  \"evidence_used\": \"documento_derivato\",\n  \"item_id\": 3,\n  \"uncertainty_boundary\": [\n    \"grandezza_mancante\",\n    \"temporalita_non_specificata\"\n  ]\n}\n```",
+  "createdAt": "2026-10-07T00:00:00.000Z",
+  "id": "mem_r3-trace-item-03",
+  "kind": "handoff",
+  "links": [],
+  "schema": "ecc.memory.v1",
+  "scope": "project",
+  "sourceHarness": "claude-code",
+  "status": "active",
+  "tags": [
+    "r3",
+    "traccia",
+    "vocabolario-chiuso"
+  ],
+  "targetHarnesses": [
+    "codex",
+    "cursor"
+  ],
+  "title": "R3 trace, item 3 — disposizione, non conclusione",
+  "trust": "unreviewed",
+  "updatedAt": "2026-10-07T00:00:00.000Z"
+}
